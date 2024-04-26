@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>게시판 목록보기</title>
+    <link rel="stylesheet" href="/css/board.css" />
+</head>
+<body>
+<section class="board">
+    <div class="page-title">
+        <div class="container">
+            <h3>게시글 목록보기</h3>
+        </div>
+    </div>
+
+    <div class="login-info">
+        <div class="container">
+          <span class="login-info_user">
+            <span>멤버</span>
+          </span>
+            <span class="login-info_logout">
+            <a href="/logout">로그아웃</a>
+          </span>
+            <span class="login-info_join">
+            <a href="/members/add">회원가입</a>
+          </span>
+        </div>
+    </div>
+
+    <!-- board list area -->
+    <div id="board-list">
+        <div class="container">
+            <table class="board-table">
+                <thead>
+                <tr>
+                    <th scope="col" class="th-num">번호</th>
+                    <th scope="col" class="th-title">제목</th>
+                    <th scope="col" class="th-viewcnt">조회수</th>
+                    <th scope="col" class="th-date">등록일</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>3</td>
+                    <th>
+                        <a href="/board?id=4">제목1</a>
+                        <p>테스트</p>
+                    </th>
+                    <td>1</td>
+                    <td>2024.04.25</td>
+                </tr>
+
+                <tr>
+                    <td>2</td>
+                    <th>
+                        <a href="/board?id=3">제목2</a>
+                    </th>
+                    <td>0</td>
+                    <td>2024.04.25</td>
+                </tr>
+
+                <tr>
+                    <td>1</td>
+                    <th>
+                        <a href="/board?id=2">제목3</a>
+                    </th>
+                    <td>1</td>
+                    <td>2024.04.25</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <th>
+                        <a href="/board?id=1">제목4</a>
+                    </th>
+                    <td>1</td>
+                    <td>2024.04.25</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+</body>
+</html>
