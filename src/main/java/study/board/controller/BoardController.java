@@ -9,13 +9,13 @@ public class BoardController {
 
     @GetMapping("/")
     public String list() {
-        return "list";
+        return "board";
     }
 
     @GetMapping("/board")
     public String board(@RequestParam("id") int id) {
         System.out.println("id = " + id);
 
-        return "board";
+        return "post";
     }
 }
