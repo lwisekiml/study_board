@@ -1,12 +1,18 @@
 package study.board.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import study.board.dto.LoginFormDto;
+import study.board.service.LoginService;
 
 @Controller
+@RequiredArgsConstructor
 public class LoginController {
+
+    private final LoginService loginService;
 
     @GetMapping("/loginForm")
     public String loginForm() {
@@ -17,9 +23,8 @@ public class LoginController {
             @RequestParam("email") String email,
             @RequestParam("password") String password
     ) {
-        System.out.println("email = " + email);
-        System.out.println("password = " + password);
-        return "redirect:/";
+        loginService.login(email, password);
+        return "loginBoard";
     }
 
     @GetMapping("/logout")
