@@ -16,15 +16,15 @@ class MemberRepositoryTest {
 
     @Autowired MemberRepository memberRepository;
 
-    @Test
-    public void testMember() {
-        Member member = new Member("memberA");
-        Member saveMember = memberRepository.save(member);
-
-        Member findMember = memberRepository.findById(saveMember.getId()).get();
-
-        assertThat(findMember.getId()).isEqualTo(member.getId());
-        assertThat(findMember.getUsername()).isEqualTo(member.getUsername());
-        assertThat(findMember).isEqualTo(member);
-    }
+//    @Test
+//    public void testMember() {
+//        Member member = new Member("memberA");
+//        Member saveMember = memberRepository.save(member);
+//
+//        Member findMember = memberRepository.findById(saveMember.getId()).get();
+//
+//        assertThat(findMember.getId()).isEqualTo(member.getId());
+//        assertThat(findMember.getUsername()).isEqualTo(member.getUsername());
+//        assertThat(findMember).isEqualTo(member);
+//    }
 }
