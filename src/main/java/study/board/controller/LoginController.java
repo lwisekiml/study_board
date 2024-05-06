@@ -18,12 +18,13 @@ public class LoginController {
     public String loginForm() {
         return "/login/loginForm";
     }
+
     @PostMapping("/login")
     public String login(
-            @RequestParam("email") String email,
+            @RequestParam("loginId") String loginId,
             @RequestParam("password") String password
     ) {
-        loginService.login(email, password);
+        loginService.login(loginId, password);
         return "loginBoard";
     }
 

@@ -7,12 +7,12 @@ import lombok.Data;
 public class LoginFormDto {
 
     @NotEmpty
-    private String email;
+    private String loginId;
     @NotEmpty
     private String password;
 
-    public LoginFormDto(String email, String password) {
-        this.email = email;
+    public LoginFormDto(String loginId, String password) {
+        this.loginId = loginId;
         this.password = password;
     }
 }
