@@ -14,7 +14,7 @@ public class LoginService {
 
     public LoginFormDto login(String loginId, String password) {
 
-        Member byLoginid = memberRepository.findByEmailAndPassword(loginId, password);
-        return new LoginFormDto(byLoginid.getEmail(), byLoginid.getPassword());
+        Member byLoginid = memberRepository.findByLoginIdAndPassword(loginId, password);
+        return new LoginFormDto(byLoginid.getLoginId(), byLoginid.getPassword());
     }
 }
