@@ -15,13 +15,13 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
+    private String loginId;
     private String username;
-    private String email;
     private String password;
 
-    public Member(String username, String email, String password) {
+    public Member(String loginId, String username, String password) {
+        this.loginId = loginId;
         this.username = username;
-        this.email = email;
         this.password = password;
     }
 }

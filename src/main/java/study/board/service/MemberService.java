@@ -11,7 +11,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    public Member addMember(String name, String email, String password) {
-        return memberRepository.save(new Member(name, email, password));
+    public Member addMember(String loginId, String username, String password) {
+        return memberRepository.save(new Member(username, loginId, password));
     }
 }
