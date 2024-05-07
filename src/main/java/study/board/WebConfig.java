@@ -2,15 +2,31 @@ package study.board;
 
 import jakarta.servlet.Filter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import study.board.Interceptor.LogInterceptor;
+import study.board.Interceptor.LoginCheckInterceptor;
 import study.board.filter.LogFilter;
 import study.board.filter.LoginCheckFilter;
 
 @Configuration
-public class WebConfig {
+public class WebConfig implements WebMvcConfigurer {
 
-    @Bean
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LogInterceptor())
+                .order(1)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/css/**", "/*.ico", "/error");
+
+        registry.addInterceptor(new LoginCheckInterceptor())
+                .order(2)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/", "/members/add", "/login", "/logout", "/css/**", "/*.ico", "/error");
+    }
+
+//    @Bean
     public FilterRegistrationBean logFilter() {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new LogFilter()); // 만든 필터를 넣는다.
@@ -20,7 +36,7 @@ public class WebConfig {
         return filterRegistrationBean;
     }
 
-    @Bean
+//    @Bean
     public FilterRegistrationBean loginCheckFilter() {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new LoginCheckFilter()); // 만든 필터를 넣는다.
