@@ -1,13 +1,16 @@
 package study.board.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import study.board.dto.LoginFormDto;
 import study.board.entity.Member;
 import study.board.repository.MemberRepository;
+import study.board.session.SessionManager;
 
 import java.util.Optional;
 
@@ -17,23 +20,17 @@ public class BoardController {
 
     private final MemberRepository memberRepository;
 
+    private final SessionManager sessionManager;
+
     @GetMapping("/")
-    public String list(
-            @CookieValue(name = "memberId", required = false) Long memberId,
-            Model model
-    ) {
+    public String list(HttpServletRequest request,Model model) {
 
-        if (memberId == null) {
+        LoginFormDto loginFormDto = (LoginFormDto) sessionManager.getSession(request);
+        if (loginFormDto == null) {
             return "board";
         }
 
-        // 로그인
-        Optional<Member> findMember = memberRepository.findById(memberId);
-        if (findMember.isEmpty()) {
-            return "board";
-        }
-
-        model.addAttribute("member", findMember.get());
+        model.addAttribute("loginFormDto", loginFormDto);
         return "loginBoard";
     }
 
