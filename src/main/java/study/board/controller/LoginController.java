@@ -3,14 +3,18 @@ package study.board.controller;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import study.board.dto.LoginFormDto;
 import study.board.service.LoginService;
+import study.board.session.SessionConst;
 import study.board.session.SessionManager;
 
 @Slf4j
@@ -21,18 +25,18 @@ public class LoginController {
     private final LoginService loginService;
     private final SessionManager sessionManager;
 
-    @GetMapping("/loginForm")
-    public String loginForm() {
+    @GetMapping("/login")
+    public String loginForm(@ModelAttribute("loginFormDto") LoginFormDto form) {
         return "/login/loginForm";
     }
 
     @PostMapping("/login")
     public String login(
-            @RequestParam("loginId") String loginId,
-            @RequestParam("password") String password,
-            HttpServletResponse response
+            @ModelAttribute LoginFormDto form,
+            HttpServletRequest request
     ) {
-        LoginFormDto loginFormDto = loginService.login(loginId, password);
+
+        LoginFormDto loginFormDto = loginService.login(form.getLoginId(), form.getPassword());
         log.info("login : {}", loginFormDto);
 
         if (loginFormDto == null) {
@@ -46,15 +50,18 @@ public class LoginController {
 //        Cookie idCookie = new Cookie("memberId", String.valueOf(loginMember.getId()));
 //        response.addCookie(idCookie);
 
-        sessionManager.createSession(loginFormDto, response);
+        HttpSession session = request.getSession();
+        session.setAttribute(SessionConst.LOGIN_MEMBER, loginFormDto);
 
-        return "loginBoard";
+        return "redirect:/";
     }
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request) {
-//        expireCookie(response, "memberId");
-        sessionManager.expire(request);
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
         return "redirect:/";
     }
 
