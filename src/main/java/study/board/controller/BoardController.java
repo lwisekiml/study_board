@@ -1,18 +1,17 @@
 package study.board.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import study.board.dto.LoginFormDto;
-import study.board.entity.Member;
 import study.board.repository.MemberRepository;
+import study.board.session.SessionConst;
 import study.board.session.SessionManager;
-
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,13 +22,17 @@ public class BoardController {
     private final SessionManager sessionManager;
 
     @GetMapping("/")
-    public String list(HttpServletRequest request,Model model) {
-
-        LoginFormDto loginFormDto = (LoginFormDto) sessionManager.getSession(request);
+    public String list(
+            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) LoginFormDto loginFormDto,
+            Model model
+    ) {
+        
+        // session에 회원 데이터가 없으면 board로 이동
         if (loginFormDto == null) {
             return "board";
         }
 
+        // session이 유지되면 로그인으로 이동
         model.addAttribute("loginFormDto", loginFormDto);
         return "loginBoard";
     }

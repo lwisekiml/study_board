@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,11 +7,15 @@
 </head>
 <body>
 <h1>로그인 폼</h1>
-<form action="/login" method="post">
-    아이디 : <input type="text" name="loginId" /><br/>
-    비밀번호 : <input type="password" name="password" /><br/>
-    <input type="submit" value="로그인" />
-    <a href="/">HOME</a>
+<form action="/login" th:action th:object="${loginFormDto}" method="post">
+    <div>
+        <label for="loginId">로그인 ID</label>
+        <input type="text" id="loginId" th:field="*{loginId}"/><br/>
+        <label for="loginId">비밀번호</label>
+        <input type="password" th:field="*{password}"/><br/>
+        <input type="submit" value="로그인"/>
+        <a href="/">HOME</a>
+    </div>
 </form>
 </body>
 </html>
