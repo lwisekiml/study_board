@@ -22,16 +22,16 @@ public class MemberController {
     // http://localhost:8080/members/add
     @PostMapping("/add")
     public String save(
-            @RequestParam("name") String name,
-            @RequestParam("email") String email,
+            @RequestParam("username") String username,
+            @RequestParam("loginId") String loginId,
             @RequestParam("password") String password
     ) {
-        System.out.println("name = " + name);
-        System.out.println("email = " + email);
+        System.out.println("username = " + username);
+        System.out.println("loginId = " + loginId);
         System.out.println("password = " + password);
 
         // 회원 가입 정보를 확인하는 창을 만들때 member를 사용할 예정
-        Member member = memberService.addMember(name, email, password);
+        Member member = memberService.addMember(username, loginId, password);
 
         return "redirect:/members/welcome";
     }
