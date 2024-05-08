@@ -1,5 +1,6 @@
 package study.board.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class PostController {
 
     @GetMapping("/posts/new")
-    public String createForm() {
+    public String createForm(HttpServletRequest request) {
         return "posts/createPostForm";
     }
 
