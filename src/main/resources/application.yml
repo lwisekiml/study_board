@@ -18,3 +18,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+server:
+  servlet:
+    session:
+      tracking-modes=cookie: cookie
