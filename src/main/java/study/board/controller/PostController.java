@@ -21,10 +21,11 @@ public class PostController {
 
     @GetMapping("/posts/new")
     public String createForm(
-            @ModelAttribute("loginFormDto") LoginFormDto loginFormDto,
+            HttpServletRequest request,
             Model model
     ) {
-        loginFormDto = (LoginFormDto) model.getAttribute("loginFormDto");
+        LoginFormDto loginFormDto = (LoginFormDto) request.getSession().getAttribute("loginMember");
+        model.addAttribute("loginFormDto", loginFormDto);
         return "posts/createPostForm";
     }
 
