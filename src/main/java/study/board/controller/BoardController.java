@@ -1,5 +1,6 @@
 package study.board.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,12 +13,17 @@ import study.board.dto.LoginFormDto;
 @RequiredArgsConstructor
 public class BoardController {
 
+    private final LoginController loginController;
+
     @GetMapping("/")
     public String list(
             @Login LoginFormDto loginFormDto,
-            Model model
+            Model model,
+            HttpServletRequest request
     ) {
-        
+
+        loginController.login(new LoginFormDto(null, "test", "1234"), "/", request);
+
         // session에 회원 데이터가 없으면 board로 이동
         if (loginFormDto == null) {
             return "board";
