@@ -9,13 +9,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import study.board.argumentresolver.Login;
 import study.board.dto.LoginFormDto;
+import study.board.entity.Post;
+import study.board.repository.PostRepository;
 import study.board.session.SessionConst;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class BoardController {
 
     private final LoginController loginController;
+    private final PostRepository postRepository;
 
     @GetMapping("/")
     public String list(
@@ -34,6 +39,9 @@ public class BoardController {
             return "board";
         }
 
+        List<Post> posts = postRepository.findAll();
+        model.addAttribute("posts", posts);
+
         // session이 유지되면 로그인으로 이동
         model.addAttribute("loginFormDto", loginFormDto);
         return "loginBoard";
@@ -41,7 +49,7 @@ public class BoardController {
 
     // 게시글 클릭
     @GetMapping("/board")
-    public String board(@RequestParam("id") int id) {
+    public String board(@RequestParam("id") long id) {
         System.out.println("id = " + id);
 
         return "post";

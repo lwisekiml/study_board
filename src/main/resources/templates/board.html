@@ -42,40 +42,13 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>4</td>
-                    <th>
-                        <a href="/board?id=4">제목1</a>
-                        <p>테스트</p>
-                    </th>
-                    <td>1</td>
-                    <td>2024.04.25</td>
-                </tr>
-
-                <tr>
-                    <td>3</td>
-                    <th>
-                        <a href="/board?id=3">제목2</a>
-                    </th>
-                    <td>0</td>
-                    <td>2024.04.25</td>
-                </tr>
-
-                <tr>
-                    <td>2</td>
-                    <th>
-                        <a href="/board?id=2">제목3</a>
-                    </th>
-                    <td>1</td>
-                    <td>2024.04.25</td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <th>
-                        <a href="/board?id=1">제목4</a>
-                    </th>
-                    <td>1</td>
-                    <td>2024.04.25</td>
+                <tr th:each="post : ${posts}">
+                    <td><a href="posts/post.html" th:href="@{/board/posts/{postId}(postId=${post.id})" th:text="${post.id}">번호</a></td>
+                    <td><a href="posts/post.html" th:href="@{|/board/posts/${post.id}|}" th:text="${post.title}">제목</a></td>
+                    <td>조회수</td>
+                    <td>등록일</td>
+<!--                    <td><a th:text="${post.views}">조회수</a></td>-->
+<!--                    <td><a th:text="${post.createdDate}">등록일</a></td>-->
                 </tr>
                 </tbody>
             </table>
