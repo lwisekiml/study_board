@@ -8,7 +8,7 @@ import lombok.Setter;
 public class PostFormDto {
 
     @NotEmpty
-    private String memberName;
+    private String loginId;
     @NotEmpty
     private String title;
     @NotEmpty
@@ -17,8 +17,8 @@ public class PostFormDto {
     public PostFormDto() {
     }
 
-    public PostFormDto(String memberName, String title, String content) {
-        this.memberName = memberName;
+    public PostFormDto(String loginId, String title, String content) {
+        this.loginId = loginId;
         this.title = title;
         this.content = content;
     }
