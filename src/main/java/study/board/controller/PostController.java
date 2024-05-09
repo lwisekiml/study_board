@@ -31,11 +31,12 @@ public class PostController {
 
     @PostMapping("/posts/new")
     public String create(
-            @ModelAttribute PostFormDto form,
+            @ModelAttribute("loginFormDto") LoginFormDto loginFormDto,
+            @ModelAttribute("PostFormDto") PostFormDto form,
             HttpServletRequest request
     ) {
-
-        postRepository.save(new Post("1", form.getTitle(), form.getContent()));
+        form.setLoginId(loginFormDto.getLoginId());
+        postRepository.save(new Post(form.getLoginId(), form.getTitle(), form.getContent()));
 
         return "redirect:/";
     }
