@@ -44,7 +44,16 @@ public class PostController {
     @GetMapping("/board/posts/{postId}")
     public String post(@PathVariable(name = "postId") long postId, Model model) {
         Post post = postRepository.findById(postId).get();
-        model.addAttribute("post", post);
+        model.addAttribute("PostFormDto", new PostFormDto(post.getId(), post.getLoginId(), post.getTitle(), post.getContent()));
         return "posts/post";
+    }
+
+    @PostMapping("/posts/delete")
+    public String delete(
+            @ModelAttribute PostFormDto form
+    ) {
+        Post post = postRepository.findById(form.getId()).get();
+        postRepository.delete(post);
+        return "redirect:/";
     }
 }
