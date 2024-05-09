@@ -16,12 +16,12 @@ public class Post {
     @Column(name = "post_id")
     private Long id;
 
-    private String memberName;
+    private String loginId;
     private String title;
     private String content;
 
-    public Post(String memberName, String title, String content) {
-        this.memberName = memberName;
+    public Post(String loginId, String title, String content) {
+        this.loginId = loginId;
         this.title = title;
         this.content = content;
     }
