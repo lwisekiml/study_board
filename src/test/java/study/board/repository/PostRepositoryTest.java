@@ -30,7 +30,7 @@ class PostRepositoryTest {
         Post findPost = postRepository.findById(savePost.getId()).get();
 
         assertThat(findPost.getId()).isEqualTo(post.getId());
-        assertThat(findPost.getMemberName()).isEqualTo(post.getMemberName());
+        assertThat(findPost.getLoginId()).isEqualTo(post.getLoginId());
         assertThat(findPost).isEqualTo(post);
     }
 
