@@ -1,6 +1,7 @@
 package study.board.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import study.board.argumentresolver.Login;
 import study.board.dto.LoginFormDto;
+import study.board.session.SessionConst;
 
 @Controller
 @RequiredArgsConstructor
@@ -22,7 +24,10 @@ public class BoardController {
             HttpServletRequest request
     ) {
 
+        // 접속시 로그인 상태로 하기 위함
         loginController.login(new LoginFormDto(null, "test", "1234"), "/", request);
+        HttpSession session = request.getSession();
+        loginFormDto = (LoginFormDto) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         // session에 회원 데이터가 없으면 board로 이동
         if (loginFormDto == null) {
