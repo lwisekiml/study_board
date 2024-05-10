@@ -24,5 +24,11 @@
 
     <button type="submit">삭제</button>
 </form>
+<div class="col">
+    <button onclick="location.href='editForm.html'"
+            th:onclick="|location.href='@{/{postId}/edit(postId=${PostFormDto.id})}'|"
+            type="button">수정</button>
+</div>
+<a href="/">취소</a>
 </body>
 </html>
