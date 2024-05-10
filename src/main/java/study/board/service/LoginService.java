@@ -18,6 +18,6 @@ public class LoginService {
         if (loginMember == null) {
             return null;
         }
-        return new LoginFormDto(loginMember.getLoginId(), loginMember.getPassword());
+        return new LoginFormDto(loginMember.getUsername(), loginMember.getLoginId(), loginMember.getPassword());
     }
 }
