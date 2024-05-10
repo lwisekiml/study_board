@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 상세보기</title>
+</head>
+<body>
+<h1>게시글 상세보기</h1>
+<form action="/posts/delete" method="post">
+    <input type="text" id="id" name="id" class="form-control" value="번호" th:value="${PostFormDto.id}"/>
+    <div>
+        <label for="loginId">글쓴이(아이디)</label>
+        <input type="text" id="loginId" name="loginId" class="form-control" value="상품A" th:value="${PostFormDto.loginId}" readonly>
+    </div>
+    <div>
+        <label for="tile">제목</label>
+        <input type="text" id="tile" name="title" class="form-control" value="제목" th:value="${PostFormDto.title}" readonly>
+    </div>
+    <div>
+        <label for="content">내용</label>
+        <input type="text" id="content" name="content" class="form-control" value="내용" th:value="${PostFormDto.content}" readonly>
+    </div>
+
+    <button type="submit">삭제</button>
+</form>
+<div class="col">
+    <button onclick="location.href='editForm.html'"
+            th:onclick="|location.href='@{/{postId}/edit(postId=${PostFormDto.id})}'|"
+            type="button">수정</button>
+</div>
+<a href="/">취소</a>
+</body>
+</html>
