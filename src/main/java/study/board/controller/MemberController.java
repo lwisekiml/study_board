@@ -3,6 +3,7 @@ package study.board.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import study.board.dto.MemberFormDto;
 import study.board.entity.Member;
 import study.board.service.MemberService;
 
@@ -15,23 +16,16 @@ public class MemberController {
 
     // http://localhost:8080/members/add
     @GetMapping("/add")
-    public String addForm() {
+    public String addForm(@ModelAttribute("memberFormDto") MemberFormDto memberFormDto) {
         return "members/addMemberForm";
     }
 
     // http://localhost:8080/members/add
     @PostMapping("/add")
-    public String save(
-            @RequestParam("username") String username,
-            @RequestParam("loginId") String loginId,
-            @RequestParam("password") String password
-    ) {
-        System.out.println("username = " + username);
-        System.out.println("loginId = " + loginId);
-        System.out.println("password = " + password);
+    public String save(@ModelAttribute("memberFormDto") MemberFormDto memberFormDto) {
 
-        // 회원 가입 정보를 확인하는 창을 만들때 member를 사용할 예정
-        Member member = memberService.addMember(username, loginId, password);
+        // 아이디 중복 확인 필요
+        memberService.addMember(memberFormDto.getUsername(), memberFormDto.getLoginId(), memberFormDto.getPassword());
 
         return "redirect:/members/welcome";
     }
