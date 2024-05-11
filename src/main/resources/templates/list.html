@@ -16,7 +16,7 @@
 
     <div class="login-info">
         <div class="container">
-            <a href="/posts/new" style="float: left">글쓰기</a>
+            <a href="/board/new" style="float: left">글쓰기</a>
           <span class="login-info_user">
             <span>멤버</span>
           </span>
@@ -42,9 +42,9 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="post : ${posts}">
-                    <td><a href="posts/post.html" th:href="@{/board/posts/{postId}(postId=${post.id})" th:text="${post.id}">번호</a></td>
-                    <td><a href="posts/post.html" th:href="@{|/board/posts/${post.id}|}" th:text="${post.title}">제목</a></td>
+                <tr th:each="board : ${boards}">
+                    <td><a href="board/board.html" th:href="@{/board/{boardId}(boardId=${board.id})}" th:text="${board.id}">번호</a></td>
+                    <td><a href="board/board.html" th:href="@{|/board/${board.id}|}" th:text="${board.title}">제목</a></td>
                     <td>조회수</td>
                     <td>등록일</td>
 <!--                    <td><a th:text="${post.views}">조회수</a></td>-->

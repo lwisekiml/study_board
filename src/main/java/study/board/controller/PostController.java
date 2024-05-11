@@ -1,84 +1,88 @@
-package study.board.controller;
-
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import study.board.dto.LoginFormDto;
-import study.board.dto.PostFormDto;
-import study.board.entity.Post;
-import study.board.repository.PostRepository;
-import study.board.service.PostService;
-
-@Controller
-@RequiredArgsConstructor
-public class PostController {
-
-    private final PostRepository postRepository;
-
-    private final PostService postService;
-
-    @GetMapping("/posts/new")
-    public String createForm(
-            HttpServletRequest request,
-            Model model
-    ) {
-        LoginFormDto loginFormDto = (LoginFormDto) request.getSession().getAttribute("loginMember");
-        model.addAttribute("loginFormDto", loginFormDto);
-        return "posts/createPostForm";
-    }
-
-    @PostMapping("/posts/new")
-    public String create(
-            @ModelAttribute("loginFormDto") LoginFormDto loginFormDto,
-            @ModelAttribute("PostFormDto") PostFormDto form,
-            HttpServletRequest request
-    ) {
-        form.setLoginId(loginFormDto.getLoginId());
-        postRepository.save(new Post(form.getLoginId(), form.getTitle(), form.getContent()));
-
-        return "redirect:/";
-    }
-
-    @GetMapping("/board/posts/{postId}")
-    public String post(@PathVariable(name = "postId") Long postId, Model model) {
-        Post post = postRepository.findById(postId).get();
-        model.addAttribute("PostFormDto", new PostFormDto(post.getId(), post.getLoginId(), post.getTitle(), post.getContent()));
-        return "posts/post";
-    }
-
-    @PostMapping("/posts/delete")
-    public String delete(
-            @ModelAttribute PostFormDto form
-    ) {
-        Post post = postRepository.findById(form.getId()).get();
-        postRepository.delete(post);
-        return "redirect:/";
-    }
-
-    @GetMapping("/{postId}/edit")
-    public String editForm(@PathVariable(name = "postId") Long postId, Model model) {
-        Post post = postRepository.findById(postId).get();
-        model.addAttribute("postFormDto", new PostFormDto(post.getId(), post.getLoginId(), post.getTitle(), post.getContent()));
-        return "posts/editForm";
-    }
-
-    // 상품 수정 폼에서 저장 클릭
-    @PostMapping("/{postId}/edit")
-    public String edit(@ModelAttribute PostFormDto postFormDto) {
-
-        postService.edit(postFormDto);
-
-//        Post post = postRepository.findById(postFormDto.getId()).get();
+//package study.board.controller;
 //
-//        // entity 변경 감지로 수정 됨
-//        post.setTitle(postFormDto.getTitle());
-//        post.setContent(postFormDto.getContent());
-
-        return "redirect:/board/posts/{postId}";
-    }
-}
+//import jakarta.servlet.http.HttpServletRequest;
+//import lombok.RequiredArgsConstructor;
+//import org.springframework.stereotype.Controller;
+//import org.springframework.ui.Model;
+//import org.springframework.web.bind.annotation.GetMapping;
+//import org.springframework.web.bind.annotation.ModelAttribute;
+//import org.springframework.web.bind.annotation.PathVariable;
+//import org.springframework.web.bind.annotation.PostMapping;
+//import study.board.dto.BoardFormDto;
+//import study.board.dto.LoginFormDto;
+//import study.board.entity.Board;
+//import study.board.repository.BoardRepository;
+//import study.board.service.BoardService;
+//
+//@Controller
+//@RequiredArgsConstructor
+//public class PostController {
+//
+//    private final BoardRepository boardRepository;
+//
+//    private final BoardService boardService;
+//
+//    // 글쓰기
+//    @GetMapping("/board/new")
+//    public String createForm(
+//            HttpServletRequest request,
+//            Model model
+//    ) {
+//        LoginFormDto loginFormDto = (LoginFormDto) request.getSession().getAttribute("loginMember");
+//        model.addAttribute("loginFormDto", loginFormDto);
+//        return "board/createBoardForm";
+//    }
+//
+//    @PostMapping("/board/new")
+//    public String create(
+//            @ModelAttribute("loginFormDto") LoginFormDto loginFormDto,
+//            @ModelAttribute("boardFormDto") BoardFormDto form,
+//            HttpServletRequest request
+//    ) {
+//        form.setLoginId(loginFormDto.getLoginId());
+//        boardRepository.save(new Board(form.getLoginId(), form.getTitle(), form.getContent()));
+//
+//        return "redirect:/";
+//    }
+//
+//    // 글 조회
+//    @GetMapping("board/{boardId}")
+//    public String post(@PathVariable(name = "boardId") Long boardId, Model model) {
+//        Board board = boardRepository.findById(boardId).get();
+//        model.addAttribute("boardFormDto", new BoardFormDto(board.getId(), board.getLoginId(), board.getTitle(), board.getContent()));
+//        return "list";
+//    }
+//
+//    // 글 삭제
+//    @PostMapping("/board/delete")
+//    public String delete(
+//            @ModelAttribute BoardFormDto form
+//    ) {
+//        Board board = boardRepository.findById(form.getId()).get();
+//        boardRepository.delete(board);
+//        return "redirect:/";
+//    }
+//
+//    // 글 수정
+//    @GetMapping("/{boardId}/edit")
+//    public String editForm(@PathVariable(name = "boardId") Long boardId, Model model) {
+//        Board board = boardRepository.findById(boardId).get();
+//        model.addAttribute("boardFormDto", new BoardFormDto(board.getId(), board.getLoginId(), board.getTitle(), board.getContent()));
+//        return "board/editBoardForm";
+//    }
+//
+//    // 상품 수정 폼에서 저장 클릭
+//    @PostMapping("/{boardId}/edit")
+//    public String edit(@ModelAttribute BoardFormDto boardFormDto) {
+//
+//        boardService.edit(boardFormDto);
+//
+////        Board post = boardRepository.findById(BoardFormDto.getId()).get();
+////
+////        // entity 변경 감지로 수정 됨
+////        post.setTitle(BoardFormDto.getTitle());
+////        post.setContent(BoardFormDto.getContent());
+//
+//        return "redirect:/board/board/{boardId}";
+//    }
+//}
