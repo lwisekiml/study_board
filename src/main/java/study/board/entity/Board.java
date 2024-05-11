@@ -9,11 +9,10 @@ import lombok.Setter;
 @Entity
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Post {
+public class Board {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "post_id")
+    @Id @GeneratedValue
+    @Column(name = "board_id")
     private Long id;
 
     private String loginId;
@@ -21,7 +20,7 @@ public class Post {
     private String content;
     private int views; // 조회수
 
-    public Post(String loginId, String title, String content) {
+    public Board(String loginId, String title, String content) {
         this.loginId = loginId;
         this.title = title;
         this.content = content;
