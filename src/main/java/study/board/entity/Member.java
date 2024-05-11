@@ -19,7 +19,7 @@ public class Member {
     private String username;
     private String password;
 
-    public Member(String loginId, String username, String password) {
+    public Member(String username, String loginId, String password) {
         this.loginId = loginId;
         this.username = username;
         this.password = password;
