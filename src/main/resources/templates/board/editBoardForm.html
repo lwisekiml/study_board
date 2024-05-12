@@ -7,25 +7,34 @@
 </head>
 <body>
 <h1>게시글 상세보기</h1>
-<form action="board" th:action method="post">
-    <input type="text" id="id" name="id" class="form-control" value="번호" th:value="${boardFormDto.id}" readonly>
+<form action="/board" th:action method="post">
+
+    <input type="hidden" id="id" name="id" class="form-control" value="번호" th:value="${boardFormDto.id}" readonly>
+
     <div>
         <label for="loginId">글쓴이(아이디)</label>
-        <input type="text" id="loginId" name="loginId" class="form-control" value="상품A" th:value="${boardFormDto.loginId}" readonly>
+        <input type="text" id="loginId" name="loginId" class="form-control" value="상품A"
+               th:value="${boardFormDto.loginId}" readonly>
     </div>
+
     <div>
         <label for="tile">제목</label>
         <input type="text" id="tile" name="title" class="form-control" value="제목" th:value="${boardFormDto.title}">
     </div>
+
     <div>
         <label for="content">내용</label>
-        <input type="text" id="content" name="content" class="form-control" value="내용" th:value="${boardFormDto.content}">
+        <input type="text" id="content" name="content" class="form-control" value="내용"
+               th:value="${boardFormDto.content}">
     </div>
 
     <button type="submit">저장</button>
+
 </form>
+
 <button onclick="location.href='board.html'"
-        th:onclick="|location.href='@{/board/boards/{boardId}(boardId=${boardFormDto.id})}'|"
+        th:onclick="|location.href='@{/board/{boardId}(boardId=${boardFormDto.id})}'|"
         type="button">취소</button>
+
 </body>
 </html>

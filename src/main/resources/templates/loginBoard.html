@@ -16,7 +16,6 @@
 
     <div class="login-info">
         <div class="container">
-            <!--            <a href="/boards/new" style="float: left">글쓰기</a>-->
             <form action="/board/new" th:action th:object="${loginFormDto}" method="get" style="float: left">
                 <a href="/board/new" style="float: left">글쓰기</a>
             </form>
@@ -36,6 +35,7 @@
     <div id="board-list">
         <div class="container">
             <table class="board-table">
+
                 <thead>
                 <tr>
                     <th scope="col" class="th-num">번호</th>
@@ -44,18 +44,16 @@
                     <th scope="col" class="th-date">등록일</th>
                 </tr>
                 </thead>
+
                 <tbody>
                 <tr th:each="board : ${boards}">
-                    <td><a href="board/board.html" th:href="@{/boards/{boardId}(boardId=${board.id})}"
-                           th:text="${board.id}">번호</a></td>
-                    <td><a href="board/board.html" th:href="@{|/board/${board.id}|}" th:text="${board.title}">제목</a>
-                    </td>
+                    <td><a href="board/board.html" th:href="@{/boards/{boardId}(boardId=${board.id})}" th:text="${board.id}">번호</a></td>
+                    <td><a href="board/board.html" th:href="@{|/board/${board.id}|}" th:text="${board.title}">제목</a></td>
                     <td>조회수</td>
                     <td>등록일</td>
-                    <!--                    <td><a th:text="${board.views}">조회수</a></td>-->
-                    <!--                    <td><a th:text="${board.createdDate}">등록일</a></td>-->
                 </tr>
                 </tbody>
+
             </table>
         </div>
     </div>

@@ -8,17 +8,17 @@
 <body>
 <h1>글쓰기 폼</h1>
 <form action="/board/new" method="post">
-<!--  이름 : <div th:text="${memberName}"></div><br/>-->
+
   <div>
     <label for="loginId">글쓴이(아이디)</label>
     <input type="text" id="loginId" name="loginId" class="form-control" value="글쓴이(아이디)"
            th:value="${loginFormDto.loginId}" readonly>
   </div>
-<!--  아이디 : <br/>-->
+
   제목 : <input type="text" name="title" /><br/>
   내용 : <input type="text" name="content" /><br/>
   <input type="submit" value="등록" />
-<!--  <input type="submit" value="취소" />-->
+
 </form>
 </body>
 </html>
