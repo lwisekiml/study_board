@@ -21,4 +21,5 @@ public class BoardService {
         board.setTitle(boardFormDto.getTitle());
         board.setContent(boardFormDto.getContent());
     }
+
 }
