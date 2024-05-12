@@ -33,6 +33,7 @@
     <div id="board-list">
         <div class="container">
             <table class="board-table">
+
                 <thead>
                 <tr>
                     <th scope="col" class="th-num">번호</th>
@@ -41,16 +42,16 @@
                     <th scope="col" class="th-date">등록일</th>
                 </tr>
                 </thead>
+
                 <tbody>
                 <tr th:each="board : ${boards}">
                     <td><a href="board/board.html" th:href="@{/board/{boardId}(boardId=${board.id})}" th:text="${board.id}">번호</a></td>
                     <td><a href="board/board.html" th:href="@{|/board/${board.id}|}" th:text="${board.title}">제목</a></td>
                     <td>조회수</td>
                     <td>등록일</td>
-<!--                    <td><a th:text="${post.views}">조회수</a></td>-->
-<!--                    <td><a th:text="${post.createdDate}">등록일</a></td>-->
                 </tr>
                 </tbody>
+
             </table>
         </div>
     </div>
