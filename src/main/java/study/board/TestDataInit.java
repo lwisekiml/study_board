@@ -20,8 +20,8 @@ public class TestDataInit {
      */
     @PostConstruct
     public void init() {
-        memberRepository.save(new Member("test", "kim", "1234"));
-        memberRepository.save(new Member("qwer", "lee", "zxcv"));
+        memberRepository.save(new Member("kim", "test", "1234"));
+        memberRepository.save(new Member("lee", "qwer", "zxcv"));
 
         boardRepository.save(new Board("test", "제목1", "내용1"));
         boardRepository.save(new Board("qwer", "제목2", "내용2"));

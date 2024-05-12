@@ -2,9 +2,11 @@ package study.board.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import study.board.dto.MemberFormDto;
-import study.board.entity.Member;
 import study.board.service.MemberService;
 
 @Controller
@@ -25,7 +27,7 @@ public class MemberController {
     public String save(@ModelAttribute("memberFormDto") MemberFormDto memberFormDto) {
 
         // 아이디 중복 확인 필요
-        memberService.addMember(memberFormDto.getUsername(), memberFormDto.getLoginId(), memberFormDto.getPassword());
+        memberService.save(memberFormDto.getUsername(), memberFormDto.getLoginId(), memberFormDto.getPassword());
 
         return "redirect:/members/welcome";
     }
@@ -35,4 +37,5 @@ public class MemberController {
     public String welcome() {
         return "welcome";
     }
+
 }
