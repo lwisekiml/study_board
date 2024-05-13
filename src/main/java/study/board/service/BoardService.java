@@ -27,6 +27,6 @@ public class BoardService {
     public void board(Long boardId, Model model) {
         Board board = boardRepository.findById(boardId).get();
         board.plusViews();
-        model.addAttribute("boardFormDto", new BoardFormDto(board.getId(), board.getLoginId(), board.getTitle(), board.getContent(), board.getViews()));
+        model.addAttribute("boardFormDto", new BoardFormDto(board.getId(), board.getLoginId(), board.getTitle(), board.getContent(), board.getViews(), board.getUploadFileName()));
     }
 }
