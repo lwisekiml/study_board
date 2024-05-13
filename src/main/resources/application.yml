@@ -1,10 +1,3 @@
-#spring:
-#  datasource:
-#    url: jdbc:h2:tcp://localhost/~/studyboardjpa
-#    username: sa
-#    password:
-#    driver-class-name: org.h2.Driver
-#
 spring:
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/studydb?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
@@ -22,7 +15,18 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  servlet:
+    multipart:
+      max-file-size: 1MB # 파일 하나의 최대 사이즈
+      max-request-size: 10MB # 전체 사이즈
 server:
   servlet:
     session:
       tracking-modes=cookie: cookie
+
+logging:
+  level:
+    org.apache.coyote.http11: trace
+
+file:
+  dir: /G:/ # 파일 저장 위치(업로드시)

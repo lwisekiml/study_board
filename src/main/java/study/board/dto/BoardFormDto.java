@@ -3,6 +3,7 @@ package study.board.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter @Setter
 @AllArgsConstructor
@@ -14,7 +15,28 @@ public class BoardFormDto {
     private String content;
     private int views; // 조회수
 
+    // 첨부파일
+    private MultipartFile attachFile; // 멀티파트는 @ModelAttribute에서 사용할 수 있다.
+    private String uploadFileName; // 고객이 업로드한 파일명
+    private String storeFileName; // 서버 내부에서 관리하는 파일명
+
     public BoardFormDto() {
     }
 
+    public BoardFormDto(Long id, String loginId, String title, String content, int views) {
+        this.id = id;
+        this.loginId = loginId;
+        this.title = title;
+        this.content = content;
+        this.views = views;
+    }
+
+    public BoardFormDto(Long id, String loginId, String title, String content, int views, String uploadFileName) {
+        this.id = id;
+        this.loginId = loginId;
+        this.title = title;
+        this.content = content;
+        this.views = views;
+        this.uploadFileName = uploadFileName;
+    }
 }
