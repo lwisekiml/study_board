@@ -16,6 +16,7 @@ public class LogInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
         String requestURI = request.getRequestURI();
         String uuid = UUID.randomUUID().toString();
 
@@ -26,6 +27,7 @@ public class LogInterceptor implements HandlerInterceptor {
         }
 
         log.info("REQUEST [{}][{}][{}]", uuid, requestURI, handler);
+
         return true;
     }
 
@@ -36,11 +38,14 @@ public class LogInterceptor implements HandlerInterceptor {
 
     @Override // 항상 호출 - 예외와 무관하게 공통 처리시 사용
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+
         String requestURI = request.getRequestURI();
         String logId = (String) request.getAttribute("logId");
+
         log.info("RESPONSE [{}][{}][{}]", logId, requestURI, handler);
         if (ex != null) {
             log.error("afterCompletion error!!", ex);
         }
     }
+
 }

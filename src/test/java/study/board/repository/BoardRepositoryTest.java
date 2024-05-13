@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import study.board.entity.Post;
+import study.board.entity.Board;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -15,23 +15,24 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @SpringBootTest
 @Transactional
 @Rollback(value = false)
-class PostRepositoryTest {
+class BoardRepositoryTest {
 
-    @Autowired PostRepository postRepository;
+    @Autowired
+    BoardRepository boardRepository;
 
     @PersistenceContext
     EntityManager em;
 
     @Test
     public void testPost() {
-        Post post = new Post("member1", "제목", "내용");
-        Post savePost = postRepository.save(post);
+        Board board = new Board("member1", "제목", "내용");
+        Board saveBoard = boardRepository.save(board);
 
-        Post findPost = postRepository.findById(savePost.getId()).get();
+        Board findBoard = boardRepository.findById(saveBoard.getId()).get();
 
-        assertThat(findPost.getId()).isEqualTo(post.getId());
-        assertThat(findPost.getLoginId()).isEqualTo(post.getLoginId());
-        assertThat(findPost).isEqualTo(post);
+        assertThat(findBoard.getId()).isEqualTo(board.getId());
+        assertThat(findBoard.getLoginId()).isEqualTo(board.getLoginId());
+        assertThat(findBoard).isEqualTo(board);
     }
 
 }
