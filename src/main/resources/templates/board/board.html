@@ -32,6 +32,10 @@
     <input type="text" id="views" name="views" class="form-control" value="조회수" th:value="${boardFormDto.views}" readonly>
     </div>
 
+    <div>
+    첨부파일: <a th:if="${boardFormDto.uploadFileName}" th:href="|/attach/${boardFormDto.id}|" th:text="${boardFormDto.uploadFileName}"></a>
+    </div>
+
     <button onclick="location.href='editBoardForm.html'"
             th:onclick="|location.href='@{/board/{boardId}/edit(boardId=${boardFormDto.id})}'|"
             type="button">수정</button>
