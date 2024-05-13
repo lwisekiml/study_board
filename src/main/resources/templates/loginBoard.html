@@ -49,7 +49,7 @@
                 <tr th:each="board : ${boards}">
                     <td><a href="board/board.html" th:href="@{/boards/{boardId}(boardId=${board.id})}" th:text="${board.id}">번호</a></td>
                     <td><a href="board/board.html" th:href="@{|/board/${board.id}|}" th:text="${board.title}">제목</a></td>
-                    <td>조회수</td>
+                    <td><a href="board/board.html" th:text="${board.views}">조회수</a></td>
                     <td>등록일</td>
                 </tr>
                 </tbody>
