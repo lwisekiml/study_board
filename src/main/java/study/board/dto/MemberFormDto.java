@@ -6,18 +6,13 @@ import lombok.Setter;
 
 @Getter @Setter
 @AllArgsConstructor
-public class LoginFormDto {
+public class MemberFormDto {
 
     private String username;
     private String loginId;
     private String password;
 
-    public LoginFormDto() {
-    }
-
-    public LoginFormDto(String loginId, String password) {
-        this.loginId = loginId;
-        this.password = password;
+    public MemberFormDto() {
     }
 
 }

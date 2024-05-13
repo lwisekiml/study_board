@@ -1,8 +1,6 @@
 package study.board.controller;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +27,7 @@ public class LoginController {
 
     @PostMapping("/login")
     public String login(
-            @ModelAttribute LoginFormDto form,
+            @ModelAttribute("loginFormDto") LoginFormDto form,
             @RequestParam(name = "redirectURL", defaultValue = "/") String redirectURL,
             HttpServletRequest request
     ) {
@@ -58,9 +56,4 @@ public class LoginController {
         return "redirect:/";
     }
 
-    private void expireCookie(HttpServletResponse response, String cookieName) {
-        Cookie cookie = new Cookie(cookieName, null);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
-    }
 }
