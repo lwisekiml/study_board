@@ -3,6 +3,7 @@ package study.board.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import study.board.dto.BoardFormDto;
 import study.board.entity.Board;
 import study.board.repository.BoardRepository;
@@ -22,4 +23,10 @@ public class BoardService {
         board.setContent(boardFormDto.getContent());
     }
 
+    @Transactional
+    public void board(Long boardId, Model model) {
+        Board board = boardRepository.findById(boardId).get();
+        board.plusViews();
+        model.addAttribute("boardFormDto", new BoardFormDto(board.getId(), board.getLoginId(), board.getTitle(), board.getContent(), board.getViews()));
+    }
 }

@@ -26,4 +26,8 @@ public class Board {
         this.content = content;
     }
 
+    public void plusViews() {
+        this.views += 1;
+    }
+
 }
