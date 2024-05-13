@@ -75,9 +75,7 @@ public class BoardController {
     public String board(
             @PathVariable(name = "boardId") Long boardId, Model model
     ) {
-        Board board = boardRepository.findById(boardId).get();
-        model.addAttribute("boardFormDto", new BoardFormDto(board.getId(), board.getLoginId(), board.getTitle(), board.getContent()));
-
+        boardService.board(boardId, model);
         return "/board/board";
     }
 
@@ -98,7 +96,7 @@ public class BoardController {
             @PathVariable(name = "boardId") Long boardId, Model model
     ) {
         Board board = boardRepository.findById(boardId).get();
-        model.addAttribute("boardFormDto", new BoardFormDto(board.getId(), board.getLoginId(), board.getTitle(), board.getContent()));
+        model.addAttribute("boardFormDto", new BoardFormDto(board.getId(), board.getLoginId(), board.getTitle(), board.getContent(), board.getViews()));
 
         return "board/editBoardForm";
     }

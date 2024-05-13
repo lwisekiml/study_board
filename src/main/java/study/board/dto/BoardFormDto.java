@@ -12,6 +12,7 @@ public class BoardFormDto {
     private String loginId;
     private String title;
     private String content;
+    private int views; // 조회수
 
     public BoardFormDto() {
     }
