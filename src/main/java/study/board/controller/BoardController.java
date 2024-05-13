@@ -37,14 +37,9 @@ public class BoardController {
 
         List<Board> boards = boardRepository.findAll(); // dto로 바꿔서 넘기도록 수정 필요
         model.addAttribute("boards", boards);
-
-        if (loginFormDto == null) {
-            return "list";
-        }
-
         model.addAttribute("loginFormDto", loginFormDto);
 
-        return "loginBoard";
+        return "list";
     }
 
     // 글쓰기
