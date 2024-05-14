@@ -28,7 +28,7 @@ class BoardRepositoryTest {
         Board board = new Board("member1", "제목", "내용");
         Board saveBoard = boardRepository.save(board);
 
-        Board findBoard = boardRepository.findById(saveBoard.getId()).get();
+        Board findBoard = boardRepository.findById(saveBoard.getId()).orElseThrow(IllegalArgumentException::new);
 
         assertThat(findBoard.getId()).isEqualTo(board.getId());
         assertThat(findBoard.getLoginId()).isEqualTo(board.getLoginId());

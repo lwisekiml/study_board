@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @Controller
@@ -96,7 +97,8 @@ public class BoardController {
     public String delete(
             @ModelAttribute("boardFormDto") BoardFormDto form
     ) {
-        Board board = boardRepository.findById(form.getId()).get();
+//        Board board = boardRepository.findById(form.getId()).get();
+        Board board = boardRepository.findById(form.getId()).orElseThrow(IllegalArgumentException::new);
         boardRepository.delete(board);
 
         return "redirect:/";
@@ -107,7 +109,7 @@ public class BoardController {
     public String editForm(
             @PathVariable(name = "boardId") Long boardId, Model model
     ) {
-        Board board = boardRepository.findById(boardId).get();
+        Board board = boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
         model.addAttribute("boardFormDto", new BoardFormDto(board.getId(), board.getLoginId(), board.getTitle(), board.getContent(), board.getViews()));
 
         return "board/editBoardForm";
@@ -126,7 +128,7 @@ public class BoardController {
 
     @GetMapping("/attach/{boardId}")
     public ResponseEntity<Resource> downloadAttach(@PathVariable("boardId") Long boardId) throws MalformedURLException {
-        Board board = boardRepository.findById(boardId).get();
+        Board board = boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
         String storeFileName = board.getStoreFileName();
         String uploadFileName = board.getUploadFileName();
 
