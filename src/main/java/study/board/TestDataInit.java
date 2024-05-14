@@ -24,6 +24,8 @@ public class TestDataInit {
         memberRepository.save(new Member("lee", "qwer", "zxcv"));
 
         boardRepository.save(new Board("test", "제목1", "내용1"));
+        boardRepository.save(new Board("test", "제목3", "내용3"));
+        boardRepository.save(new Board("test", "제목5", "내용5"));
         boardRepository.save(new Board("qwer", "제목2", "내용2"));
     }
 }
