@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
 import study.board.dto.BoardFormDto;
 import study.board.entity.Board;
 import study.board.repository.BoardRepository;
+import study.board.repository.FileStore;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -16,13 +19,23 @@ import java.util.List;
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final FileStore fileStore;
 
     @Transactional
-    public void edit(BoardFormDto boardFormDto) {
+    public void edit(BoardFormDto boardFormDto, MultipartFile attachModiFile) throws IOException {
+
         Board board = boardRepository.findById(boardFormDto.getId()).orElseThrow(IllegalArgumentException::new);
 
         board.setTitle(boardFormDto.getTitle());
         board.setContent(boardFormDto.getContent());
+
+        if (!attachModiFile.isEmpty()) {
+            boardFormDto.setAttachFile(attachModiFile);
+            boardFormDto = fileStore.storeFile(boardFormDto);
+
+            board.setUploadFileName(boardFormDto.getUploadFileName());
+            board.setStoreFileName(boardFormDto.getStoreFileName());
+        }
     }
 
     @Transactional
