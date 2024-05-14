@@ -19,7 +19,7 @@ public class BoardService {
 
     @Transactional
     public void edit(BoardFormDto boardFormDto) {
-        Board board = boardRepository.findById(boardFormDto.getId()).get();
+        Board board = boardRepository.findById(boardFormDto.getId()).orElseThrow(IllegalArgumentException::new);
 
         board.setTitle(boardFormDto.getTitle());
         board.setContent(boardFormDto.getContent());
@@ -27,7 +27,7 @@ public class BoardService {
 
     @Transactional
     public void board(Long boardId, Model model) {
-        Board board = boardRepository.findById(boardId).get();
+        Board board = boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
         board.plusViews();
         model.addAttribute("boardFormDto", new BoardFormDto(board.getId(), board.getLoginId(), board.getTitle(), board.getContent(), board.getViews(), board.getUploadFileName()));
     }
