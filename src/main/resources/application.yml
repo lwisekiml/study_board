@@ -27,6 +27,7 @@ server:
 logging:
   level:
     org.apache.coyote.http11: trace
+    org.hibernate.SQL: debug
 
 file:
   dir: /G:/ # 파일 저장 위치(업로드시)
