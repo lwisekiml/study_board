@@ -24,27 +24,29 @@
     <div>
         <label for="content">내용</label>
         <input type="text" id="content" name="content" class="form-control" value="내용" th:value="${boardFormDto.content}" readonly>
-
     </div>
 
     <div>
-    <label for="views">조회수</label>
-    <input type="text" id="views" name="views" class="form-control" value="조회수" th:value="${boardFormDto.views}" readonly>
+        <label for="views">조회수</label>
+        <input type="text" id="views" name="views" class="form-control" value="조회수" th:value="${boardFormDto.views}" readonly>
     </div>
 
-    <div>
-    첨부파일: <a th:if="${boardFormDto.uploadFileName}" th:href="|/attach/${boardFormDto.id}|" th:text="${boardFormDto.uploadFileName}"></a>
+    <div th:if="${boardFormDto.uploadFileName}"> <!-- 첨부파일이 없을 경우 '첨부파일' 란이 안 나오도록 개발 -->
+        첨부파일: <a th:href="|/attach/${boardFormDto.id}|" th:text="${boardFormDto.uploadFileName}"></a>
     </div>
 
     <button onclick="location.href='editBoardForm.html'"
             th:onclick="|location.href='@{/board/{boardId}/edit(boardId=${boardFormDto.id})}'|"
-            type="button">수정</button>
+            type="button">수정
+    </button>
 
     <button type="submit">삭제</button>
 
     <button onclick="location.href='../list.html'"
             th:onclick="|location.href='@{/}'|"
-            type="button">취소</button>
+            type="button">취소
+    </button>
+
 </form>
 </body>
 </html>
