@@ -32,6 +32,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardController {
 
+    private final LoginController loginController;
     private final BoardService boardService;
     private final BoardRepository boardRepository;
 
@@ -44,7 +45,7 @@ public class BoardController {
             HttpServletRequest request
     ) {
         // 접속시 로그인 상태로 하기 위함(나중에 삭제 필요)
-//        loginController.login(new LoginFormDto(null, "test", "1234"), "/", request);
+//        loginController.login(new LoginFormDto("kim", "test", "1234"), "/", request);
 //        HttpSession session = request.getSession();
 //        loginFormDto = (LoginFormDto) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
