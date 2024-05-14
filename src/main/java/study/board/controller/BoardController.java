@@ -1,6 +1,7 @@
 package study.board.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -9,10 +10,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
 import study.board.argumentresolver.Login;
 import study.board.dto.BoardFormDto;
@@ -21,12 +20,12 @@ import study.board.entity.Board;
 import study.board.repository.BoardRepository;
 import study.board.repository.FileStore;
 import study.board.service.BoardService;
+import study.board.session.SessionConst;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Slf4j
 @Controller
@@ -110,7 +109,12 @@ public class BoardController {
             @PathVariable(name = "boardId") Long boardId, Model model
     ) {
         Board board = boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
-        model.addAttribute("boardFormDto", new BoardFormDto(board.getId(), board.getLoginId(), board.getTitle(), board.getContent(), board.getViews()));
+        model.addAttribute("boardFormDto", new BoardFormDto(board.getId()
+                                                            ,board.getLoginId()
+                                                            ,board.getTitle()
+                                                            ,board.getContent()
+                                                            ,board.getViews()
+                                                            ,board.getUploadFileName()));
 
         return "board/editBoardForm";
     }
@@ -118,11 +122,11 @@ public class BoardController {
     // 상품 수정 폼에서 저장 클릭
     @PostMapping("/board/{boardId}/edit")
     public String edit(
-            @ModelAttribute("boardFormDto") BoardFormDto boardFormDto
-    ) {
+             @ModelAttribute(name = "boardFormDto") BoardFormDto boardFormDto
+            ,@RequestParam(name = "attachNewFile", required = false) MultipartFile attachModiFile
+    ) throws IOException {
 
-        boardService.edit(boardFormDto);
-
+        boardService.edit(boardFormDto, attachModiFile);
         return "redirect:/board/{boardId}";
     }
 

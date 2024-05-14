@@ -7,7 +7,7 @@
 </head>
 <body>
 <h1>게시글 상세보기</h1>
-<form action="/board" th:action method="post">
+<form action="/board" enctype="multipart/form-data" th:action method="post">
 
     <input type="hidden" id="id" name="id" class="form-control" value="번호" th:value="${boardFormDto.id}" readonly>
 
@@ -28,14 +28,19 @@
                th:value="${boardFormDto.content}">
     </div>
 
+    <input type="file" id="attachModiFile" name="attachModiFile" class="form-control" value="첨부파일"/><br/>
+
+    <div th:if="${boardFormDto.uploadFileName}">
+        첨부파일: <a type="file" th:text="${boardFormDto.uploadFileName}"></a>
+    </div>
+
     <button type="submit">저장</button>
 
-</form>
+    <button onclick="history.back()">취소</button>
 
+</form>
 <!--<button onclick="location.href='board.html'"-->
 <!--        th:onclick="|location.href='@{/board/{boardId}(boardId=${boardFormDto.id})}'|"-->
 <!--        type="button">취소</button>-->
-
-<button onclick="history.back()">취소</button>
 </body>
 </html>
