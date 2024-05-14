@@ -27,7 +27,7 @@
                     <td th:text="${boardFormDto.views}"></td>
                     <td>등록일</td>
                     <td>
-                        <a href="#" th:href="@{/board/{boardId}/edit (id=${boardFormDto.id})}" class="btn btn-primary" role="button">수정</a>
+                        <a href="#" th:href="@{/board/{boardId}/edit (boardId=${boardFormDto.id})}" class="btn btn-primary" role="button">수정</a>
                     </td>
                 </tr>
                 </tbody>
