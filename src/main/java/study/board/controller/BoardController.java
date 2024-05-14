@@ -123,7 +123,7 @@ public class BoardController {
     @PostMapping("/board/{boardId}/edit")
     public String edit(
              @ModelAttribute(name = "boardFormDto") BoardFormDto boardFormDto
-            ,@RequestParam(name = "attachNewFile", required = false) MultipartFile attachModiFile
+            ,@RequestParam(name = "attachModiFile", required = false) MultipartFile attachModiFile
     ) throws IOException {
 
         boardService.edit(boardFormDto, attachModiFile);
