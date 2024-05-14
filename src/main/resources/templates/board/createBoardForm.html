@@ -20,7 +20,9 @@
   <input type="file" id="attachFile" name="attachFile" class="form-control" value="첨부파일" /><br/>
 
   <input type="submit" value="등록" />
-
+  <button onclick="location.href='../list.html'"
+          th:onclick="|location.href='@{/}'|"
+          type="button">취소</button>
 </form>
 </body>
 </html>
