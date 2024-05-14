@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class BoardFormDto {
 
     private Long id;
+
     private String loginId;
     private String title;
     private String content;
@@ -21,6 +22,13 @@ public class BoardFormDto {
     private String storeFileName; // 서버 내부에서 관리하는 파일명
 
     public BoardFormDto() {
+    }
+
+    // 본인 글 볼때 사용
+    public BoardFormDto(Long id, String title, int views) {
+        this.id = id;
+        this.title = title;
+        this.views = views;
     }
 
     public BoardFormDto(Long id, String loginId, String title, String content, int views) {
