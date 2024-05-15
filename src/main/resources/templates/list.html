@@ -58,6 +58,21 @@
 
             </table>
         </div>
+
+        <div>
+            <nav>
+                <ul th:if="${totalPage != 0}">
+                    <li><a th:href="@{/(page=${boards.pageable.pageNumber - 1})}">Previous</a></li>
+
+                    <li th:each="page : ${#numbers.sequence(startPage, endPage)}">
+                        <a th:href="@{/(page=${page - 1})}" th:text="${page}"></a>
+                    </li>
+
+                    <li><a th:href="@{/(page=${boards.pageable.pageNumber + 1})}">Next</a></li>
+                </ul>
+            </nav>
+        </div>
+
     </div>
 </section>
 </body>
