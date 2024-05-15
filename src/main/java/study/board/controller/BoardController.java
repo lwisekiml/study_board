@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,6 +23,7 @@ import study.board.entity.Board;
 import study.board.repository.BoardRepository;
 import study.board.repository.FileStore;
 import study.board.service.BoardService;
+import study.board.service.PaginationService;
 import study.board.session.SessionConst;
 
 import java.io.IOException;
@@ -35,23 +39,53 @@ public class BoardController {
     private final LoginController loginController;
     private final BoardService boardService;
     private final BoardRepository boardRepository;
+    private final PaginationService paginationService;
 
     private final FileStore fileStore;
 
     @GetMapping("/")
     public String list(
-            @Login LoginFormDto loginFormDto,
-            Model model,
-            HttpServletRequest request
+            @Login LoginFormDto loginFormDto
+            ,Model model
+            ,HttpServletRequest request
+            ,@PageableDefault(size = 10) Pageable pageable
     ) {
         // 접속시 로그인 상태로 하기 위함(나중에 삭제 필요)
 //        loginController.login(new LoginFormDto("kim", "test", "1234"), "/", request);
 //        HttpSession session = request.getSession();
 //        loginFormDto = (LoginFormDto) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
-        List<Board> boards = boardRepository.findAll(); // dto로 바꿔서 넘기도록 수정 필요
-        model.addAttribute("boards", boards);
+//        List<Board> boards = boardRepository.findAll(); // dto로 바꿔서 넘기도록 수정 필요
+//        model.addAttribute("boards", boards);
+//        model.addAttribute("loginFormDto", loginFormDto);
+
+        ////////////////////////////////////////////////////////////////////////////////////
+        Page<Board> page = boardRepository.findAll(pageable);// dto로 바꿔서 넘기도록 수정 필요
+//        Page<BoardFormDto> map = boardRepository.findAll(pageable).map(BoardFormDto::new);
+
+        int startPage = Math.max(1, page.getPageable().getPageNumber() - 1);
+        if (startPage >= page.getTotalPages()) {
+            startPage = page.getTotalPages();
+        }
+
+        int endPage;
+        int a = page.getTotalPages();
+        int b = page.getPageable().getPageNumber();
+
+        if (page.getPageable().getPageNumber() == 0) {
+            endPage = Math.min(page.getTotalPages(), page.getPageable().getPageNumber() + 5);
+        } else if (page.getPageable().getPageNumber() == 1) {
+            endPage = Math.min(page.getTotalPages(), page.getPageable().getPageNumber() + 4);
+        } else {
+            endPage = Math.min(page.getTotalPages(), page.getPageable().getPageNumber() + 3);
+        }
+
+        model.addAttribute("boards", page);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
         model.addAttribute("loginFormDto", loginFormDto);
+        ////////////////////////////////////////////////////////////////////////////////////
 
         return "list";
     }
