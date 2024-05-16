@@ -7,7 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -48,45 +50,48 @@ public class BoardController {
             @Login LoginFormDto loginFormDto
             ,Model model
             ,HttpServletRequest request
-            ,@PageableDefault(size = 10) Pageable pageable
+            ,@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         // 접속시 로그인 상태로 하기 위함(나중에 삭제 필요)
 //        loginController.login(new LoginFormDto("kim", "test", "1234"), "/", request);
 //        HttpSession session = request.getSession();
 //        loginFormDto = (LoginFormDto) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
+        ////////////////////////////////////////////////////////////////////////////////////
 //        List<Board> boards = boardRepository.findAll(); // dto로 바꿔서 넘기도록 수정 필요
 //        model.addAttribute("boards", boards);
 //        model.addAttribute("loginFormDto", loginFormDto);
-
         ////////////////////////////////////////////////////////////////////////////////////
-        Page<Board> page = boardRepository.findAll(pageable);// dto로 바꿔서 넘기도록 수정 필요
-//        Page<BoardFormDto> map = boardRepository.findAll(pageable).map(BoardFormDto::new);
+        int pageNumberIm = pageable.getPageNumber();
+        int pageIm = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+        int size = pageable.getPageSize();
+        Sort sort = pageable.getSort();
+        Pageable pageable1 = PageRequest.of(pageIm, size, sort);
 
-        int startPage = Math.max(1, page.getPageable().getPageNumber() - 1);
-        if (startPage >= page.getTotalPages()) {
-            startPage = page.getTotalPages();
+        Page<Board> page = boardRepository.findAll(pageable1);// dto로 바꿔서 넘기도록 수정 필요
+
+        if (page.isEmpty()) {
+            log.info("없는 페이지 입니다.");
+            return "list";
+            // 없는 페이지 입니다.
         }
+        int pageNumber = page.getPageable().getPageNumber();
+        int totalPages = page.getTotalPages(); // 21
 
-        int endPage;
-        int a = page.getTotalPages();
-        int b = page.getPageable().getPageNumber();
-
-        if (page.getPageable().getPageNumber() == 0) {
-            endPage = Math.min(page.getTotalPages(), page.getPageable().getPageNumber() + 5);
-        } else if (page.getPageable().getPageNumber() == 1) {
-            endPage = Math.min(page.getTotalPages(), page.getPageable().getPageNumber() + 4);
-        } else {
-            endPage = Math.min(page.getTotalPages(), page.getPageable().getPageNumber() + 3);
+        int startPage = Math.max(pageNumberIm - (SessionConst.BAR_LENGTH / 2), 1);
+        if (startPage > totalPages - (SessionConst.BAR_LENGTH - 1)) { // totalPages - (barLength - 1)
+            startPage = totalPages - (SessionConst.BAR_LENGTH - 1);
         }
-
-        model.addAttribute("boards", page);
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
+        int endPage = Math.min(startPage + (SessionConst.BAR_LENGTH - 1), totalPages); // startPage + (barLength - 1)
 
         model.addAttribute("loginFormDto", loginFormDto);
-        ////////////////////////////////////////////////////////////////////////////////////
+        model.addAttribute("boards", page);
 
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("hasNext", page.hasNext());
+        model.addAttribute("hasPrev", page.hasPrevious());
+        ////////////////////////////////////////////////////////////////////////////////////
         return "list";
     }
 
