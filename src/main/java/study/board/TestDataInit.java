@@ -25,7 +25,7 @@ public class TestDataInit {
 
 //        boardRepository.save(new Board("test", "제목1", "내용1"));
 //        boardRepository.save(new Board("test", "제목3", "내용3"));
-        boardRepository.save(new Board("qwer", "제목2", "내용2"));
+//        boardRepository.save(new Board("qwer", "제목2", "내용2"));
 
         for (int i = 0; i < 100; i++) {
             boardRepository.save(new Board("test", "test제목"+i, "test내용"+i));
