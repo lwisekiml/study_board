@@ -59,19 +59,36 @@
             </table>
         </div>
 
-        <div>
-            <nav>
-                <ul th:if="${totalPage != 0}">
-                    <li><a th:href="@{/(page=${boards.pageable.pageNumber - 1})}">Previous</a></li>
+<!--        &lt;!&ndash; 첫번째 페이지로 이동 &ndash;&gt;-->
+<!--        <a th:href="@{/(page=1)}">첫 페이지 </a>-->
 
-                    <li th:each="page : ${#numbers.sequence(startPage, endPage)}">
-                        <a th:href="@{/(page=${page - 1})}" th:text="${page}"></a>
-                    </li>
+        <a th:if="${hasPrev}">
+            <a th:href="@{/(page=${boards.pageable.pageNumber})}">
+                Previous
+            </a>
+        </a>
+        <a th:unless="${hasPrev}">
+            Previous
+        </a>
 
-                    <li><a th:href="@{/(page=${boards.pageable.pageNumber + 1})}">Next</a></li>
-                </ul>
-            </nav>
-        </div>
+        <span th:each="page : ${#numbers.sequence(startPage, endPage)}">
+            <span th:if="${page == boards.number + 1}" th:text="${page}"></span>
+            <span th:unless="${page == boards.number + 1}">
+               <a th:href="@{/(page=${page})}" th:text="${page}"></a>
+            </span>
+        </span>
+
+        <a th:if="${hasNext}">
+            <a th:href="@{/(page=${boards.pageable.pageNumber + 2})}">
+                Next
+            </a>
+        </a>
+        <a th:unless="${hasNext}">
+            Next
+        </a>
+
+<!--        &lt;!&ndash; 마지막 페이지로 이동 &ndash;&gt;-->
+<!--        <a th:href="@{/(page=${boards.totalPages})}"> 마지막 페이지</a>-->
 
     </div>
 </section>
