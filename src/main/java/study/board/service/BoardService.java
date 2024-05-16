@@ -45,6 +45,7 @@ public class BoardService {
         model.addAttribute("boardFormDto", new BoardFormDto(board.getId(), board.getLoginId(), board.getTitle(), board.getContent(), board.getViews(), board.getUploadFileName()));
     }
 
+    // 본인이 작성한 글 찾기
     @Transactional
     public List<BoardFormDto> getMemberWrite(String loginId) {
         return boardRepository.findMemberDto(loginId);
