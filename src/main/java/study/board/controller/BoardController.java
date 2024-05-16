@@ -6,6 +6,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,6 +25,7 @@ import study.board.entity.Board;
 import study.board.repository.BoardRepository;
 import study.board.repository.FileStore;
 import study.board.service.BoardService;
+import study.board.service.PaginationService;
 import study.board.session.SessionConst;
 
 import java.io.IOException;
@@ -35,23 +41,41 @@ public class BoardController {
     private final LoginController loginController;
     private final BoardService boardService;
     private final BoardRepository boardRepository;
+    private final PaginationService paginationService;
 
     private final FileStore fileStore;
 
     @GetMapping("/")
     public String list(
-            @Login LoginFormDto loginFormDto,
-            Model model,
-            HttpServletRequest request
+            @Login LoginFormDto loginFormDto
+            ,Model model
+            ,HttpServletRequest request
+            ,@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         // 접속시 로그인 상태로 하기 위함(나중에 삭제 필요)
 //        loginController.login(new LoginFormDto("kim", "test", "1234"), "/", request);
 //        HttpSession session = request.getSession();
 //        loginFormDto = (LoginFormDto) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
-        List<Board> boards = boardRepository.findAll(); // dto로 바꿔서 넘기도록 수정 필요
-        model.addAttribute("boards", boards);
+        ////////////////////////////////////////////////////////////////////////////////////
+//        List<Board> boards = boardRepository.findAll(); // dto로 바꿔서 넘기도록 수정 필요
+//        model.addAttribute("boards", boards);
+//        model.addAttribute("loginFormDto", loginFormDto);
+        ////////////////////////////////////////////////////////////////////////////////////
+
+
+        Page<Board> page = boardRepository.findAll(pageable); // 단순 조회(?)인데 BoardService로 옮기는 게 좋을까?
+        if (page.isEmpty()) {
+            log.info("없는 페이지 입니다.");
+            return "list";
+            // 없는 페이지 입니다.
+        }
+
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), page.getTotalPages());
+
+        model.addAttribute("paginationBarNumbers", barNumbers);
         model.addAttribute("loginFormDto", loginFormDto);
+        model.addAttribute("boards", page);
 
         return "list";
     }
@@ -119,7 +143,6 @@ public class BoardController {
         return "board/editBoardForm";
     }
 
-    // 상품 수정 폼에서 저장 클릭
     @PostMapping("/board/{boardId}/edit")
     public String edit(
              @ModelAttribute(name = "boardFormDto") BoardFormDto boardFormDto
