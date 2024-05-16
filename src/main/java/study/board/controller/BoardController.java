@@ -62,36 +62,21 @@ public class BoardController {
 //        model.addAttribute("boards", boards);
 //        model.addAttribute("loginFormDto", loginFormDto);
         ////////////////////////////////////////////////////////////////////////////////////
-        int pageNumberIm = pageable.getPageNumber();
-        int pageIm = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
-        int size = pageable.getPageSize();
-        Sort sort = pageable.getSort();
-        Pageable pageable1 = PageRequest.of(pageIm, size, sort);
 
-        Page<Board> page = boardRepository.findAll(pageable1);// dto로 바꿔서 넘기도록 수정 필요
 
+        Page<Board> page = boardRepository.findAll(pageable); // 단순 조회(?)인데 BoardService로 옮기는 게 좋을까?
         if (page.isEmpty()) {
             log.info("없는 페이지 입니다.");
             return "list";
             // 없는 페이지 입니다.
         }
-        int pageNumber = page.getPageable().getPageNumber();
-        int totalPages = page.getTotalPages(); // 21
 
-        int startPage = Math.max(pageNumberIm - (SessionConst.BAR_LENGTH / 2), 1);
-        if (startPage > totalPages - (SessionConst.BAR_LENGTH - 1)) { // totalPages - (barLength - 1)
-            startPage = totalPages - (SessionConst.BAR_LENGTH - 1);
-        }
-        int endPage = Math.min(startPage + (SessionConst.BAR_LENGTH - 1), totalPages); // startPage + (barLength - 1)
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), page.getTotalPages());
 
+        model.addAttribute("paginationBarNumbers", barNumbers);
         model.addAttribute("loginFormDto", loginFormDto);
         model.addAttribute("boards", page);
 
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
-        model.addAttribute("hasNext", page.hasNext());
-        model.addAttribute("hasPrev", page.hasPrevious());
-        ////////////////////////////////////////////////////////////////////////////////////
         return "list";
     }
 
@@ -158,7 +143,6 @@ public class BoardController {
         return "board/editBoardForm";
     }
 
-    // 상품 수정 폼에서 저장 클릭
     @PostMapping("/board/{boardId}/edit")
     public String edit(
              @ModelAttribute(name = "boardFormDto") BoardFormDto boardFormDto
