@@ -1,7 +1,7 @@
-package study.board.repository;
+package study.board.member;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import study.board.entity.Member;
+import study.board.member.Member;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Member findByLoginIdAndPassword(String loginId, String password);

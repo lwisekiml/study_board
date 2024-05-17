@@ -1,39 +1,39 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>나의 게시물 목록보기</title>
-    <link rel="stylesheet" href="/css/board.css"/>
-</head>
-<body>
-<section class="board">
-    <div id="board-list">
-        <div class="container">
-            <table class="board-table">
-                <thead>
-                <tr>
-                    <th>번호</th>
-                    <th>제목</th>
-                    <th>조회수</th>
-                    <th>등록일</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="boardFormDto : ${boardFormDtos}">
-                    <td th:text="${boardFormDto.id}"></td>
-                    <td th:text="${boardFormDto.title}"></td>
-                    <td th:text="${boardFormDto.views}"></td>
-                    <td>등록일</td>
-                    <td>
-                        <a href="#" th:href="@{/board/{boardId}/edit (boardId=${boardFormDto.id})}" class="btn btn-primary" role="button">수정</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</section>
-</body>
-</html>
+<!--<!DOCTYPE HTML>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8"/>-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>-->
+<!--    <title>나의 게시물 목록보기</title>-->
+<!--    <link rel="stylesheet" href="/css/board.css"/>-->
+<!--</head>-->
+<!--<body>-->
+<!--<section class="board">-->
+<!--    <div id="board-list">-->
+<!--        <div class="container">-->
+<!--            <table class="board-table">-->
+<!--                <thead>-->
+<!--                <tr>-->
+<!--                    <th>번호</th>-->
+<!--                    <th>제목</th>-->
+<!--                    <th>조회수</th>-->
+<!--                    <th>등록일</th>-->
+<!--                    <th></th>-->
+<!--                </tr>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                <tr th:each="boardFormDto : ${boardFormDtos}">-->
+<!--                    <td th:text="${boardFormDto.id}"></td>-->
+<!--                    <td th:text="${boardFormDto.title}"></td>-->
+<!--                    <td th:text="${boardFormDto.views}"></td>-->
+<!--                    <td>등록일</td>-->
+<!--                    <td>-->
+<!--                        <a href="#" th:href="@{/board/{boardId}/edit (boardId=${boardFormDto.id})}" class="btn btn-primary" role="button">수정</a>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--                </tbody>-->
+<!--            </table>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
+<!--</body>-->
+<!--</html>-->
