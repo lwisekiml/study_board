@@ -3,10 +3,10 @@ package study.board;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import study.board.entity.Board;
-import study.board.entity.Member;
-import study.board.repository.BoardRepository;
-import study.board.repository.MemberRepository;
+import study.board.board.Board;
+import study.board.member.Member;
+import study.board.board.BoardRepository;
+import study.board.member.MemberRepository;
 
 @Component
 @RequiredArgsConstructor
@@ -28,11 +28,11 @@ public class TestDataInit {
 //        boardRepository.save(new Board("qwer", "제목2", "내용2"));
 
         for (int i = 0; i < 100; i++) {
-            boardRepository.save(new Board("test", "test제목"+i, "test내용"+i));
+            boardRepository.save(new Board("test", "test제목"+i, 1));
         }
 
         for (int i = 0; i < 100; i++) {
-            boardRepository.save(new Board("qwer", "qwer제목"+i, "qwer내용"+i));
+            boardRepository.save(new Board("qwer", "qwer제목"+i, 1));
         }
     }
 }
