@@ -23,7 +23,7 @@ public class FileStore {
     public BoardFormDto storeFile(BoardFormDto form) throws IOException {
         MultipartFile multipartFile = form.getAttachFile();
         if (multipartFile.isEmpty()) {
-            return null;
+            return form;
         }
 
         String originalFilename = multipartFile.getOriginalFilename();
