@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
@@ -22,7 +23,9 @@ import study.board.util.PaginationService;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -60,7 +63,18 @@ public class BoardController {
     }
 
     @PostMapping("/board/new")
-    public String create(@ModelAttribute("boardFormDto") BoardFormDto form, HttpServletRequest request) throws IOException {
+    public String create(@ModelAttribute("boardFormDto") BoardFormDto form, HttpServletRequest request, Model model) throws IOException {
+
+        Map<String, String> errors = new HashMap<>();
+        if (!StringUtils.hasText(form.getTitle())) {
+            errors.put("titleError", "제목은 필수 입니다.");
+        }
+
+        if (!errors.isEmpty()) {
+            log.info("errors = {}", errors);
+            model.addAttribute("errors", errors);
+            return "/board/createBoardForm";
+        }
 
         form = fileStore.storeFile(form);
         boardRepository.save(new Board(form.getTitle(), form.getContent(), form.getUploadFileName(), form.getStoreFileName()));
