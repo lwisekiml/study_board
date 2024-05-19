@@ -53,12 +53,12 @@ public class BoardController {
 
     // 글쓰기
     @GetMapping("/board/new")
-    public String createForm(@ModelAttribute("boardFormDto") BoardDto boardDto) {
+    public String createForm(@ModelAttribute("boardDto") BoardDto boardDto) {
         return "board/createBoardForm";
     }
 
     @PostMapping("/board/new")
-    public String create(@ModelAttribute("boardFormDto") BoardDto form, Model model) throws IOException {
+    public String create(@ModelAttribute("boardDto") BoardDto form, Model model) throws IOException {
         return boardService.create(form, model);
     }
 
@@ -71,7 +71,7 @@ public class BoardController {
 
     // 글 삭제
     @PostMapping("/board/delete")
-    public String delete(@ModelAttribute("boardFormDto") BoardDto form) {
+    public String delete(@ModelAttribute("boardDto") BoardDto form) {
         boardService.delete(form);
         return "redirect:/";
     }
@@ -81,7 +81,7 @@ public class BoardController {
     public String editForm(@PathVariable(name = "boardId") Long boardId, Model model) {
 
         Board board = boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
-        model.addAttribute("boardFormDto",
+        model.addAttribute("boardDto",
                 new BoardDto(board.getId()
                         , board.getTitle()
                         , board.getContent()
@@ -93,7 +93,7 @@ public class BoardController {
 
     @PostMapping("/board/{boardId}/edit")
     public String edit(
-            @ModelAttribute(name = "boardFormDto") BoardDto boardDto,
+            @ModelAttribute(name = "boardDto") BoardDto boardDto,
             @RequestParam(name = "attachModiFile", required = false) MultipartFile attachModiFile
     ) throws IOException {
 
