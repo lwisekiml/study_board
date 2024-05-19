@@ -1,6 +1,5 @@
 package study.board.board;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -13,7 +12,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
@@ -23,9 +21,7 @@ import study.board.util.PaginationService;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Controller
@@ -39,17 +35,30 @@ public class BoardController {
 
     @GetMapping("/")
     public String list(Model model, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        return boardService.list(model, pageable);
+
+        Page<BoardDto> boardDtos = boardService.findAll(pageable);
+
+        if (boardDtos.isEmpty()) {
+            log.info("없는 페이지 입니다.");
+            return "list";
+        }
+
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), boardDtos.getTotalPages());
+
+        model.addAttribute("paginationBarNumbers", barNumbers);
+        model.addAttribute("boards", boardDtos); // 프론트에 보낼 때 Dto 인지 명시할 필요가 없을 것으로 보여 boards로 함
+
+        return "list";
     }
 
     // 글쓰기
     @GetMapping("/board/new")
-    public String createForm(@ModelAttribute("boardFormDto") BoardFormDto boardFormDto) {
+    public String createForm(@ModelAttribute("boardFormDto") BoardDto boardDto) {
         return "board/createBoardForm";
     }
 
     @PostMapping("/board/new")
-    public String create(@ModelAttribute("boardFormDto") BoardFormDto form, Model model) throws IOException {
+    public String create(@ModelAttribute("boardFormDto") BoardDto form, Model model) throws IOException {
         return boardService.create(form, model);
     }
 
@@ -62,7 +71,7 @@ public class BoardController {
 
     // 글 삭제
     @PostMapping("/board/delete")
-    public String delete(@ModelAttribute("boardFormDto") BoardFormDto form) {
+    public String delete(@ModelAttribute("boardFormDto") BoardDto form) {
         boardService.delete(form);
         return "redirect:/";
     }
@@ -73,7 +82,7 @@ public class BoardController {
 
         Board board = boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
         model.addAttribute("boardFormDto",
-                new BoardFormDto(board.getId()
+                new BoardDto(board.getId()
                         , board.getTitle()
                         , board.getContent()
                         , board.getViews()
@@ -84,11 +93,11 @@ public class BoardController {
 
     @PostMapping("/board/{boardId}/edit")
     public String edit(
-            @ModelAttribute(name = "boardFormDto") BoardFormDto boardFormDto,
+            @ModelAttribute(name = "boardFormDto") BoardDto boardDto,
             @RequestParam(name = "attachModiFile", required = false) MultipartFile attachModiFile
     ) throws IOException {
 
-        boardService.edit(boardFormDto, attachModiFile);
+        boardService.edit(boardDto, attachModiFile);
         return "redirect:/board/{boardId}";
     }
 

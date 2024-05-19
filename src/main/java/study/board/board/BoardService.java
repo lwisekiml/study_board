@@ -10,11 +10,9 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import study.board.util.FileStore;
-import study.board.util.PaginationService;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -24,28 +22,15 @@ import java.util.Map;
 public class BoardService {
 
     private final BoardRepository boardRepository;
-    private final PaginationService paginationService;
     private final FileStore fileStore;
 
     @Transactional
-    public String list(Model model, Pageable pageable) {
-
-        Page<Board> page = boardRepository.findAll(pageable); // 단순 조회(?)인데 BoardService로 옮기는 게 좋을까?
-        if (page.isEmpty()) {
-            log.info("없는 페이지 입니다.");
-            return "list";
-        }
-
-        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), page.getTotalPages());
-
-        model.addAttribute("paginationBarNumbers", barNumbers);
-        model.addAttribute("boards", page);
-
-        return "list";
+    public Page<BoardDto> findAll(Pageable pageable) {
+        return boardRepository.findAll(pageable).map(BoardDto::toDto);
     }
 
     @Transactional
-    public String create(BoardFormDto form, Model model) throws IOException {
+    public String create(BoardDto form, Model model) throws IOException {
 
         Map<String, String> errors = new HashMap<>();
 
@@ -73,28 +58,28 @@ public class BoardService {
     public void board(Long boardId, Model model) {
         Board board = boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
         board.plusViews();
-        model.addAttribute("boardFormDto", new BoardFormDto(board.getId(), board.getTitle(), board.getContent(), board.getViews(), board.getUploadFileName()));
+        model.addAttribute("boardFormDto", new BoardDto(board.getId(), board.getTitle(), board.getContent(), board.getViews(), board.getUploadFileName()));
     }
 
     @Transactional
-    public void edit(BoardFormDto boardFormDto, MultipartFile attachModiFile) throws IOException {
+    public void edit(BoardDto boardDto, MultipartFile attachModiFile) throws IOException {
 
-        Board board = boardRepository.findById(boardFormDto.getId()).orElseThrow(IllegalArgumentException::new);
+        Board board = boardRepository.findById(boardDto.getId()).orElseThrow(IllegalArgumentException::new);
 
-        board.setTitle(boardFormDto.getTitle());
-        board.setContent(boardFormDto.getContent());
+        board.setTitle(boardDto.getTitle());
+        board.setContent(boardDto.getContent());
 
         if (!attachModiFile.isEmpty()) {
-            boardFormDto.setAttachFile(attachModiFile);
-            boardFormDto = fileStore.storeFile(boardFormDto);
+            boardDto.setAttachFile(attachModiFile);
+            boardDto = fileStore.storeFile(boardDto);
 
-            board.setUploadFileName(boardFormDto.getUploadFileName());
-            board.setStoreFileName(boardFormDto.getStoreFileName());
+            board.setUploadFileName(boardDto.getUploadFileName());
+            board.setStoreFileName(boardDto.getStoreFileName());
         }
     }
 
     @Transactional
-    public void delete(BoardFormDto form) {
+    public void delete(BoardDto form) {
         Board board = boardRepository.findById(form.getId()).orElseThrow(IllegalArgumentException::new);
         boardRepository.delete(board);
 
@@ -102,7 +87,7 @@ public class BoardService {
 
 //    // 본인이 작성한 글 찾기
 //    @Transactional
-//    public List<BoardFormDto> getMemberWrite(String loginId) {
+//    public List<BoardDto> getMemberWrite(String loginId) {
 //        return boardRepository.findMemberDto(loginId);
 //    }
 }
