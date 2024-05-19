@@ -93,6 +93,13 @@ public class BoardService {
         }
     }
 
+    @Transactional
+    public void delete(BoardFormDto form) {
+        Board board = boardRepository.findById(form.getId()).orElseThrow(IllegalArgumentException::new);
+        boardRepository.delete(board);
+
+    }
+
 //    // 본인이 작성한 글 찾기
 //    @Transactional
 //    public List<BoardFormDto> getMemberWrite(String loginId) {
