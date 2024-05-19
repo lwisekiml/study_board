@@ -3,7 +3,7 @@ package study.board.util;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import study.board.board.BoardFormDto;
+import study.board.board.BoardDto;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +20,7 @@ public class FileStore {
         return fileDir + filename;
     }
 
-    public BoardFormDto storeFile(BoardFormDto form) throws IOException {
+    public BoardDto storeFile(BoardDto form) throws IOException {
         MultipartFile multipartFile = form.getAttachFile();
         if (multipartFile.isEmpty()) {
             return form;
