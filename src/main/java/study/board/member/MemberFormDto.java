@@ -1,4 +1,4 @@
-package study.board.dto;
+package study.board.member;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

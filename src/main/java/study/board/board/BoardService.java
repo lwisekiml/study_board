@@ -1,14 +1,11 @@
-package study.board.service;
+package study.board.board;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
-import study.board.dto.BoardFormDto;
-import study.board.entity.Board;
-import study.board.repository.BoardRepository;
-import study.board.repository.FileStore;
+import study.board.util.FileStore;
 
 import java.io.IOException;
 import java.util.List;
@@ -42,12 +39,12 @@ public class BoardService {
     public void board(Long boardId, Model model) {
         Board board = boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
         board.plusViews();
-        model.addAttribute("boardFormDto", new BoardFormDto(board.getId(), board.getLoginId(), board.getTitle(), board.getContent(), board.getViews(), board.getUploadFileName()));
+        model.addAttribute("boardFormDto", new BoardFormDto(board.getId(), board.getTitle(), board.getContent(), board.getViews(), board.getUploadFileName()));
     }
 
-    // 본인이 작성한 글 찾기
-    @Transactional
-    public List<BoardFormDto> getMemberWrite(String loginId) {
-        return boardRepository.findMemberDto(loginId);
-    }
+//    // 본인이 작성한 글 찾기
+//    @Transactional
+//    public List<BoardFormDto> getMemberWrite(String loginId) {
+//        return boardRepository.findMemberDto(loginId);
+//    }
 }

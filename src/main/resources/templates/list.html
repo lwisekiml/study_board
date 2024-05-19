@@ -17,19 +17,6 @@
     <div class="login-info">
         <div class="container">
             <a href="/board/new" style="float: left">글쓰기</a>
-
-          <span class="login-info_user" th:if="${loginFormDto != null}">
-              <a th:href="|/member/boardList|" th:text="${loginFormDto.loginId}"></a>
-          </span>
-            <span class="login-info_logout" th:if="${loginFormDto == null}">
-            <a href="/login">로그인</a>
-          </span>
-            <span class="login-info_logout" th:if="${loginFormDto != null}">
-            <a href="/logout">로그아웃</a>
-          </span>
-            <span class="login-info_join" th:if="${loginFormDto == null}">
-            <a href="/member/add">회원가입</a>
-          </span>
         </div>
     </div>
 

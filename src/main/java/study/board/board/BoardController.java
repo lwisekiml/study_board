@@ -1,13 +1,11 @@
-package study.board.controller;
+package study.board.board;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -15,54 +13,32 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
-import study.board.argumentresolver.Login;
-import study.board.dto.BoardFormDto;
-import study.board.dto.LoginFormDto;
-import study.board.entity.Board;
-import study.board.repository.BoardRepository;
-import study.board.repository.FileStore;
-import study.board.service.BoardService;
-import study.board.service.PaginationService;
-import study.board.session.SessionConst;
+import study.board.util.FileStore;
+import study.board.util.PaginationService;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Controller
 @RequiredArgsConstructor
 public class BoardController {
 
-    private final LoginController loginController;
     private final BoardService boardService;
     private final BoardRepository boardRepository;
     private final PaginationService paginationService;
-
     private final FileStore fileStore;
 
     @GetMapping("/")
-    public String list(
-            @Login LoginFormDto loginFormDto
-            ,Model model
-            ,HttpServletRequest request
-            ,@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
-    ) {
-        // 접속시 로그인 상태로 하기 위함(나중에 삭제 필요)
-//        loginController.login(new LoginFormDto("kim", "test", "1234"), "/", request);
-//        HttpSession session = request.getSession();
-//        loginFormDto = (LoginFormDto) session.getAttribute(SessionConst.LOGIN_MEMBER);
-
-        ////////////////////////////////////////////////////////////////////////////////////
-//        List<Board> boards = boardRepository.findAll(); // dto로 바꿔서 넘기도록 수정 필요
-//        model.addAttribute("boards", boards);
-//        model.addAttribute("loginFormDto", loginFormDto);
-        ////////////////////////////////////////////////////////////////////////////////////
-
+    public String list(Model model, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Page<Board> page = boardRepository.findAll(pageable); // 단순 조회(?)인데 BoardService로 옮기는 게 좋을까?
         if (page.isEmpty()) {
@@ -74,7 +50,6 @@ public class BoardController {
         List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), page.getTotalPages());
 
         model.addAttribute("paginationBarNumbers", barNumbers);
-        model.addAttribute("loginFormDto", loginFormDto);
         model.addAttribute("boards", page);
 
         return "list";
@@ -82,45 +57,42 @@ public class BoardController {
 
     // 글쓰기
     @GetMapping("/board/new")
-    public String createForm(
-            HttpServletRequest request,
-            Model model,
-            @ModelAttribute("boardFormDto") BoardFormDto boardFormDto
-    ) {
-        LoginFormDto loginFormDto = (LoginFormDto) request.getSession().getAttribute("loginMember");
-        model.addAttribute("loginFormDto", loginFormDto);
+    public String createForm(@ModelAttribute("boardFormDto") BoardFormDto boardFormDto) {
 
         return "board/createBoardForm";
     }
 
     @PostMapping("/board/new")
-    public String create(
-//            @ModelAttribute("loginFormDto") LoginFormDto loginFormDto, // createBoardForm에서 loginId값을 보내면 form에도 loginId값이 설정 되어 주석처리 함
-            @ModelAttribute("boardFormDto") BoardFormDto form,
-            HttpServletRequest request
-    ) throws IOException {
+    public String create(@ModelAttribute("boardFormDto") BoardFormDto form, HttpServletRequest request, Model model) throws IOException {
+
+        Map<String, String> errors = new HashMap<>();
+        if (!StringUtils.hasText(form.getTitle())) {
+            errors.put("titleError", "제목은 필수 입니다.");
+        }
+
+        if (!errors.isEmpty()) {
+            log.info("errors = {}", errors);
+            model.addAttribute("errors", errors);
+            return "/board/createBoardForm";
+        }
 
         form = fileStore.storeFile(form);
-        boardRepository.save(new Board(form.getLoginId(), form.getTitle(), form.getContent(), form.getUploadFileName(), form.getStoreFileName()));
+        boardRepository.save(new Board(form.getTitle(), form.getContent(), form.getUploadFileName(), form.getStoreFileName()));
 
         return "redirect:/";
     }
 
     // 글 조회
     @GetMapping("/board/{boardId}")
-    public String board(
-            @PathVariable(name = "boardId") Long boardId, Model model
-    ) {
+    public String board(@PathVariable(name = "boardId") Long boardId, Model model) {
         boardService.board(boardId, model);
         return "/board/board";
     }
 
     // 글 삭제
     @PostMapping("/board/delete")
-    public String delete(
-            @ModelAttribute("boardFormDto") BoardFormDto form
-    ) {
-//        Board board = boardRepository.findById(form.getId()).get();
+    public String delete(@ModelAttribute("boardFormDto") BoardFormDto form) {
+
         Board board = boardRepository.findById(form.getId()).orElseThrow(IllegalArgumentException::new);
         boardRepository.delete(board);
 
@@ -129,24 +101,23 @@ public class BoardController {
 
     // 글 수정
     @GetMapping("/board/{boardId}/edit")
-    public String editForm(
-            @PathVariable(name = "boardId") Long boardId, Model model
-    ) {
+    public String editForm(@PathVariable(name = "boardId") Long boardId, Model model) {
+
         Board board = boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
-        model.addAttribute("boardFormDto", new BoardFormDto(board.getId()
-                                                            ,board.getLoginId()
-                                                            ,board.getTitle()
-                                                            ,board.getContent()
-                                                            ,board.getViews()
-                                                            ,board.getUploadFileName()));
+        model.addAttribute("boardFormDto",
+                new BoardFormDto(board.getId()
+                        , board.getTitle()
+                        , board.getContent()
+                        , board.getViews()
+                        , board.getUploadFileName()));
 
         return "board/editBoardForm";
     }
 
     @PostMapping("/board/{boardId}/edit")
     public String edit(
-             @ModelAttribute(name = "boardFormDto") BoardFormDto boardFormDto
-            ,@RequestParam(name = "attachModiFile", required = false) MultipartFile attachModiFile
+            @ModelAttribute(name = "boardFormDto") BoardFormDto boardFormDto,
+            @RequestParam(name = "attachModiFile", required = false) MultipartFile attachModiFile
     ) throws IOException {
 
         boardService.edit(boardFormDto, attachModiFile);
@@ -155,6 +126,7 @@ public class BoardController {
 
     @GetMapping("/attach/{boardId}")
     public ResponseEntity<Resource> downloadAttach(@PathVariable("boardId") Long boardId) throws MalformedURLException {
+
         Board board = boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
         String storeFileName = board.getStoreFileName();
         String uploadFileName = board.getUploadFileName();

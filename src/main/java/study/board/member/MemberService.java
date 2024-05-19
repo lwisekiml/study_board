@@ -1,9 +1,9 @@
-package study.board.service;
+package study.board.member;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import study.board.entity.Member;
-import study.board.repository.MemberRepository;
+import study.board.member.Member;
+import study.board.member.MemberRepository;
 
 @Service
 @RequiredArgsConstructor
