@@ -1,21 +1,12 @@
-package study.board.controller;
+package study.board.member;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import study.board.dto.BoardFormDto;
-import study.board.dto.LoginFormDto;
-import study.board.dto.MemberFormDto;
-import study.board.service.BoardService;
-import study.board.service.MemberService;
-import study.board.session.SessionConst;
-
-import java.util.List;
+import study.board.board.BoardService;
 
 @Controller
 @RequestMapping("/member")
@@ -48,12 +39,12 @@ public class MemberController {
     }
 
     // 멤버에 대한 게시글이기는 한데 Board에 있어야 하나?
-    @GetMapping("/boardList")
-    public String getMemberWrite(Model model, HttpServletRequest request) {
-        LoginFormDto loginFormDto = (LoginFormDto) request.getSession().getAttribute(SessionConst.LOGIN_MEMBER);
-        List<BoardFormDto> boardFormDto = boardService.getMemberWrite(loginFormDto.getLoginId());
-        model.addAttribute("boardFormDtos", boardFormDto);
-
-        return "/member/boardList";
-    }
+//    @GetMapping("/boardList")
+//    public String getMemberWrite(Model model, HttpServletRequest request) {
+//        LoginFormDto loginFormDto = (LoginFormDto) request.getSession().getAttribute(SessionConst.LOGIN_MEMBER);
+//        List<BoardFormDto> boardFormDto = boardService.getMemberWrite(loginFormDto.getLoginId());
+//        model.addAttribute("boardFormDtos", boardFormDto);
+//
+//        return "/member/boardList";
+//    }
 }

@@ -1,4 +1,4 @@
-package study.board.entity;
+package study.board.member;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

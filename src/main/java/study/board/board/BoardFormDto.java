@@ -1,4 +1,4 @@
-package study.board.dto;
+package study.board.board;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +11,6 @@ public class BoardFormDto {
 
     private Long id;
 
-    private String loginId;
     private String title;
     private String content;
     private int views; // 조회수
@@ -31,17 +30,15 @@ public class BoardFormDto {
         this.views = views;
     }
 
-    public BoardFormDto(Long id, String loginId, String title, String content, int views) {
+    public BoardFormDto(Long id, String title, String content, int views) {
         this.id = id;
-        this.loginId = loginId;
         this.title = title;
         this.content = content;
         this.views = views;
     }
 
-    public BoardFormDto(Long id, String loginId, String title, String content, int views, String uploadFileName) {
+    public BoardFormDto(Long id, String title, String content, int views, String uploadFileName) {
         this.id = id;
-        this.loginId = loginId;
         this.title = title;
         this.content = content;
         this.views = views;
