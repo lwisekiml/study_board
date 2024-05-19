@@ -18,6 +18,7 @@
 </head>
 <body>
 <h1>글쓰기</h1>
+<!-- th:object를 사용하려면 controller에서 빈 껍데기를 넘겨주어야 한다. -->
 <form action="/board/new" enctype="multipart/form-data" th:object="${boardFormDto}" method="post" >
 
 <!--  <div>-->
@@ -26,15 +27,23 @@
 <!--           th:value="${loginFormDto.loginId}" readonly>-->
 <!--  </div>-->
 
-  제목 : <input type="text" id="title" th:field="*{title}"
-          th:classappend="${errors?.containsKey('titleError')} ? 'form-control field-error' : _"
-              class="form-control" placeholder="제목을 입력하세요"><br/>
+  <!-- th:field가 id, name, value 속성을 자동으로 처리 -->
+  <!-- errors?. 은 errors 가 null 일때 NullPointerException 이 발생하는 대신, null 을 반환하는 문법 -->
+  제목 : <input type="text" th:field="*{title}"
+              th:classappend="${errors?.containsKey('titleError')} ? 'field-error' : _"
+              placeholder="제목을 입력하세요"><br/>
         <div class="field-error" th:if="${errors?.containsKey('titleError')}" th:text="${errors['titleError']}">
           제목 오류
         </div>
 
-  내용 : <input type="text" name="content" /><br/>
-  <input type="file" id="attachFile" name="attachFile" class="form-control" value="첨부파일" /><br/>
+  내용 : <input type="text" th:field="*{content}"
+              th:classappend="${errors?.containsKey('contentError')} ? 'field-error' : _"
+              placeholder="내용을 입력하세요"><br/>
+        <div class="field-error" th:if="${errors?.containsKey('contentError')}" th:text="${errors['contentError']}">
+          내용 오류
+        </div>
+
+  <input type="file" th:field="*{attachFile}" class="form-control" /><br/>
 
   <input type="submit" value="등록" />
   <button onclick="location.href='../list.html'"

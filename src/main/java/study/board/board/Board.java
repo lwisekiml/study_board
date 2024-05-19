@@ -23,18 +23,14 @@ public class Board {
     private String uploadFileName; // 고객이 업로드한 파일명
     private String storeFileName; // 서버 내부에서 관리하는 파일명
 
+    // TestDataInit
     public Board(String title, String content, int views) {
         this.title = title;
         this.content = content;
         this.views = views;
     }
 
-    public Board(String title, String content, String uploadFileName) {
-        this.title = title;
-        this.content = content;
-        this.uploadFileName = uploadFileName;
-    }
-
+    // 글쓰기
     public Board(String title, String content, String uploadFileName, String storeFileName) {
         this.title = title;
         this.content = content;
