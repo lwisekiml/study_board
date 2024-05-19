@@ -63,10 +63,7 @@ public class BoardController {
     // 글 삭제
     @PostMapping("/board/delete")
     public String delete(@ModelAttribute("boardFormDto") BoardFormDto form) {
-
-        Board board = boardRepository.findById(form.getId()).orElseThrow(IllegalArgumentException::new);
-        boardRepository.delete(board);
-
+        boardService.delete(form);
         return "redirect:/";
     }
 
