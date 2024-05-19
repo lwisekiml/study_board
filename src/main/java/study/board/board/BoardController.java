@@ -39,47 +39,18 @@ public class BoardController {
 
     @GetMapping("/")
     public String list(Model model, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-
-        Page<Board> page = boardRepository.findAll(pageable); // 단순 조회(?)인데 BoardService로 옮기는 게 좋을까?
-        if (page.isEmpty()) {
-            log.info("없는 페이지 입니다.");
-            return "list";
-            // 없는 페이지 입니다.
-        }
-
-        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), page.getTotalPages());
-
-        model.addAttribute("paginationBarNumbers", barNumbers);
-        model.addAttribute("boards", page);
-
-        return "list";
+        return boardService.list(model, pageable);
     }
 
     // 글쓰기
     @GetMapping("/board/new")
     public String createForm(@ModelAttribute("boardFormDto") BoardFormDto boardFormDto) {
-
         return "board/createBoardForm";
     }
 
     @PostMapping("/board/new")
-    public String create(@ModelAttribute("boardFormDto") BoardFormDto form, HttpServletRequest request, Model model) throws IOException {
-
-        Map<String, String> errors = new HashMap<>();
-        if (!StringUtils.hasText(form.getTitle())) {
-            errors.put("titleError", "제목은 필수 입니다.");
-        }
-
-        if (!errors.isEmpty()) {
-            log.info("errors = {}", errors);
-            model.addAttribute("errors", errors);
-            return "/board/createBoardForm";
-        }
-
-        form = fileStore.storeFile(form);
-        boardRepository.save(new Board(form.getTitle(), form.getContent(), form.getUploadFileName(), form.getStoreFileName()));
-
-        return "redirect:/";
+    public String create(@ModelAttribute("boardFormDto") BoardFormDto form, Model model) throws IOException {
+        return boardService.create(form, model);
     }
 
     // 글 조회
@@ -124,6 +95,8 @@ public class BoardController {
         return "redirect:/board/{boardId}";
     }
 
+
+    // board에 관련되어 있지만 /board로 시작하는 것이 아니라 다른 곳을 옮기는게 좋을거 같은데
     @GetMapping("/attach/{boardId}")
     public ResponseEntity<Resource> downloadAttach(@PathVariable("boardId") Long boardId) throws MalformedURLException {
 

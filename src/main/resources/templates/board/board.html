@@ -9,29 +9,29 @@
 <h1>게시글 상세보기</h1>
 <form action="/board/delete" method="post">
 
-    <input type="hidden" id="id" name="id" class="form-control" value="번호" th:value="${boardFormDto.id}"/>
+    <input type="hidden" id="id" name="id" value="번호" th:value="${boardFormDto.id}"/>
 
 <!--    <div>-->
 <!--        <label for="loginId">글쓴이(아이디)</label>-->
-<!--        <input type="text" id="loginId" name="loginId" class="form-control" value="상품A" th:value="${boardFormDto.loginId}" readonly>-->
+<!--        <input type="text" id="loginId" name="loginId" value="상품A" th:value="${boardFormDto.loginId}" readonly>-->
 <!--    </div>-->
 
     <div>
         <label for="tile">제목</label>
-        <input type="text" id="tile" name="title" class="form-control" value="제목" th:value="${boardFormDto.title}" readonly>
+        <input type="text" id="tile" name="title" value="제목" th:value="${boardFormDto.title}" readonly>
     </div>
 
     <div>
         <label for="content">내용</label>
-        <input type="text" id="content" name="content" class="form-control" value="내용" th:value="${boardFormDto.content}" readonly>
+        <input type="text" id="content" name="content" value="내용" th:value="${boardFormDto.content}" readonly>
     </div>
 
     <div>
         <label for="views">조회수</label>
-        <input type="text" id="views" name="views" class="form-control" value="조회수" th:value="${boardFormDto.views}" readonly>
+        <input type="text" id="views" name="views" value="조회수" th:value="${boardFormDto.views}" readonly>
     </div>
 
-    <div th:if="${boardFormDto.uploadFileName}"> <!-- 첨부파일이 없을 경우 '첨부파일' 란이 안 나오도록 개발 -->
+    <div th:if="${boardFormDto.uploadFileName}">
         첨부파일: <a th:href="|/attach/${boardFormDto.id}|" th:text="${boardFormDto.uploadFileName}"></a>
     </div>
 
