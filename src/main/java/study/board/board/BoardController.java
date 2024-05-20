@@ -15,6 +15,8 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
@@ -37,6 +39,8 @@ public class BoardController {
     private final BoardRepository boardRepository;
     private final PaginationService paginationService;
     private final FileStore fileStore;
+
+    private final BoardValidator boardValidator;
 
     @GetMapping("/")
     public String list(Model model, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -65,13 +69,7 @@ public class BoardController {
     @PostMapping("/board/new")
     public String create(@ModelAttribute("boardDto") BoardDto form, BindingResult bindingResult, Model model) throws IOException {
 
-        if (!StringUtils.hasText(form.getTitle())) {
-            bindingResult.rejectValue("title", "required");
-        }
-
-        if (!StringUtils.hasText(form.getContent())) {
-            bindingResult.rejectValue("content", "re.board.content");
-        }
+        boardValidator.validate(form, bindingResult);
 
         if (bindingResult.hasErrors()) {
             log.info("errors = {}", bindingResult);
