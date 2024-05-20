@@ -12,6 +12,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
@@ -21,7 +26,9 @@ import study.board.util.PaginationService;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -58,8 +65,24 @@ public class BoardController {
     }
 
     @PostMapping("/board/new")
-    public String create(@ModelAttribute("boardDto") BoardDto form, Model model) throws IOException {
-        return boardService.create(form, model);
+    public String create(@Validated @ModelAttribute("boardDto") BoardDto form, BindingResult bindingResult, Model model) throws IOException {
+
+        if (bindingResult.hasErrors()) {
+            log.info("errors = {}", bindingResult);
+            return "/board/createBoardForm";
+        }
+
+        form = fileStore.storeFile(form); //새로운 변수로 해야할거 같은데
+        boardRepository.save(
+                Board.builder()
+                        .title(form.getTitle())
+                        .content(form.getContent())
+                        .uploadFileName(form.getUploadFileName())
+                        .storeFileName(form.getStoreFileName())
+                        .build());
+
+        return "redirect:/";
+//        return boardService.create(form, model);
     }
 
     // 글 조회
@@ -78,11 +101,17 @@ public class BoardController {
 
     @PostMapping("/board/{boardId}/edit")
     public String edit(
-            @ModelAttribute(name = "boardDto") BoardDto boardDto,
+            @Validated @ModelAttribute("boardDto") BoardDto form,
+            BindingResult bindingResult,
             @RequestParam(name = "newAttachFile", required = false) MultipartFile newAttachFile
     ) throws IOException {
 
-        boardService.edit(boardDto, newAttachFile);
+        if (bindingResult.hasErrors()) {
+            log.info("errors = {}", bindingResult);
+            return "/board/editBoardForm";
+        }
+
+        boardService.edit(form, newAttachFile);
         return "redirect:/board/{boardId}";
     }
 
