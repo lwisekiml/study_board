@@ -64,15 +64,13 @@ public class BoardController {
 
     @PostMapping("/board/new")
     public String create(@ModelAttribute("boardDto") BoardDto form, BindingResult bindingResult, Model model) throws IOException {
-        Map<String, String> errors = new HashMap<>();
 
         if (!StringUtils.hasText(form.getTitle())) {
-//            bindingResult.addError(new FieldError("boardDto", "title", "제목은 필수 입니다."));
-            bindingResult.addError(new FieldError("boardDto", "title", form.getTitle(), false, null, null, "제목은 필수 입니다."));
+            bindingResult.rejectValue("title", "required");
         }
 
         if (!StringUtils.hasText(form.getContent())) {
-            bindingResult.addError(new FieldError("boardDto", "content", "내용은 필수 입니다."));
+            bindingResult.rejectValue("content", "re.board.content");
         }
 
         if (bindingResult.hasErrors()) {
