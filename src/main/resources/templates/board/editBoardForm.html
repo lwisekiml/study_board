@@ -28,7 +28,7 @@
                th:value="${boardDto.content}">
     </div>
 
-    <input type="file" id="attachModiFile" name="attachModiFile" class="form-control" value="첨부파일"/><br/>
+    <input type="file" id="newAttachFile" name="newAttachFile" class="form-control" value="첨부파일"/><br/>
 
     <div th:if="${boardDto.uploadFileName}">
         첨부파일: <a type="file" th:text="${boardDto.uploadFileName}"></a>
