@@ -1,5 +1,6 @@
 package study.board.board;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +14,9 @@ public class BoardDto {
 
     private Long id;
 
+    @NotBlank(message = "제목은 필수 입니다.")
     private String title;
+    @NotBlank
     private String content;
     private int views; // 조회수
 

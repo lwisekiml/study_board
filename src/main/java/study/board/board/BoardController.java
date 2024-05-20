@@ -40,14 +40,6 @@ public class BoardController {
     private final PaginationService paginationService;
     private final FileStore fileStore;
 
-    private final BoardValidator boardValidator;
-
-    @InitBinder("boardDto") // 해당 controller에만 영향
-    public void init(WebDataBinder dataBinder) {
-        log.info("init binder {}", dataBinder);
-        dataBinder.addValidators(boardValidator);
-    }
-
     @GetMapping("/")
     public String list(Model model, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
