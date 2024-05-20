@@ -1,10 +1,7 @@
 package study.board.board;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter @Setter
@@ -23,18 +20,16 @@ public class Board {
     private String uploadFileName; // 고객이 업로드한 파일명
     private String storeFileName; // 서버 내부에서 관리하는 파일명
 
+    // TestDataInit
     public Board(String title, String content, int views) {
         this.title = title;
         this.content = content;
         this.views = views;
     }
 
-    public Board(String title, String content, String uploadFileName) {
-        this.title = title;
-        this.content = content;
-        this.uploadFileName = uploadFileName;
-    }
-
+    // 글쓰기
+    // @NoArgsConstructor와 @Builder를 같이 사용하면 오류 발생하여 생성자에 붙인다.
+    @Builder
     public Board(String title, String content, String uploadFileName, String storeFileName) {
         this.title = title;
         this.content = content;

@@ -21,13 +21,13 @@
 <!--                </tr>-->
 <!--                </thead>-->
 <!--                <tbody>-->
-<!--                <tr th:each="boardFormDto : ${boardFormDtos}">-->
-<!--                    <td th:text="${boardFormDto.id}"></td>-->
-<!--                    <td th:text="${boardFormDto.title}"></td>-->
-<!--                    <td th:text="${boardFormDto.views}"></td>-->
+<!--                <tr th:each="boardDto : ${boardDtos}">-->
+<!--                    <td th:text="${boardDto.id}"></td>-->
+<!--                    <td th:text="${boardDto.title}"></td>-->
+<!--                    <td th:text="${boardDto.views}"></td>-->
 <!--                    <td>등록일</td>-->
 <!--                    <td>-->
-<!--                        <a href="#" th:href="@{/board/{boardId}/edit (boardId=${boardFormDto.id})}" class="btn btn-primary" role="button">수정</a>-->
+<!--                        <a href="#" th:href="@{/board/{boardId}/edit (boardId=${boardDto.id})}" class="btn btn-primary" role="button">수정</a>-->
 <!--                    </td>-->
 <!--                </tr>-->
 <!--                </tbody>-->

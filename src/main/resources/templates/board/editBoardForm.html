@@ -9,29 +9,29 @@
 <h1>게시글 수정</h1>
 <form action="/board" enctype="multipart/form-data" th:action method="post">
 
-    <input type="hidden" id="id" name="id" class="form-control" value="번호" th:value="${boardFormDto.id}" readonly>
+    <input type="hidden" id="id" name="id" class="form-control" value="번호" th:value="${boardDto.id}" readonly>
 
 <!--    <div>-->
 <!--        <label for="loginId">글쓴이(아이디)</label>-->
 <!--        <input type="text" id="loginId" name="loginId" class="form-control" value="상품A"-->
-<!--               th:value="${boardFormDto.loginId}" readonly>-->
+<!--               th:value="${boardDto.loginId}" readonly>-->
 <!--    </div>-->
 
     <div>
         <label for="tile">제목</label>
-        <input type="text" id="tile" name="title" class="form-control" value="제목" th:value="${boardFormDto.title}">
+        <input type="text" id="tile" name="title" class="form-control" value="제목" th:value="${boardDto.title}">
     </div>
 
     <div>
         <label for="content">내용</label>
         <input type="text" id="content" name="content" class="form-control" value="내용"
-               th:value="${boardFormDto.content}">
+               th:value="${boardDto.content}">
     </div>
 
-    <input type="file" id="attachModiFile" name="attachModiFile" class="form-control" value="첨부파일"/><br/>
+    <input type="file" id="newAttachFile" name="newAttachFile" class="form-control" value="첨부파일"/><br/>
 
-    <div th:if="${boardFormDto.uploadFileName}">
-        첨부파일: <a type="file" th:text="${boardFormDto.uploadFileName}"></a>
+    <div th:if="${boardDto.uploadFileName}">
+        첨부파일: <a type="file" th:text="${boardDto.uploadFileName}"></a>
     </div>
 
     <button type="submit">저장</button>
@@ -40,7 +40,7 @@
 
 </form>
 <!--<button onclick="location.href='board.html'"-->
-<!--        th:onclick="|location.href='@{/board/{boardId}(boardId=${boardFormDto.id})}'|"-->
+<!--        th:onclick="|location.href='@{/board/{boardId}(boardId=${boardDto.id})}'|"-->
 <!--        type="button">취소</button>-->
 </body>
 </html>
