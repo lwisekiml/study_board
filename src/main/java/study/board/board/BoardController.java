@@ -101,11 +101,17 @@ public class BoardController {
 
     @PostMapping("/board/{boardId}/edit")
     public String edit(
-            @ModelAttribute(name = "boardDto") BoardDto boardDto,
+            @Validated @ModelAttribute("boardDto") BoardDto form,
+            BindingResult bindingResult,
             @RequestParam(name = "newAttachFile", required = false) MultipartFile newAttachFile
     ) throws IOException {
 
-        boardService.edit(boardDto, newAttachFile);
+        if (bindingResult.hasErrors()) {
+            log.info("errors = {}", bindingResult);
+            return "/board/editBoardForm";
+        }
+
+        boardService.edit(form, newAttachFile);
         return "redirect:/board/{boardId}";
     }
 

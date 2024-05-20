@@ -4,12 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시글 수정</title>
+
+    <style>
+        .field-error {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+    </style>
 </head>
 <body>
 <h1>게시글 수정</h1>
-<form action="/board" enctype="multipart/form-data" th:action method="post">
+<form action="/board" enctype="multipart/form-data" th:action th:object="${boardDto}" method="post">
 
-    <input type="hidden" id="id" name="id" class="form-control" value="번호" th:value="${boardDto.id}" readonly>
+    <input type="hidden" id="id" name="id" class="form-control" value="번호" th:value="*{id}" readonly>
 
 <!--    <div>-->
 <!--        <label for="loginId">글쓴이(아이디)</label>-->
@@ -19,13 +26,18 @@
 
     <div>
         <label for="tile">제목</label>
-        <input type="text" id="tile" name="title" class="form-control" value="제목" th:value="${boardDto.title}">
+        <input type="text" id="tile" th:field="*{title}" th:errorclass="field-error">
+        <div class="field-error" th:errors="*{title}">
+            제목 오류
+        </div>
     </div>
 
     <div>
         <label for="content">내용</label>
-        <input type="text" id="content" name="content" class="form-control" value="내용"
-               th:value="${boardDto.content}">
+        <input type="text" id="content" th:field="*{content}" th:errorclass="field-error">
+        <div class="field-error" th:errors="*{content}">
+            내용 오류
+        </div>
     </div>
 
     <input type="file" id="newAttachFile" name="newAttachFile" class="form-control" value="첨부파일"/><br/>

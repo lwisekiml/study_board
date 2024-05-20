@@ -82,19 +82,19 @@ public class BoardService {
     }
 
     @Transactional
-    public void edit(BoardDto boardDto, MultipartFile newAttachFile) throws IOException {
+    public void edit(BoardDto form, MultipartFile newAttachFile) throws IOException {
 
-        Board board = boardRepository.findById(boardDto.getId()).orElseThrow(IllegalArgumentException::new);
+        Board board = boardRepository.findById(form.getId()).orElseThrow(IllegalArgumentException::new);
 
-        board.setTitle(boardDto.getTitle());
-        board.setContent(boardDto.getContent());
+        board.setTitle(form.getTitle());
+        board.setContent(form.getContent());
 
         if (!newAttachFile.isEmpty()) {
-            boardDto.setAttachFile(newAttachFile);
-            boardDto = fileStore.storeFile(boardDto);
+            form.setAttachFile(newAttachFile);
+            form = fileStore.storeFile(form);
 
-            board.setUploadFileName(boardDto.getUploadFileName());
-            board.setStoreFileName(boardDto.getStoreFileName());
+            board.setUploadFileName(form.getUploadFileName());
+            board.setStoreFileName(form.getStoreFileName());
         }
     }
 
