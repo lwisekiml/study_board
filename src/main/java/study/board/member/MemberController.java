@@ -42,8 +42,8 @@ public class MemberController {
 //    @GetMapping("/boardList")
 //    public String getMemberWrite(Model model, HttpServletRequest request) {
 //        LoginFormDto loginFormDto = (LoginFormDto) request.getSession().getAttribute(SessionConst.LOGIN_MEMBER);
-//        List<BoardDto> boardFormDto = boardService.getMemberWrite(loginFormDto.getLoginId());
-//        model.addAttribute("boardFormDtos", boardFormDto);
+//        List<BoardDto> boardDto = boardService.getMemberWrite(loginFormDto.getLoginId());
+//        model.addAttribute("boardDtos", boardDto);
 //
 //        return "/member/boardList";
 //    }
