@@ -42,6 +42,12 @@ public class BoardController {
 
     private final BoardValidator boardValidator;
 
+    @InitBinder("boardDto") // 해당 controller에만 영향
+    public void init(WebDataBinder dataBinder) {
+        log.info("init binder {}", dataBinder);
+        dataBinder.addValidators(boardValidator);
+    }
+
     @GetMapping("/")
     public String list(Model model, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
@@ -67,9 +73,7 @@ public class BoardController {
     }
 
     @PostMapping("/board/new")
-    public String create(@ModelAttribute("boardDto") BoardDto form, BindingResult bindingResult, Model model) throws IOException {
-
-        boardValidator.validate(form, bindingResult);
+    public String create(@Validated @ModelAttribute("boardDto") BoardDto form, BindingResult bindingResult, Model model) throws IOException {
 
         if (bindingResult.hasErrors()) {
             log.info("errors = {}", bindingResult);
