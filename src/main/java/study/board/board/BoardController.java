@@ -65,8 +65,25 @@ public class BoardController {
     // 글 조회
     @GetMapping("/board/{boardId}")
     public String board(@PathVariable(name = "boardId") Long boardId, Model model) {
-        boardService.board(boardId, model);
+        model.addAttribute("boardDto", boardService.board(boardId, model));
         return "/board/board";
+    }
+
+    // 글 수정
+    @GetMapping("/board/{boardId}/edit")
+    public String editForm(@PathVariable(name = "boardId") Long boardId, Model model) {
+        model.addAttribute("boardDto", boardService.findById(boardId));
+        return "board/editBoardForm";
+    }
+
+    @PostMapping("/board/{boardId}/edit")
+    public String edit(
+            @ModelAttribute(name = "boardDto") BoardDto boardDto,
+            @RequestParam(name = "newAttachFile", required = false) MultipartFile newAttachFile
+    ) throws IOException {
+
+        boardService.edit(boardDto, newAttachFile);
+        return "redirect:/board/{boardId}";
     }
 
     // 글 삭제
@@ -75,33 +92,7 @@ public class BoardController {
         boardService.delete(form);
         return "redirect:/";
     }
-
-    // 글 수정
-    @GetMapping("/board/{boardId}/edit")
-    public String editForm(@PathVariable(name = "boardId") Long boardId, Model model) {
-
-        Board board = boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
-        model.addAttribute("boardDto",
-                new BoardDto(board.getId()
-                        , board.getTitle()
-                        , board.getContent()
-                        , board.getViews()
-                        , board.getUploadFileName()));
-
-        return "board/editBoardForm";
-    }
-
-    @PostMapping("/board/{boardId}/edit")
-    public String edit(
-            @ModelAttribute(name = "boardDto") BoardDto boardDto,
-            @RequestParam(name = "attachModiFile", required = false) MultipartFile attachModiFile
-    ) throws IOException {
-
-        boardService.edit(boardDto, attachModiFile);
-        return "redirect:/board/{boardId}";
-    }
-
-
+    
     // board에 관련되어 있지만 /board로 시작하는 것이 아니라 다른 곳을 옮기는게 좋을거 같은데
     @GetMapping("/attach/{boardId}")
     public ResponseEntity<Resource> downloadAttach(@PathVariable("boardId") Long boardId) throws MalformedURLException {

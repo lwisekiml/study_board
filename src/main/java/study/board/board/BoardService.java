@@ -29,6 +29,7 @@ public class BoardService {
         return boardRepository.findAll(pageable).map(BoardDto::toDto);
     }
 
+    // validation 할 때 수정
     @Transactional
     public String create(BoardDto form, Model model) throws IOException {
 
@@ -49,28 +50,47 @@ public class BoardService {
         }
 
         form = fileStore.storeFile(form); //새로운 변수로 해야할거 같은데
-        boardRepository.save(new Board(form.getTitle(), form.getContent(), form.getUploadFileName(), form.getStoreFileName()));
+        boardRepository.save(
+                Board.builder()
+                        .title(form.getTitle())
+                        .content(form.getContent())
+                        .uploadFileName(form.getUploadFileName())
+                        .storeFileName(form.getStoreFileName())
+                        .build());
 
         return "redirect:/";
     }
 
+    // 깔끔하게 Dto로 넘기고 싶지만 plusViews를 해야 하므로 아래와 같이 함
     @Transactional
-    public void board(Long boardId, Model model) {
+    public BoardDto board(Long boardId, Model model) {
         Board board = boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
         board.plusViews();
-        model.addAttribute("boardFormDto", new BoardDto(board.getId(), board.getTitle(), board.getContent(), board.getViews(), board.getUploadFileName()));
+
+        return BoardDto.builder()
+                .id(board.getId())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .views(board.getViews())
+                .uploadFileName(board.getUploadFileName())
+                .build();
     }
 
     @Transactional
-    public void edit(BoardDto boardDto, MultipartFile attachModiFile) throws IOException {
+    public BoardDto findById(Long boardId) {
+        return boardRepository.findById(boardId).map(BoardDto::toDto).orElseThrow(IllegalArgumentException::new);
+    }
+
+    @Transactional
+    public void edit(BoardDto boardDto, MultipartFile newAttachFile) throws IOException {
 
         Board board = boardRepository.findById(boardDto.getId()).orElseThrow(IllegalArgumentException::new);
 
         board.setTitle(boardDto.getTitle());
         board.setContent(boardDto.getContent());
 
-        if (!attachModiFile.isEmpty()) {
-            boardDto.setAttachFile(attachModiFile);
+        if (!newAttachFile.isEmpty()) {
+            boardDto.setAttachFile(newAttachFile);
             boardDto = fileStore.storeFile(boardDto);
 
             board.setUploadFileName(boardDto.getUploadFileName());
