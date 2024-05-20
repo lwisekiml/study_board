@@ -28,18 +28,14 @@
 <!--  </div>-->
 
   <!-- th:field가 id, name, value 속성을 자동으로 처리 -->
-  <!-- errors?. 은 errors 가 null 일때 NullPointerException 이 발생하는 대신, null 을 반환하는 문법 -->
-  제목 : <input type="text" th:field="*{title}"
-              th:classappend="${errors?.containsKey('titleError')} ? 'field-error' : _"
-              placeholder="제목을 입력하세요"><br/>
-        <div class="field-error" th:if="${errors?.containsKey('titleError')}" th:text="${errors['titleError']}">
+  <!-- th:errorclass는 th:field에서 지정한 필드에 오류가 있으면 class 정보를 추가 -->
+  제목 : <input type="text" th:field="*{title}" th:errorclass="field-error" placeholder="제목을 입력하세요"><br/>
+        <div class="field-error" th:errors="*{title}">
           제목 오류
         </div>
 
-  내용 : <input type="text" th:field="*{content}"
-              th:classappend="${errors?.containsKey('contentError')} ? 'field-error' : _"
-              placeholder="내용을 입력하세요"><br/>
-        <div class="field-error" th:if="${errors?.containsKey('contentError')}" th:text="${errors['contentError']}">
+  내용 : <input type="text" th:field="*{content}" th:errorclass="field-error" placeholder="내용을 입력하세요"><br/>
+        <div class="field-error" th:errors="*{content}">
           내용 오류
         </div>
 

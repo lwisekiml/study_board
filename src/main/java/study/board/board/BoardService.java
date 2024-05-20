@@ -30,36 +30,36 @@ public class BoardService {
     }
 
     // validation 할 때 수정
-    @Transactional
-    public String create(BoardDto form, Model model) throws IOException {
-
-        Map<String, String> errors = new HashMap<>();
-
-        if (!StringUtils.hasText(form.getTitle())) {
-            errors.put("titleError", "제목은 필수 입니다.");
-        }
-
-        if (!StringUtils.hasText(form.getContent())) {
-            errors.put("contentError", "내용은 필수 입니다.");
-        }
-
-        if (!errors.isEmpty()) {
-            log.info("errors = {}", errors);
-            model.addAttribute("errors", errors);
-            return "/board/createBoardForm";
-        }
-
-        form = fileStore.storeFile(form); //새로운 변수로 해야할거 같은데
-        boardRepository.save(
-                Board.builder()
-                        .title(form.getTitle())
-                        .content(form.getContent())
-                        .uploadFileName(form.getUploadFileName())
-                        .storeFileName(form.getStoreFileName())
-                        .build());
-
-        return "redirect:/";
-    }
+//    @Transactional
+//    public String create(BoardDto form, Model model) throws IOException {
+//
+//        Map<String, String> errors = new HashMap<>();
+//
+//        if (!StringUtils.hasText(form.getTitle())) {
+//            errors.put("titleError", "제목은 필수 입니다.");
+//        }
+//
+//        if (!StringUtils.hasText(form.getContent())) {
+//            errors.put("contentError", "내용은 필수 입니다.");
+//        }
+//
+//        if (!errors.isEmpty()) {
+//            log.info("errors = {}", errors);
+//            model.addAttribute("errors", errors);
+//            return "/board/createBoardForm";
+//        }
+//
+//        form = fileStore.storeFile(form); //새로운 변수로 해야할거 같은데
+//        boardRepository.save(
+//                Board.builder()
+//                        .title(form.getTitle())
+//                        .content(form.getContent())
+//                        .uploadFileName(form.getUploadFileName())
+//                        .storeFileName(form.getStoreFileName())
+//                        .build());
+//
+//        return "redirect:/";
+//    }
 
     // 깔끔하게 Dto로 넘기고 싶지만 plusViews를 해야 하므로 아래와 같이 함
     @Transactional
