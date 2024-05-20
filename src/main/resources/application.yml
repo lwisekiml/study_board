@@ -15,10 +15,15 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
   servlet:
     multipart:
       max-file-size: 1MB # 파일 하나의 최대 사이즈
       max-request-size: 10MB # 전체 사이즈
+
+  messages:
+    basename: messages,errors
+
 server:
   servlet:
     session:
