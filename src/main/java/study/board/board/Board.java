@@ -1,10 +1,7 @@
 package study.board.board;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter @Setter
@@ -31,6 +28,8 @@ public class Board {
     }
 
     // 글쓰기
+    // @NoArgsConstructor와 @Builder를 같이 사용하면 오류 발생하여 생성자에 붙인다.
+    @Builder
     public Board(String title, String content, String uploadFileName, String storeFileName) {
         this.title = title;
         this.content = content;
