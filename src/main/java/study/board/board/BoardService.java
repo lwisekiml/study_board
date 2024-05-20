@@ -30,36 +30,36 @@ public class BoardService {
     }
 
     // validation 할 때 수정
-    @Transactional
-    public String create(BoardDto form, Model model) throws IOException {
-
-        Map<String, String> errors = new HashMap<>();
-
-        if (!StringUtils.hasText(form.getTitle())) {
-            errors.put("titleError", "제목은 필수 입니다.");
-        }
-
-        if (!StringUtils.hasText(form.getContent())) {
-            errors.put("contentError", "내용은 필수 입니다.");
-        }
-
-        if (!errors.isEmpty()) {
-            log.info("errors = {}", errors);
-            model.addAttribute("errors", errors);
-            return "/board/createBoardForm";
-        }
-
-        form = fileStore.storeFile(form); //새로운 변수로 해야할거 같은데
-        boardRepository.save(
-                Board.builder()
-                        .title(form.getTitle())
-                        .content(form.getContent())
-                        .uploadFileName(form.getUploadFileName())
-                        .storeFileName(form.getStoreFileName())
-                        .build());
-
-        return "redirect:/";
-    }
+//    @Transactional
+//    public String create(BoardDto form, Model model) throws IOException {
+//
+//        Map<String, String> errors = new HashMap<>();
+//
+//        if (!StringUtils.hasText(form.getTitle())) {
+//            errors.put("titleError", "제목은 필수 입니다.");
+//        }
+//
+//        if (!StringUtils.hasText(form.getContent())) {
+//            errors.put("contentError", "내용은 필수 입니다.");
+//        }
+//
+//        if (!errors.isEmpty()) {
+//            log.info("errors = {}", errors);
+//            model.addAttribute("errors", errors);
+//            return "/board/createBoardForm";
+//        }
+//
+//        form = fileStore.storeFile(form); //새로운 변수로 해야할거 같은데
+//        boardRepository.save(
+//                Board.builder()
+//                        .title(form.getTitle())
+//                        .content(form.getContent())
+//                        .uploadFileName(form.getUploadFileName())
+//                        .storeFileName(form.getStoreFileName())
+//                        .build());
+//
+//        return "redirect:/";
+//    }
 
     // 깔끔하게 Dto로 넘기고 싶지만 plusViews를 해야 하므로 아래와 같이 함
     @Transactional
@@ -82,19 +82,19 @@ public class BoardService {
     }
 
     @Transactional
-    public void edit(BoardDto boardDto, MultipartFile newAttachFile) throws IOException {
+    public void edit(BoardDto form, MultipartFile newAttachFile) throws IOException {
 
-        Board board = boardRepository.findById(boardDto.getId()).orElseThrow(IllegalArgumentException::new);
+        Board board = boardRepository.findById(form.getId()).orElseThrow(IllegalArgumentException::new);
 
-        board.setTitle(boardDto.getTitle());
-        board.setContent(boardDto.getContent());
+        board.setTitle(form.getTitle());
+        board.setContent(form.getContent());
 
         if (!newAttachFile.isEmpty()) {
-            boardDto.setAttachFile(newAttachFile);
-            boardDto = fileStore.storeFile(boardDto);
+            form.setAttachFile(newAttachFile);
+            form = fileStore.storeFile(form);
 
-            board.setUploadFileName(boardDto.getUploadFileName());
-            board.setStoreFileName(boardDto.getStoreFileName());
+            board.setUploadFileName(form.getUploadFileName());
+            board.setStoreFileName(form.getStoreFileName());
         }
     }
 
