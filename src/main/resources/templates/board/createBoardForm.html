@@ -1,50 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>글쓰기</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>글쓰기</title>
 
-  <style>
-    .container {
-      max-width: 560px;
-    }
-    .field-error {
-      border-color: #dc3545;
-      color: #dc3545;
-    }
-  </style>
+    <style>
+        .field-error {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+    </style>
 
 </head>
 <body>
 <h1>글쓰기</h1>
 <!-- th:object를 사용하려면 controller에서 빈 껍데기를 넘겨주어야 한다. -->
-<form action="/board/new" enctype="multipart/form-data" th:object="${boardDto}" method="post" >
+<form action="/board/new" enctype="multipart/form-data" th:object="${boardDto}" method="post">
 
-<!--  <div>-->
-<!--    <label for="loginId">글쓴이(아이디)</label>-->
-<!--    <input type="text" id="loginId" name="loginId" class="form-control" value="글쓴이(아이디)"-->
-<!--           th:value="${loginFormDto.loginId}" readonly>-->
-<!--  </div>-->
+    <!--  <div>-->
+    <!--    <label for="loginId">글쓴이(아이디)</label>-->
+    <!--    <input type="text" id="loginId" name="loginId" class="form-control" value="글쓴이(아이디)"-->
+    <!--           th:value="${loginFormDto.loginId}" readonly>-->
+    <!--  </div>-->
 
-  <!-- th:field가 id, name, value 속성을 자동으로 처리 -->
-  <!-- th:errorclass는 th:field에서 지정한 필드에 오류가 있으면 class 정보를 추가 -->
-  제목 : <input type="text" th:field="*{title}" th:errorclass="field-error" placeholder="제목을 입력하세요"><br/>
+    <!-- th:field가 id, name, value 속성을 자동으로 처리 -->
+    <!-- th:errorclass는 th:field에서 지정한 필드에 오류가 있으면 class 정보를 추가 -->
+    <div>
+        <label for="tile">제목</label>
+        <input type="text" id="tile" th:field="*{title}" th:errorclass="field-error" placeholder="제목을 입력하세요"><br/>
         <div class="field-error" th:errors="*{title}">
-          제목 오류
+            제목 오류
         </div>
+    </div>
 
-  내용 : <input type="text" th:field="*{content}" th:errorclass="field-error" placeholder="내용을 입력하세요"><br/>
+    <div>
+        <label for="content">내용</label>
+
+        <input type="text" id="content" th:field="*{content}" th:errorclass="field-error" placeholder="내용을 입력하세요"><br/>
         <div class="field-error" th:errors="*{content}">
-          내용 오류
+            내용 오류
         </div>
+    </div>
 
-  <input type="file" th:field="*{attachFile}" class="form-control" /><br/>
+    <input type="file" th:field="*{attachFile}" class="form-control"/><br/>
 
-  <input type="submit" value="등록" />
-  <button onclick="location.href='../list.html'"
-          th:onclick="|location.href='@{/}'|"
-          type="button">취소</button>
+    <input type="submit" value="등록"/>
+    <button onclick="location.href='../list.html'"
+            th:onclick="|location.href='@{/}'|"
+            type="button">취소
+    </button>
 </form>
 </body>
 </html>
