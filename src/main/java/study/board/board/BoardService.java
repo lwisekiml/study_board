@@ -83,8 +83,8 @@ public class BoardService {
         }
 
         if (!boardEditDto.getImageFiles().isEmpty()) {
-            uploadFileRepository.deleteAll(board.getImageFiles());
-//            board.setImageFiles(fileStore.storeFiles(boardEditDto.getImageFiles()));
+            uploadFileRepository.deleteAllInBatch(board.getImageFiles());
+            board.setImageFiles(fileStore.storeFiles(boardEditDto.getImageFiles()));
         }
     }
 
