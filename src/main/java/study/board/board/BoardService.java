@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.multipart.MultipartFile;
+import study.board.file.UploadFileRepository;
 import study.board.util.FileStore;
 
 import java.io.IOException;
@@ -17,6 +17,7 @@ import java.io.IOException;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class BoardService {
+    private final UploadFileRepository uploadFileRepository;
 
     private final BoardRepository boardRepository;
     private final FileStore fileStore;
@@ -30,12 +31,21 @@ public class BoardService {
     @Transactional
     public void create(BoardCreateDto boardCreateDto, Model model) throws IOException {
 
+//        boardRepository.save(
+//                Board.builder()
+//                        .title(boardCreateDto.getTitle())
+//                        .content(boardCreateDto.getContent())
+//                        .uploadFile(fileStore.storeFile(boardCreateDto.getAttachFile()))
+//                        .imageFiles(fileStore.storeFiles(boardCreateDto.getImageFiles()))
+//                        .build()
+//        );
+
         boardRepository.save(
-                Board.builder()
-                        .title(boardCreateDto.getTitle())
-                        .content(boardCreateDto.getContent())
-                        .uploadFile(fileStore.storeFile(boardCreateDto.getAttachFile()))
-                        .build()
+                new Board(
+                        boardCreateDto.getTitle(),
+                        boardCreateDto.getContent(),
+                        fileStore.storeFile(boardCreateDto.getAttachFile()),
+                        fileStore.storeFiles(boardCreateDto.getImageFiles()))
         );
     }
 
@@ -51,6 +61,7 @@ public class BoardService {
                 .content(board.getContent())
                 .views(board.getViews())
                 .attachFile(board.getAttachFile())
+                .imageFiles(board.getImageFiles())
                 .build();
     }
 
@@ -60,16 +71,20 @@ public class BoardService {
     }
 
     @Transactional
-    public void edit(BoardEditDto boardEditDto, MultipartFile newAttachFile) throws IOException {
+    public void edit(BoardEditDto boardEditDto) throws IOException {
 
         Board board = boardRepository.findById(boardEditDto.getId()).orElseThrow(IllegalArgumentException::new);
 
         board.setTitle(boardEditDto.getTitle());
         board.setContent(boardEditDto.getContent());
 
-        if (!newAttachFile.isEmpty()) {
-            boardEditDto.setAttachFile(newAttachFile);
-            board.setAttachFile(fileStore.storeFile(newAttachFile));
+        if (!boardEditDto.getAttachFile().isEmpty()) {
+            board.setAttachFile(fileStore.storeFile(boardEditDto.getAttachFile()));
+        }
+
+        if (!boardEditDto.getImageFiles().isEmpty()) {
+            uploadFileRepository.deleteAll(board.getImageFiles());
+//            board.setImageFiles(fileStore.storeFiles(boardEditDto.getImageFiles()));
         }
     }
 

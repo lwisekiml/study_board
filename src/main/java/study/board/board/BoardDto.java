@@ -4,6 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import study.board.file.UploadFile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Builder
 @Getter @Setter
 @AllArgsConstructor
@@ -20,6 +23,7 @@ public class BoardDto {
 
     // 첨부파일
     private UploadFile attachFile;
+    private List<UploadFile> imageFiles = new ArrayList<>();
 
 //    // 본인 글 볼때 사용
 //    public BoardDto(Long id, String title, int views) {
@@ -58,7 +62,8 @@ public class BoardDto {
                 entity.getTitle(),
                 entity.getContent(),
                 entity.getViews(),
-                entity.getAttachFile()
+                entity.getAttachFile(),
+                entity.getImageFiles()
         );
     }
 }

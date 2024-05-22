@@ -17,7 +17,11 @@ public class UploadFile {
     @Column(name = "uploadfile_id")
     private Long id;
 
-    @OneToOne(mappedBy = "attachFile", fetch = LAZY)
+//    @OneToOne(mappedBy = "attachFile", fetch = LAZY)
+//    private Board board;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "board_id")
     private Board board;
 
     private String uploadFileName; // 고객이 업로드한 파일명
