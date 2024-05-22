@@ -12,11 +12,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
@@ -26,9 +23,7 @@ import study.board.util.PaginationService;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Controller
@@ -43,46 +38,38 @@ public class BoardController {
     @GetMapping("/")
     public String list(Model model, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Page<BoardDto> boardDtos = boardService.findAll(pageable);
+        Page<BoardDto> pageBoardDtos = boardService.findAll(pageable);
 
-        if (boardDtos.isEmpty()) {
+        if (pageBoardDtos.isEmpty()) {
             log.info("없는 페이지 입니다.");
             return "list";
         }
 
-        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), boardDtos.getTotalPages());
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), pageBoardDtos.getTotalPages());
 
         model.addAttribute("paginationBarNumbers", barNumbers);
-        model.addAttribute("boards", boardDtos); // 프론트에 보낼 때 Dto 인지 명시할 필요가 없을 것으로 보여 boards로 함
+        model.addAttribute("pageBoardDtos", pageBoardDtos); // 프론트에 보낼 때 Dto 인지 명시할 필요가 없을 것으로 보여 boards로 함
 
         return "list";
     }
 
     // 글쓰기
     @GetMapping("/board/new")
-    public String createForm(@ModelAttribute("boardDto") BoardDto boardDto) {
+    public String createForm(@ModelAttribute("boardCreateDto") BoardCreateDto boardCreateDto) {
         return "board/createBoardForm";
     }
 
     @PostMapping("/board/new")
-    public String create(@Validated @ModelAttribute("boardDto") BoardDto form, BindingResult bindingResult, Model model) throws IOException {
+    public String create(@Validated @ModelAttribute("boardCreateDto") BoardCreateDto boardCreateDto, BindingResult bindingResult, Model model) throws IOException {
 
         if (bindingResult.hasErrors()) {
             log.info("errors = {}", bindingResult);
             return "/board/createBoardForm";
         }
 
-        form = fileStore.storeFile(form); //새로운 변수로 해야할거 같은데
-        boardRepository.save(
-                Board.builder()
-                        .title(form.getTitle())
-                        .content(form.getContent())
-                        .uploadFileName(form.getUploadFileName())
-                        .storeFileName(form.getStoreFileName())
-                        .build());
+        boardService.create(boardCreateDto, model);
 
         return "redirect:/";
-//        return boardService.create(form, model);
     }
 
     // 글 조회
@@ -95,15 +82,14 @@ public class BoardController {
     // 글 수정
     @GetMapping("/board/{boardId}/edit")
     public String editForm(@PathVariable(name = "boardId") Long boardId, Model model) {
-        model.addAttribute("boardDto", boardService.findById(boardId));
+        model.addAttribute("boardEditDto", boardService.findById(boardId));
         return "board/editBoardForm";
     }
 
     @PostMapping("/board/{boardId}/edit")
     public String edit(
-            @Validated @ModelAttribute("boardDto") BoardDto form,
-            BindingResult bindingResult,
-            @RequestParam(name = "newAttachFile", required = false) MultipartFile newAttachFile
+            @Validated @ModelAttribute("boardEditDto") BoardEditDto boardEditDto,
+            BindingResult bindingResult
     ) throws IOException {
 
         if (bindingResult.hasErrors()) {
@@ -111,7 +97,7 @@ public class BoardController {
             return "/board/editBoardForm";
         }
 
-        boardService.edit(form, newAttachFile);
+        boardService.edit(boardEditDto);
         return "redirect:/board/{boardId}";
     }
 
@@ -127,8 +113,8 @@ public class BoardController {
     public ResponseEntity<Resource> downloadAttach(@PathVariable("boardId") Long boardId) throws MalformedURLException {
 
         Board board = boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
-        String storeFileName = board.getStoreFileName();
-        String uploadFileName = board.getUploadFileName();
+        String storeFileName = board.getAttachFile().getStoreFileName();
+        String uploadFileName = board.getAttachFile().getUploadFileName();
 
         UrlResource resource = new UrlResource("file:" + fileStore.getFullPath(storeFileName));
 
@@ -139,5 +125,12 @@ public class BoardController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
                 .body(resource);
+    }
+
+    @ResponseBody
+    @GetMapping("/images/{filename}")
+    public Resource downloadImage(@PathVariable("filename") String filename) throws MalformedURLException {
+        String s = "file:" + fileStore.getFullPath(filename);
+        return new UrlResource(s);
     }
 }

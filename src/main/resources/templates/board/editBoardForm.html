@@ -14,7 +14,7 @@
 </head>
 <body>
 <h1>게시글 수정</h1>
-<form action="/board" enctype="multipart/form-data" th:action th:object="${boardDto}" method="post">
+<form action="/board" enctype="multipart/form-data" th:action th:object="${boardEditDto}" method="post">
 
     <input type="hidden" id="id" name="id" class="form-control" value="번호" th:value="*{id}" readonly>
 
@@ -40,11 +40,13 @@
         </div>
     </div>
 
-    <input type="file" id="newAttachFile" name="newAttachFile" class="form-control" value="첨부파일"/><br/>
-
-    <div th:if="${boardDto.uploadFileName}">
-        첨부파일: <a type="file" th:text="${boardDto.uploadFileName}"></a>
+    <div th:if="${boardEditDto.attachFile}">
+        첨부파일: <a type="file" th:text="${boardEditDto.attachFile.getUploadFileName()}"></a>
     </div>
+    <input type="file" id="attachFile" name="attachFile" class="form-control" value="첨부파일"/><br/>
+
+<!--    <img th:each="imageFile : ${boardEditDto.imageFiles}" th:src="|/images/${imageFile.getStoreFileName()}|" width="300" height="300"/><br>-->
+    <input type="file" th:field="*{imageFiles}" multiple="multiple"><br/>
 
     <button type="submit">저장</button>
 
