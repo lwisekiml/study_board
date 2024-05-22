@@ -38,17 +38,17 @@ public class BoardController {
     @GetMapping("/")
     public String list(Model model, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Page<BoardDto> pageBoardDto = boardService.findAll(pageable);
+        Page<BoardDto> pageBoardDtos = boardService.findAll(pageable);
 
-        if (pageBoardDto.isEmpty()) {
+        if (pageBoardDtos.isEmpty()) {
             log.info("없는 페이지 입니다.");
             return "list";
         }
 
-        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), pageBoardDto.getTotalPages());
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), pageBoardDtos.getTotalPages());
 
         model.addAttribute("paginationBarNumbers", barNumbers);
-        model.addAttribute("boards", pageBoardDto); // 프론트에 보낼 때 Dto 인지 명시할 필요가 없을 것으로 보여 boards로 함
+        model.addAttribute("pageBoardDtos", pageBoardDtos); // 프론트에 보낼 때 Dto 인지 명시할 필요가 없을 것으로 보여 boards로 함
 
         return "list";
     }
