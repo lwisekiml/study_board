@@ -23,18 +23,18 @@ public class FileStore {
         return fileDir + filename;
     }
 
-//    public List<UploadFile> storeFiles(List<MultipartFile> multipartFiles) throws IOException {
-//
-//        List<UploadFile> storeFileResult = new ArrayList<>();
-//
-//        for (MultipartFile multipartFile : multipartFiles) {
-//            if (!multipartFile.isEmpty()) {
-//                storeFileResult.add(storeFile(multipartFile));
-//            }
-//        }
-//
-//        return storeFileResult;
-//    }
+    public List<UploadFile> storeFiles(List<MultipartFile> multipartFiles) throws IOException {
+
+        List<UploadFile> storeFileResult = new ArrayList<>();
+
+        for (MultipartFile multipartFile : multipartFiles) {
+            if (!multipartFile.isEmpty()) {
+                storeFileResult.add(storeFile(multipartFile));
+            }
+        }
+
+        return storeFileResult;
+    }
 
     public UploadFile storeFile(MultipartFile multipartFile) throws IOException {
 

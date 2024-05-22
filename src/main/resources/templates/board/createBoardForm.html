@@ -43,7 +43,8 @@
         </div>
     </div>
 
-    <input type="file" th:field="*{attachFile}" class="form-control"/><br/>
+    <input type="file" th:field="*{attachFile}" class="form-control"><br/>
+    <input type="file" th:field="*{imageFiles}" multiple="multiple"><br/>
 
     <input type="submit" value="등록"/>
     <button onclick="location.href='../list.html'"

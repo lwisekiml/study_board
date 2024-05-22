@@ -89,8 +89,7 @@ public class BoardController {
     @PostMapping("/board/{boardId}/edit")
     public String edit(
             @Validated @ModelAttribute("boardEditDto") BoardEditDto boardEditDto,
-            BindingResult bindingResult,
-            @RequestParam(name = "newAttachFile", required = false) MultipartFile newAttachFile
+            BindingResult bindingResult
     ) throws IOException {
 
         if (bindingResult.hasErrors()) {
@@ -98,7 +97,7 @@ public class BoardController {
             return "/board/editBoardForm";
         }
 
-        boardService.edit(boardEditDto, newAttachFile);
+        boardService.edit(boardEditDto);
         return "redirect:/board/{boardId}";
     }
 
@@ -126,5 +125,12 @@ public class BoardController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
                 .body(resource);
+    }
+
+    @ResponseBody
+    @GetMapping("/images/{filename}")
+    public Resource downloadImage(@PathVariable("filename") String filename) throws MalformedURLException {
+        String s = "file:" + fileStore.getFullPath(filename);
+        return new UrlResource(s);
     }
 }
