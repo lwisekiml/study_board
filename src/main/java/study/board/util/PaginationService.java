@@ -14,7 +14,7 @@ public class PaginationService {
 
         int startNumber = Math.max(currentPageNumber - (BAR_LENGTH / 2), 0);
         // 마지막 페이지로 가도 BAR가 BAR_LENGTH 만큼 보이도록 하기 위함
-        if (startNumber > totalPages - BAR_LENGTH) {
+        if (totalPages - BAR_LENGTH > 0 && startNumber > totalPages - BAR_LENGTH) {
             startNumber = totalPages - BAR_LENGTH;
         }
 
