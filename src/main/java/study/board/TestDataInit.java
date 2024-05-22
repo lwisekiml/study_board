@@ -27,11 +27,11 @@ public class TestDataInit {
 //        boardRepository.save(new Board("test", "제목3", "내용3"));
 //        boardRepository.save(new Board("qwer", "제목2", "내용2"));
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
             boardRepository.save(new Board("test", "test제목"+i, 1));
         }
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
             boardRepository.save(new Board("qwer", "qwer제목"+i, 1));
         }
     }
