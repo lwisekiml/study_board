@@ -35,7 +35,7 @@
                 </thead>
 
                 <tbody>
-                <tr th:each="board : ${boards}">
+                <tr th:each="board : ${pageBoardDtos}">
                     <td><a href="board/board.html" th:href="@{/board/{boardId}(boardId=${board.id})}" th:text="${board.id}">번호</a></td>
                     <td><a href="board/board.html" th:href="@{|/board/${board.id}|}" th:text="${board.title}">제목</a></td>
                     <td><a href="board/board.html" th:text="${board.views}">조회수</a></td>
@@ -49,33 +49,33 @@
 <!--        &lt;!&ndash; 첫번째 페이지로 이동 &ndash;&gt;-->
 <!--        <a th:href="@{/(page=1)}">첫 페이지 </a>-->
 
-        <a th:if="${boards.number > 0}">
-            <a th:href="@{/(page=${boards.number - 1})}" style="color:#FF0000">
+        <a th:if="${pageBoardDtos.number > 0}">
+            <a th:href="@{/(page=${pageBoardDtos.number - 1})}" style="color:#FF0000">
                 Previous
             </a>
         </a>
-        <a th:unless="${boards.number > 0}">
+        <a th:unless="${pageBoardDtos.number > 0}">
             Previous
         </a>
 
         <span th:each="pageNumber : ${paginationBarNumbers}">
-            <span th:if="${pageNumber == boards.number}" th:text="${pageNumber + 1}"></span>
-            <span th:unless="${pageNumber == boards.number}">
+            <span th:if="${pageNumber == pageBoardDtos.number}" th:text="${pageNumber + 1}"></span>
+            <span th:unless="${pageNumber == pageBoardDtos.number}">
                <a th:href="@{/(page=${pageNumber})}" th:text="${pageNumber + 1}" style="color:#FF0000"></a>
             </span>
         </span>
 
-        <a th:if="${boards.number < boards.totalPages - 1}">
-            <a th:href="@{/(page=${boards.number + 1})}" style="color:#FF0000">
+        <a th:if="${pageBoardDtos.number < pageBoardDtos.totalPages - 1}">
+            <a th:href="@{/(page=${pageBoardDtos.number + 1})}" style="color:#FF0000">
                 Next
             </a>
         </a>
-        <a th:unless="${boards.number < boards.totalPages - 1}">
+        <a th:unless="${pageBoardDtos.number < pageBoardDtos.totalPages - 1}">
             Next
         </a>
 
 <!--        &lt;!&ndash; 마지막 페이지로 이동 &ndash;&gt;-->
-<!--        <a th:href="@{/(page=${boards.totalPages})}"> 마지막 페이지</a>-->
+<!--        <a th:href="@{/(page=${pageBoardDtos.totalPages})}"> 마지막 페이지</a>-->
 
     </div>
 </section>
