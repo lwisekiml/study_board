@@ -7,13 +7,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import study.board.util.FileStore;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -30,36 +27,17 @@ public class BoardService {
     }
 
     // validation 할 때 수정
-//    @Transactional
-//    public String create(BoardDto form, Model model) throws IOException {
-//
-//        Map<String, String> errors = new HashMap<>();
-//
-//        if (!StringUtils.hasText(form.getTitle())) {
-//            errors.put("titleError", "제목은 필수 입니다.");
-//        }
-//
-//        if (!StringUtils.hasText(form.getContent())) {
-//            errors.put("contentError", "내용은 필수 입니다.");
-//        }
-//
-//        if (!errors.isEmpty()) {
-//            log.info("errors = {}", errors);
-//            model.addAttribute("errors", errors);
-//            return "/board/createBoardForm";
-//        }
-//
-//        form = fileStore.storeFile(form); //새로운 변수로 해야할거 같은데
-//        boardRepository.save(
-//                Board.builder()
-//                        .title(form.getTitle())
-//                        .content(form.getContent())
-//                        .uploadFileName(form.getUploadFileName())
-//                        .storeFileName(form.getStoreFileName())
-//                        .build());
-//
-//        return "redirect:/";
-//    }
+    @Transactional
+    public void create(BoardCreateDto boardCreateDto, Model model) throws IOException {
+
+        boardRepository.save(
+                Board.builder()
+                        .title(boardCreateDto.getTitle())
+                        .content(boardCreateDto.getContent())
+                        .uploadFile(fileStore.storeFile(boardCreateDto.getAttachFile()))
+                        .build()
+        );
+    }
 
     // 깔끔하게 Dto로 넘기고 싶지만 plusViews를 해야 하므로 아래와 같이 함
     @Transactional
@@ -72,7 +50,7 @@ public class BoardService {
                 .title(board.getTitle())
                 .content(board.getContent())
                 .views(board.getViews())
-                .uploadFileName(board.getUploadFileName())
+                .attachFile(board.getAttachFile())
                 .build();
     }
 
@@ -82,19 +60,16 @@ public class BoardService {
     }
 
     @Transactional
-    public void edit(BoardDto form, MultipartFile newAttachFile) throws IOException {
+    public void edit(BoardEditDto boardEditDto, MultipartFile newAttachFile) throws IOException {
 
-        Board board = boardRepository.findById(form.getId()).orElseThrow(IllegalArgumentException::new);
+        Board board = boardRepository.findById(boardEditDto.getId()).orElseThrow(IllegalArgumentException::new);
 
-        board.setTitle(form.getTitle());
-        board.setContent(form.getContent());
+        board.setTitle(boardEditDto.getTitle());
+        board.setContent(boardEditDto.getContent());
 
         if (!newAttachFile.isEmpty()) {
-            form.setAttachFile(newAttachFile);
-            form = fileStore.storeFile(form);
-
-            board.setUploadFileName(form.getUploadFileName());
-            board.setStoreFileName(form.getStoreFileName());
+            boardEditDto.setAttachFile(newAttachFile);
+            board.setAttachFile(fileStore.storeFile(newAttachFile));
         }
     }
 
