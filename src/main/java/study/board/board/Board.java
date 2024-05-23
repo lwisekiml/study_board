@@ -6,12 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import study.board.base.BaseEntity;
+import study.board.file.UploadFile;
 import study.board.file.UploadFiles;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter @Setter
@@ -27,9 +26,8 @@ public class Board extends BaseEntity {
     private int views; // 조회수
 
     // 첨부파일
-    @OneToOne(fetch = LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "uploadfile_id")
-    private UploadFiles attachFile;
+    @OneToOne(mappedBy = "board", cascade = CascadeType.ALL)
+    private UploadFile attachFile;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<UploadFiles> imageFiles = new ArrayList<>();
@@ -44,10 +42,11 @@ public class Board extends BaseEntity {
     // 글쓰기
     // @NoArgsConstructor와 @Builder를 같이 사용하면 오류 발생하여 생성자에 붙인다.
 //    @Builder
-    public Board(String title, String content, UploadFiles uploadFiles, List<UploadFiles> imageFiles) {
+    public Board(String title, String content, UploadFile uploadFile, List<UploadFiles> imageFiles) {
         this.title = title;
         this.content = content;
-        this.setAttachFile(uploadFiles);
+        this.setAttachFile(uploadFile);
+        uploadFile.setBoard(this); // board_id 생성
         this.setImageFiles(imageFiles);
     }
 
