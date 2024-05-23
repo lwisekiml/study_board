@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import study.board.file.UploadFileRepository;
+import study.board.file.UploadFilesRepository;
 import study.board.util.FileStore;
 
 import java.io.IOException;
@@ -17,7 +17,7 @@ import java.io.IOException;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class BoardService {
-    private final UploadFileRepository uploadFileRepository;
+    private final UploadFilesRepository uploadFilesRepository;
 
     private final BoardRepository boardRepository;
     private final FileStore fileStore;
@@ -83,7 +83,7 @@ public class BoardService {
         }
 
         if (!boardEditDto.getImageFiles().isEmpty()) {
-            uploadFileRepository.deleteAllInBatch(board.getImageFiles());
+            uploadFilesRepository.deleteAllInBatch(board.getImageFiles());
             board.setImageFiles(fileStore.storeFiles(boardEditDto.getImageFiles()));
         }
     }

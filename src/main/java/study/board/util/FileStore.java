@@ -3,8 +3,7 @@ package study.board.util;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import study.board.board.BoardDto;
-import study.board.file.UploadFile;
+import study.board.file.UploadFiles;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,9 +22,9 @@ public class FileStore {
         return fileDir + filename;
     }
 
-    public List<UploadFile> storeFiles(List<MultipartFile> multipartFiles) throws IOException {
+    public List<UploadFiles> storeFiles(List<MultipartFile> multipartFiles) throws IOException {
 
-        List<UploadFile> storeFileResult = new ArrayList<>();
+        List<UploadFiles> storeFileResult = new ArrayList<>();
 
         for (MultipartFile multipartFile : multipartFiles) {
             if (!multipartFile.isEmpty()) {
@@ -36,7 +35,7 @@ public class FileStore {
         return storeFileResult;
     }
 
-    public UploadFile storeFile(MultipartFile multipartFile) throws IOException {
+    public UploadFiles storeFile(MultipartFile multipartFile) throws IOException {
 
         if (multipartFile.isEmpty()) {
             return null;
@@ -47,7 +46,7 @@ public class FileStore {
 
         multipartFile.transferTo(new File(getFullPath(storeFileName)));
 
-        return new UploadFile(originalFilename, storeFileName);
+        return new UploadFiles(originalFilename, storeFileName);
     }
 
     // 새로운 파일 이름 생성
