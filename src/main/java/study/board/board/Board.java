@@ -45,8 +45,11 @@ public class Board extends BaseEntity {
     public Board(String title, String content, UploadFile uploadFile, List<UploadFiles> imageFiles) {
         this.title = title;
         this.content = content;
-        this.setAttachFile(uploadFile);
-        uploadFile.setBoard(this); // board_id 생성
+
+        if (uploadFile != null) {
+            this.setAttachFile(uploadFile);
+            uploadFile.setBoard(this); // board_id 생성
+        }
         this.setImageFiles(imageFiles);
     }
 
