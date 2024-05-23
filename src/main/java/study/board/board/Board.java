@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import study.board.base.BaseEntity;
 import study.board.file.UploadFile;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Entity
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Board {
+public class Board extends BaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "board_id")

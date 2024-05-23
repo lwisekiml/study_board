@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import study.board.file.UploadFile;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,12 @@ public class BoardDto {
     // 첨부파일
     private UploadFile attachFile;
     private List<UploadFile> imageFiles = new ArrayList<>();
+
+    private String createdBy;
+    private String createdDate;
+    private String lastModifiedBy;
+    private LocalDateTime lastModifiedDate;
+
 
 //    // 본인 글 볼때 사용
 //    public BoardDto(Long id, String title, int views) {
@@ -63,7 +71,11 @@ public class BoardDto {
                 entity.getContent(),
                 entity.getViews(),
                 entity.getAttachFile(),
-                entity.getImageFiles()
+                entity.getImageFiles(),
+                entity.getCreatedBy(),
+                entity.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                entity.getLastModifiedBy(),
+                entity.getLastModifiedDate()
         );
     }
 }
