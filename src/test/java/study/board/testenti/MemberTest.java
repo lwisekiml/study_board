@@ -84,5 +84,12 @@ class MemberTest {
         em.flush();
         em.clear();
 
+        Member findMember = em.getReference(Member.class, member.getId()); // getReference() 호출 시점에는 쿼리 x
+        System.out.println("findMember.getClass() = " + findMember.getClass());
+        System.out.println("findMember.getId() = " + findMember.getId()); // 위에 member.getId() 한것 때문에 쿼리 x
+        System.out.println("findMember.getUsername() = " + findMember.getUsername()); // 쿼리 날림
+
+        System.out.println("findMember.getUsername() = " + findMember.getUsername()); // 쿼리 x
+        System.out.println("findMember.getClass() = " + findMember.getClass());
     }
 }
