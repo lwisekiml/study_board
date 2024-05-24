@@ -17,9 +17,6 @@ public class Team {
     private Long id;
     private String name;
 
-//    @OneToMany(mappedBy = "team")
-//    private List<Member> members = new ArrayList<>();
-
     @OneToMany
     @JoinColumn(name = "TEAM_ID") // @JoinColumn은 꼭 넣어야 한다.
     private List<Member> members = new ArrayList<>();
