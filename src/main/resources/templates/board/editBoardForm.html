@@ -45,7 +45,7 @@
     </div>
     <input type="file" id="attachFile" name="attachFile" class="form-control" value="첨부파일"/><br/>
 
-<!--    <img th:each="imageFile : ${boardEditDto.imageFiles}" th:src="|/images/${imageFile.getStoreFileName()}|" width="300" height="300"/><br>-->
+    <img th:each="imageFile : ${boardEditDto.imageFiles}" th:src="|/images/${imageFile.getStoreFileName()}|" width="300" height="300"/><br>
     <input type="file" th:field="*{imageFiles}" multiple="multiple"><br/>
 
     <button type="submit">저장</button>
