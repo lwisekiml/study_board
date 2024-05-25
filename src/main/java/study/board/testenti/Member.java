@@ -19,7 +19,7 @@ public class Member extends BaseEntity {
     @Column(name = "USERNAME")
     private String username;
 
-    @ManyToOne//(fetch = FetchType.LAZY) // 없으면 한번에 join해서 가져온다.
+    @ManyToOne(fetch = FetchType.LAZY) // 없으면 한번에 join해서 가져온다.
     @JoinColumn(name = "TEAM_ID") // join해야 되는 컬럼이 뭐냐
     private Team team;
 
