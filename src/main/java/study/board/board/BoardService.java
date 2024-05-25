@@ -30,16 +30,6 @@ public class BoardService {
     // validation 할 때 수정
     @Transactional
     public void create(BoardCreateDto boardCreateDto, Model model) throws IOException {
-
-//        boardRepository.save(
-//                Board.builder()
-//                        .title(boardCreateDto.getTitle())
-//                        .content(boardCreateDto.getContent())
-//                        .uploadFile(fileStore.storeFile(boardCreateDto.getAttachFile()))
-//                        .imageFiles(fileStore.storeFiles(boardCreateDto.getImageFiles()))
-//                        .build()
-//        );
-
         boardRepository.save(
                 new Board(
                         boardCreateDto.getTitle(),
@@ -51,7 +41,7 @@ public class BoardService {
 
     // 깔끔하게 Dto로 넘기고 싶지만 plusViews를 해야 하므로 아래와 같이 함
     @Transactional
-    public BoardDto board(Long boardId, Model model) {
+    public BoardDto board(Long boardId) {
         Board board = boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
         board.plusViews();
 
@@ -67,7 +57,16 @@ public class BoardService {
 
     @Transactional
     public BoardDto findById(Long boardId) {
-        return boardRepository.findById(boardId).map(BoardDto::toDto).orElseThrow(IllegalArgumentException::new);
+        Board board = boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
+
+        return BoardDto.builder()
+                .id(board.getId())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .views(board.getViews())
+                .attachFile(board.getAttachFile())
+                .imageFiles(board.getImageFiles())
+                .build();
     }
 
     @Transactional
