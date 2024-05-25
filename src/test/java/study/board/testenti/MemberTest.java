@@ -7,6 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @SpringBootTest
 @Transactional
 @Rollback(value = false)
@@ -144,5 +146,74 @@ class MemberTest {
 //        em.close();
 //
 //        System.out.println("refMember.getUsername() = " + refMember.getUsername()); // LazyInitializationException
+    }
+
+    @Test
+    public void 지연로딩() {
+        Team team = new Team();
+        team.setName("TeamA");
+        em.persist(team);
+
+        Member member = new Member();
+        member.setUsername("member1");
+        member.setTeam(team);
+        em.persist(member);
+
+        em.flush();
+        em.clear();
+
+//        Member m = em.find(Member.class, member.getId());
+//        System.out.println("m.getTeam().getClass() = " + m.getTeam().getClass());
+//
+//        System.out.println("=====================");
+//        m.getTeam(); // Proxy를 가져와 쿼리x
+//        System.out.println("=====================");
+//        m.getTeam().getName(); // 실제 team을 사용, 초기화(DB 조회)
+//        System.out.println("=====================");
+
+
+        // 1
+        // SQL : select * from Member
+//        Member member1 = em.find(Member.class, member.getId());
+
+        // 2
+        // SQL : select * from Member
+        List<Member> members = em.createQuery("select m from Member m", Member.class)
+                .getResultList();
+    }
+
+    @Test
+    public void 즉시로딩() {
+        Team teamA = new Team();
+        teamA.setName("teamA");
+        em.persist(teamA);
+
+        Team teamB = new Team();
+        teamB.setName("teamA");
+        em.persist(teamB);
+
+        Member member1 = new Member(); // @ManyToOne(fetch = FetchType.EAGER) 로 바꾸고 테스트
+        member1.setUsername("member1");
+        member1.setTeam(teamA);
+        em.persist(member1);
+
+        Member member2 = new Member();
+        member2.setUsername("member2");
+        member2.setTeam(teamB);
+        em.persist(member2);
+
+        em.flush();
+        em.clear();
+
+        // 1
+        // join을 통해 team도 가져온다.
+//        Member member = em.find(Member.class, member1.getId());
+
+        // 2
+        // SQL : select * from Member
+        // SQL : select * from Team where TEAM_ID = xxx
+        // SQL : select * from Team where TEAM_ID = xxx
+        List<Member> members = em.createQuery("select m from Member m", Member.class)
+                .getResultList();
     }
 }
