@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -215,5 +216,25 @@ class MemberTest {
         // SQL : select * from Team where TEAM_ID = xxx
         List<Member> members = em.createQuery("select m from Member m", Member.class)
                 .getResultList();
+    }
+
+    @Test
+    public void 영속성전이_고아객체() {
+        // 기본적인 방법
+        Child child1 = new Child();
+        Child child2 = new Child();
+
+        Parent parent = new Parent();
+        parent.addChild(child1);
+        parent.addChild(child2);
+
+        // cascade = CascadeType.ALL로 아래 2개는 안해도 된다.
+        // cascade = CascadeType.ALL이 없으면 아래 2개 주석을 풀고 해야 한다.
+        em.persist(parent);
+//        em.persist(child1);
+//        em.persist(child2);
+
+
+
     }
 }
