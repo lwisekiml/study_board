@@ -3,6 +3,7 @@ package study.board.testenti;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.Rollback;
@@ -16,6 +17,8 @@ import java.util.List;
 class MemberTest {
 
     @PersistenceContext EntityManager em;
+    @Autowired
+    private ChildRepository childRepository;
 
     @Test
     public void test() {
@@ -218,9 +221,24 @@ class MemberTest {
                 .getResultList();
     }
 
+//    @Test
+//    public void 영속성전이() {
+//        Child child1 = new Child();
+//        Child child2 = new Child();
+//
+//        Parent parent = new Parent();
+//        parent.addChild(child1);
+//        parent.addChild(child2);
+//
+//        // cascade = CascadeType.ALL로 아래 2개는 안해도 된다.
+//        // cascade = CascadeType.ALL이 없으면 아래 2개 주석을 풀고 해야 한다.
+//        em.persist(parent);
+////        em.persist(child1);
+////        em.persist(child2);
+//    }
+
     @Test
-    public void 영속성전이_고아객체() {
-        // 기본적인 방법
+    public void 고아객체1_OneToMany() {
         Child child1 = new Child();
         Child child2 = new Child();
 
@@ -228,13 +246,39 @@ class MemberTest {
         parent.addChild(child1);
         parent.addChild(child2);
 
-        // cascade = CascadeType.ALL로 아래 2개는 안해도 된다.
-        // cascade = CascadeType.ALL이 없으면 아래 2개 주석을 풀고 해야 한다.
         em.persist(parent);
-//        em.persist(child1);
-//        em.persist(child2);
 
+        em.flush();
+        em.clear();
 
-
+        Parent findParent = em.find(Parent.class, parent.getId());
+        em.remove(findParent); // 부모 delete 하면 child도 delete 됨
+//        findParent.getChildList().remove(0); // child 1개 delete
     }
+
+//    @Test
+//    public void 고아객체2_OneToOne() {
+//        Parent parent = new Parent();
+//        Child child = new Child();
+//
+//        // 정상 (cascade 없을때 persist 순서를 child -> parent로 하면 3번 쿼리나감 / insert child -> insert parent -> update child)
+//        parent.addChild(child);
+//        em.persist(parent);
+////        em.persist(child);
+//
+//        // cascade 없을때 에러 발생
+////        parent.addChild(child);
+////        em.persist(parent);
+//
+//
+//        em.flush();
+//        em.clear();
+//
+//        Parent findParent = em.find(Parent.class, parent.getId());
+//        System.out.println("=======================");
+//        findParent.setChild(null);
+//        System.out.println("=======================");
+//        childRepository.delete(child);
+//        System.out.println("=======================");
+//    }
 }
