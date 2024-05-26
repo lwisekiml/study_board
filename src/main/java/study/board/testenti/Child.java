@@ -14,7 +14,13 @@ public class Child {
 
     private String name;
 
+    // 테스트 : 고아객체1_OneToMany
     @ManyToOne
     @JoinColumn(name = "parent_id")
     private Parent parent;
+
+    // 테스트 : 고아객체2_OneToOne
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "parent_id")
+//    private Parent parent;
 }
