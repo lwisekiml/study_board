@@ -26,20 +26,20 @@ public class Parent {
      *  CascadeType.REMOVE는 자식 엔티티가 그대로 남아있는 반면, orphanRemoval = true는 자식 엔티티를 제거한다.
      */
     // 테스트 : 고아객체1_OneToMany
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
-    private List<Child> childList = new ArrayList<>();
-
-    public void addChild(Child child) {
-        childList.add(child);
-        child.setParent(this);
-    }
-
-    // 테스트 : 고아객체2_OneToOne
-//    @OneToOne(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-//    private Child child;
+//    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+//    private List<Child> childList = new ArrayList<>();
 //
 //    public void addChild(Child child) {
-//        this.child = child;
+//        childList.add(child);
 //        child.setParent(this);
 //    }
+
+    // 테스트 : 고아객체2_OneToOne
+    @OneToOne(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Child child;
+
+    public void addChild(Child child) {
+        this.child = child;
+        child.setParent(this);
+    }
 }

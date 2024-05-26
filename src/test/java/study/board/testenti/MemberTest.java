@@ -239,46 +239,50 @@ class MemberTest {
 
     @Test
     public void 고아객체1_OneToMany() {
-        Child child1 = new Child();
-        Child child2 = new Child();
-
-        Parent parent = new Parent();
-        parent.addChild(child1);
-        parent.addChild(child2);
-
-        em.persist(parent);
-
-        em.flush();
-        em.clear();
-
-        Parent findParent = em.find(Parent.class, parent.getId());
-        em.remove(findParent); // 부모 delete 하면 child도 delete 됨
-//        findParent.getChildList().remove(0); // child 1개 delete
-    }
-
-//    @Test
-//    public void 고아객체2_OneToOne() {
+//        Child child1 = new Child();
+//        Child child2 = new Child();
+//
 //        Parent parent = new Parent();
-//        Child child = new Child();
+//        parent.addChild(child1);
+//        parent.addChild(child2);
 //
-//        // 정상 (cascade 없을때 persist 순서를 child -> parent로 하면 3번 쿼리나감 / insert child -> insert parent -> update child)
-//        parent.addChild(child);
 //        em.persist(parent);
-////        em.persist(child);
-//
-//        // cascade 없을때 에러 발생
-////        parent.addChild(child);
-////        em.persist(parent);
-//
 //
 //        em.flush();
 //        em.clear();
 //
 //        Parent findParent = em.find(Parent.class, parent.getId());
-//        System.out.println("=======================");
-//        findParent.setChild(null);
-//        System.out.println("=======================");
-//        childRepository.delete(child);
-//        System.out.println("=======================");
-//    }
+//        em.remove(findParent); // 부모 delete 하면 child도 delete 됨
+////        findParent.getChildList().remove(0); // child 1개 delete
+    }
+
+    @Test
+    public void 고아객체2_OneToOne() {
+        Parent parent = new Parent();
+        Child child = new Child();
+
+        // 정상 (cascade 없을때 persist 순서를 child -> parent로 하면 3번 쿼리나감 / insert child -> insert parent -> update child)
+        parent.addChild(child);
+        em.persist(parent);
+//        em.persist(child);
+
+        // cascade 없을때 에러 발생
+//        parent.addChild(child);
+//        em.persist(parent);
+
+
+        em.flush();
+        em.clear();
+
+        Parent findParent = em.find(Parent.class, parent.getId());
+        System.out.println("=======================");
+        Child child1 = findParent.getChild();
+        findParent.setChild(null);
+        em.remove(child1);
+//        em.remove(findParent.getChild());
+        System.out.println("=======================");
+//        childRepository.delete(findParent.getChild());
+//        childRepository.delete(child1);
+        System.out.println("=======================");
+    }
 }
