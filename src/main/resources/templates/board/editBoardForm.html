@@ -14,9 +14,9 @@
 </head>
 <body>
 <h1>게시글 수정</h1>
-<form action="/board" enctype="multipart/form-data" th:action th:object="${boardEditDto}" method="post">
+<form action="/board" enctype="multipart/form-data" th:action th:object="${boardDto}" method="post">
 
-    <input type="hidden" id="id" name="id" class="form-control" value="번호" th:value="*{id}" readonly>
+    <input type="hidden" id="id" name="id" class="form-control" value="번호" th:value="${boardDto.id}" readonly>
 
 <!--    <div>-->
 <!--        <label for="loginId">글쓴이(아이디)</label>-->
@@ -26,26 +26,26 @@
 
     <div>
         <label for="tile">제목</label>
-        <input type="text" id="tile" th:field="*{title}" th:errorclass="field-error">
-        <div class="field-error" th:errors="*{title}">
+        <input type="text" id="tile" th:field="${boardDto.title}" th:errorclass="field-error">
+        <div class="field-error" th:errors="${boardDto.title}">
             제목 오류
         </div>
     </div>
 
     <div>
         <label for="content">내용</label>
-        <input type="text" id="content" th:field="*{content}" th:errorclass="field-error">
-        <div class="field-error" th:errors="*{content}">
+        <input type="text" id="content" th:field="${boardDto.content}" th:errorclass="field-error">
+        <div class="field-error" th:errors="${boardDto.content}">
             내용 오류
         </div>
     </div>
 
-    <div th:if="${boardEditDto.attachFile}">
-        첨부파일: <a type="file" th:text="${boardEditDto.attachFile.getUploadFileName()}"></a>
+    <div th:if="${boardDto.attachFile}">
+        첨부파일: <a type="file" th:text="${boardDto.attachFile.getUploadFileName()}"></a>
     </div>
     <input type="file" id="attachFile" name="attachFile" class="form-control" value="첨부파일"/><br/>
 
-    <img th:each="imageFile : ${boardEditDto.imageFiles}" th:src="|/images/${imageFile.getStoreFileName()}|" width="300" height="300"/><br>
+    <img th:each="imageFile : ${boardDto.imageFiles}" th:src="|/images/${imageFile.getStoreFileName()}|" width="300" height="300"/><br>
     <input type="file" th:field="*{imageFiles}" multiple="multiple"><br/>
 
     <button type="submit">저장</button>
