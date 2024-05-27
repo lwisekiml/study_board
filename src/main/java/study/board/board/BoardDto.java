@@ -3,6 +3,7 @@ package study.board.board;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import study.board.file.UploadFile;
+import study.board.file.UploadFiles;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -25,7 +26,7 @@ public class BoardDto {
 
     // 첨부파일
     private UploadFile attachFile;
-    private List<UploadFile> imageFiles = new ArrayList<>();
+    private List<UploadFiles> imageFiles = new ArrayList<>();
 
     private String createdBy;
     private String createdDate;

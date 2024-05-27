@@ -7,7 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import study.board.file.UploadFile;
 import study.board.file.UploadFileRepository;
+import study.board.file.UploadFilesRepository;
 import study.board.util.FileStore;
 
 import java.io.IOException;
@@ -18,6 +20,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class BoardService {
     private final UploadFileRepository uploadFileRepository;
+    private final UploadFilesRepository uploadFilesRepository;
 
     private final BoardRepository boardRepository;
     private final FileStore fileStore;
@@ -30,16 +33,6 @@ public class BoardService {
     // validation 할 때 수정
     @Transactional
     public void create(BoardCreateDto boardCreateDto, Model model) throws IOException {
-
-//        boardRepository.save(
-//                Board.builder()
-//                        .title(boardCreateDto.getTitle())
-//                        .content(boardCreateDto.getContent())
-//                        .uploadFile(fileStore.storeFile(boardCreateDto.getAttachFile()))
-//                        .imageFiles(fileStore.storeFiles(boardCreateDto.getImageFiles()))
-//                        .build()
-//        );
-
         boardRepository.save(
                 new Board(
                         boardCreateDto.getTitle(),
@@ -51,7 +44,7 @@ public class BoardService {
 
     // 깔끔하게 Dto로 넘기고 싶지만 plusViews를 해야 하므로 아래와 같이 함
     @Transactional
-    public BoardDto board(Long boardId, Model model) {
+    public BoardDto board(Long boardId) {
         Board board = boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
         board.plusViews();
 
@@ -67,7 +60,16 @@ public class BoardService {
 
     @Transactional
     public BoardDto findById(Long boardId) {
-        return boardRepository.findById(boardId).map(BoardDto::toDto).orElseThrow(IllegalArgumentException::new);
+        Board board = boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
+
+        return BoardDto.builder()
+                .id(board.getId())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .views(board.getViews())
+                .attachFile(board.getAttachFile())
+                .imageFiles(board.getImageFiles())
+                .build();
     }
 
     @Transactional
@@ -78,14 +80,45 @@ public class BoardService {
         board.setTitle(boardEditDto.getTitle());
         board.setContent(boardEditDto.getContent());
 
-        if (!boardEditDto.getAttachFile().isEmpty()) {
-            board.setAttachFile(fileStore.storeFile(boardEditDto.getAttachFile()));
+        // 첨부파일
+        editAttachFile(board, boardEditDto);
+        editImageFiles(board, boardEditDto);
+
+
+//        UploadFile boardAttachFile = board.getAttachFile();
+//
+//        if (boardAttachFile != null) { // 기존 게시문에 첨부파일 있으면
+//            board.setAttachFile(null);
+//            uploadFileRepository.delete(boardAttachFile);
+//            // jpa delete 안되는 문제 참고 : https://carpet-part1.tistory.com/711
+//            uploadFileRepository.flush();
+//        }
+//
+//        board.setAttachFile(fileStore.storeFile(boardEditDto.getAttachFile()));
+//
+//        // 첨부된 이미지들
+//        uploadFilesRepository.deleteAllInBatch(board.getImageFiles()); // 기존 이미지 삭제
+//        board.setImageFiles(fileStore.storeFiles(boardEditDto.getImageFiles())); // 첨부된 이미지 저장
+    }
+
+    @Transactional
+    public void editAttachFile(Board board, BoardEditDto boardEditDto) throws IOException {
+        UploadFile boardAttachFile = board.getAttachFile();
+
+        if (boardAttachFile != null) { // 기존 게시문에 첨부파일 있으면
+            board.setAttachFile(null);
+            uploadFileRepository.delete(boardAttachFile);
+            // jpa delete 안되는 문제 참고 : https://carpet-part1.tistory.com/711
+            uploadFileRepository.flush();
         }
 
-        if (!boardEditDto.getImageFiles().isEmpty()) {
-            uploadFileRepository.deleteAllInBatch(board.getImageFiles());
-            board.setImageFiles(fileStore.storeFiles(boardEditDto.getImageFiles()));
-        }
+        board.setAttachFile(fileStore.storeFile(boardEditDto.getAttachFile()));
+    }
+
+    @Transactional
+    public void editImageFiles(Board board, BoardEditDto boardEditDto) throws IOException {
+        uploadFilesRepository.deleteAllInBatch(board.getImageFiles()); // 기존 이미지 삭제
+        board.setImageFiles(fileStore.storeFiles(boardEditDto.getImageFiles())); // 첨부된 이미지 저장
     }
 
     @Transactional

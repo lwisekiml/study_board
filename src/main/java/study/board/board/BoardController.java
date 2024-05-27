@@ -75,7 +75,7 @@ public class BoardController {
     // 글 조회
     @GetMapping("/board/{boardId}")
     public String board(@PathVariable(name = "boardId") Long boardId, Model model) {
-        model.addAttribute("boardDto", boardService.board(boardId, model));
+        model.addAttribute("boardDto", boardService.board(boardId));
         return "/board/board";
     }
 

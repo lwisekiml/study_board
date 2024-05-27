@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import study.board.base.BaseEntity;
 import study.board.file.UploadFile;
+import study.board.file.UploadFiles;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static jakarta.persistence.FetchType.LAZY;
+import java.util.Optional;
 
 @Entity
 @Getter @Setter
@@ -27,12 +27,11 @@ public class Board extends BaseEntity {
     private int views; // 조회수
 
     // 첨부파일
-    @OneToOne(fetch = LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "uploadfile_id")
+    @OneToOne(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private UploadFile attachFile;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
-    private List<UploadFile> imageFiles = new ArrayList<>();
+    private List<UploadFiles> imageFiles = new ArrayList<>();
 
     // TestDataInit
     public Board(String title, String content, int views) {
@@ -44,15 +43,22 @@ public class Board extends BaseEntity {
     // 글쓰기
     // @NoArgsConstructor와 @Builder를 같이 사용하면 오류 발생하여 생성자에 붙인다.
 //    @Builder
-    public Board(String title, String content, UploadFile uploadFile, List<UploadFile> imageFiles) {
+    public Board(String title, String content, UploadFile uploadFile, List<UploadFiles> imageFiles) {
         this.title = title;
         this.content = content;
         this.setAttachFile(uploadFile);
         this.setImageFiles(imageFiles);
     }
 
-    public void setImageFiles(List<UploadFile> imageFiles) {
-        for (UploadFile imageFile : imageFiles) {
+    public void setAttachFile(UploadFile attachFile) {
+        this.attachFile = attachFile;
+        if (attachFile != null) {
+            attachFile.setBoard(this); // board_id 생성됨
+        }
+    }
+
+    public void setImageFiles(List<UploadFiles> imageFiles) {
+        for (UploadFiles imageFile : imageFiles) {
             this.imageFiles.add(imageFile);
             imageFile.setBoard(this); // board_id 생성됨
         }
