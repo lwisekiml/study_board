@@ -81,6 +81,28 @@ public class BoardService {
         board.setContent(boardEditDto.getContent());
 
         // 첨부파일
+        editAttachFile(board, boardEditDto);
+        editImageFiles(board, boardEditDto);
+
+
+//        UploadFile boardAttachFile = board.getAttachFile();
+//
+//        if (boardAttachFile != null) { // 기존 게시문에 첨부파일 있으면
+//            board.setAttachFile(null);
+//            uploadFileRepository.delete(boardAttachFile);
+//            // jpa delete 안되는 문제 참고 : https://carpet-part1.tistory.com/711
+//            uploadFileRepository.flush();
+//        }
+//
+//        board.setAttachFile(fileStore.storeFile(boardEditDto.getAttachFile()));
+//
+//        // 첨부된 이미지들
+//        uploadFilesRepository.deleteAllInBatch(board.getImageFiles()); // 기존 이미지 삭제
+//        board.setImageFiles(fileStore.storeFiles(boardEditDto.getImageFiles())); // 첨부된 이미지 저장
+    }
+
+    @Transactional
+    public void editAttachFile(Board board, BoardEditDto boardEditDto) throws IOException {
         UploadFile boardAttachFile = board.getAttachFile();
 
         if (boardAttachFile != null) { // 기존 게시문에 첨부파일 있으면
@@ -91,8 +113,10 @@ public class BoardService {
         }
 
         board.setAttachFile(fileStore.storeFile(boardEditDto.getAttachFile()));
+    }
 
-        // 첨부된 이미지들
+    @Transactional
+    public void editImageFiles(Board board, BoardEditDto boardEditDto) throws IOException {
         uploadFilesRepository.deleteAllInBatch(board.getImageFiles()); // 기존 이미지 삭제
         board.setImageFiles(fileStore.storeFiles(boardEditDto.getImageFiles())); // 첨부된 이미지 저장
     }
