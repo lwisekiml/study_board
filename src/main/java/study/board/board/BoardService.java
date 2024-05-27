@@ -80,21 +80,21 @@ public class BoardService {
         board.setTitle(boardEditDto.getTitle());
         board.setContent(boardEditDto.getContent());
 
-        if (!boardEditDto.getAttachFile().isEmpty()) {
-            UploadFile boardAttachFile = board.getAttachFile();
-            if (boardAttachFile != null) {
-                board.setAttachFile(null);
-                uploadFileRepository.delete(boardAttachFile);
-                // jpa delete 안되는 문제 참고 : https://carpet-part1.tistory.com/711
-                uploadFileRepository.flush();
-            }
-            board.setAttachFile(fileStore.storeFile(boardEditDto.getAttachFile()));
+        // 첨부파일
+        UploadFile boardAttachFile = board.getAttachFile();
+
+        if (boardAttachFile != null) { // 기존 게시문에 첨부파일 있으면
+            board.setAttachFile(null);
+            uploadFileRepository.delete(boardAttachFile);
+            // jpa delete 안되는 문제 참고 : https://carpet-part1.tistory.com/711
+            uploadFileRepository.flush();
         }
 
-        if (!boardEditDto.getImageFiles().isEmpty()) {
-            uploadFilesRepository.deleteAllInBatch(board.getImageFiles());
-            board.setImageFiles(fileStore.storeFiles(boardEditDto.getImageFiles()));
-        }
+        board.setAttachFile(fileStore.storeFile(boardEditDto.getAttachFile()));
+
+        // 첨부된 이미지들
+        uploadFilesRepository.deleteAllInBatch(board.getImageFiles()); // 기존 이미지 삭제
+        board.setImageFiles(fileStore.storeFiles(boardEditDto.getImageFiles())); // 첨부된 이미지 저장
     }
 
     @Transactional
