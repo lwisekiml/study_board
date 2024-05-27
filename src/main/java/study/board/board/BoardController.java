@@ -15,7 +15,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
 import study.board.util.FileStore;
 import study.board.util.PaginationService;
@@ -82,7 +81,7 @@ public class BoardController {
     // 글 수정
     @GetMapping("/board/{boardId}/edit")
     public String editForm(@PathVariable(name = "boardId") Long boardId, Model model) {
-        model.addAttribute("boardEditDto", boardService.findById(boardId));
+        model.addAttribute("boardDto", boardService.toDto(boardId));
         return "board/editBoardForm";
     }
 

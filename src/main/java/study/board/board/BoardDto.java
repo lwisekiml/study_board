@@ -31,39 +31,7 @@ public class BoardDto {
     private String createdBy;
     private String createdDate;
     private String lastModifiedBy;
-    private LocalDateTime lastModifiedDate;
-
-
-//    // 본인 글 볼때 사용
-//    public BoardDto(Long id, String title, int views) {
-//        this.id = id;
-//        this.title = title;
-//        this.views = views;
-//    }
-//
-//    public BoardDto(Long id, String title, String content, int views) {
-//        this.id = id;
-//        this.title = title;
-//        this.content = content;
-//        this.views = views;
-//    }
-//
-//    public BoardDto(Long id, String title, String content, int views, String uploadFileName) {
-//        this.id = id;
-//        this.title = title;
-//        this.content = content;
-//        this.views = views;
-//        this.uploadFileName = uploadFileName;
-//    }
-//
-//    public BoardDto(Long id, String title, String content, int views, String uploadFileName, String storeFileName) {
-//        this.id = id;
-//        this.title = title;
-//        this.content = content;
-//        this.views = views;
-//        this.uploadFileName = uploadFileName;
-//        this.storeFileName = storeFileName;
-//    }
+    private String lastModifiedDate;
 
     public static BoardDto toDto(Board entity) {
         return new BoardDto(
@@ -76,7 +44,7 @@ public class BoardDto {
                 entity.getCreatedBy(),
                 entity.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                 entity.getLastModifiedBy(),
-                entity.getLastModifiedDate()
+                entity.getLastModifiedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
         );
     }
 }
