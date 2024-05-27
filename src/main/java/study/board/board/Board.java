@@ -11,6 +11,7 @@ import study.board.file.UploadFiles;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter @Setter
@@ -26,7 +27,7 @@ public class Board extends BaseEntity {
     private int views; // 조회수
 
     // 첨부파일
-    @OneToOne(mappedBy = "board", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private UploadFile attachFile;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
@@ -50,8 +51,8 @@ public class Board extends BaseEntity {
     }
 
     public void setAttachFile(UploadFile attachFile) {
+        this.attachFile = attachFile;
         if (attachFile != null) {
-            this.attachFile = attachFile;
             attachFile.setBoard(this); // board_id 생성됨
         }
     }
