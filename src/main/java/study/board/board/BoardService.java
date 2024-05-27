@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import study.board.file.UploadFile;
+import study.board.file.UploadFileRepository;
 import study.board.file.UploadFilesRepository;
 import study.board.util.FileStore;
 
@@ -17,6 +19,7 @@ import java.io.IOException;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class BoardService {
+    private final UploadFileRepository uploadFileRepository;
     private final UploadFilesRepository uploadFilesRepository;
 
     private final BoardRepository boardRepository;
@@ -78,6 +81,13 @@ public class BoardService {
         board.setContent(boardEditDto.getContent());
 
         if (!boardEditDto.getAttachFile().isEmpty()) {
+            UploadFile boardAttachFile = board.getAttachFile();
+            if (boardAttachFile != null) {
+                board.setAttachFile(null);
+                uploadFileRepository.delete(boardAttachFile);
+                // jpa delete 안되는 문제 참고 : https://carpet-part1.tistory.com/711
+                uploadFileRepository.flush();
+            }
             board.setAttachFile(fileStore.storeFile(boardEditDto.getAttachFile()));
         }
 
