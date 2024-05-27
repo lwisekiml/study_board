@@ -45,37 +45,21 @@ public class BoardService {
     // 깔끔하게 Dto로 넘기고 싶지만 plusViews를 해야 하므로 아래와 같이 함
     @Transactional
     public BoardDto board(Long boardId) {
-        Board board = boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
+        Board board = this.findById(boardId);
         board.plusViews();
-
-        return BoardDto.builder()
-                .id(board.getId())
-                .title(board.getTitle())
-                .content(board.getContent())
-                .views(board.getViews())
-                .attachFile(board.getAttachFile())
-                .imageFiles(board.getImageFiles())
-                .build();
+        return BoardDto.toDto(board);
     }
 
     @Transactional
-    public BoardDto findById(Long boardId) {
-        Board board = boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
-
-        return BoardDto.builder()
-                .id(board.getId())
-                .title(board.getTitle())
-                .content(board.getContent())
-                .views(board.getViews())
-                .attachFile(board.getAttachFile())
-                .imageFiles(board.getImageFiles())
-                .build();
+    public BoardDto toDto(Long boardId) {
+        Board board = this.findById(boardId);
+        return BoardDto.toDto(board);
     }
 
     @Transactional
     public void edit(BoardEditDto boardEditDto) throws IOException {
 
-        Board board = boardRepository.findById(boardEditDto.getId()).orElseThrow(IllegalArgumentException::new);
+        Board board = this.findById(boardEditDto.getId());
 
         board.setTitle(boardEditDto.getTitle());
         board.setContent(boardEditDto.getContent());
@@ -83,22 +67,6 @@ public class BoardService {
         // 첨부파일
         editAttachFile(board, boardEditDto);
         editImageFiles(board, boardEditDto);
-
-
-//        UploadFile boardAttachFile = board.getAttachFile();
-//
-//        if (boardAttachFile != null) { // 기존 게시문에 첨부파일 있으면
-//            board.setAttachFile(null);
-//            uploadFileRepository.delete(boardAttachFile);
-//            // jpa delete 안되는 문제 참고 : https://carpet-part1.tistory.com/711
-//            uploadFileRepository.flush();
-//        }
-//
-//        board.setAttachFile(fileStore.storeFile(boardEditDto.getAttachFile()));
-//
-//        // 첨부된 이미지들
-//        uploadFilesRepository.deleteAllInBatch(board.getImageFiles()); // 기존 이미지 삭제
-//        board.setImageFiles(fileStore.storeFiles(boardEditDto.getImageFiles())); // 첨부된 이미지 저장
     }
 
     @Transactional
@@ -126,6 +94,11 @@ public class BoardService {
         Board board = boardRepository.findById(form.getId()).orElseThrow(IllegalArgumentException::new);
         boardRepository.delete(board);
 
+    }
+
+    @Transactional
+    public Board findById(Long boardId) {
+        return boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
     }
 
 //    // 본인이 작성한 글 찾기
