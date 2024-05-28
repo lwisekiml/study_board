@@ -3,10 +3,8 @@ package study.board.comment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import study.board.board.BoardDto;
 
 @Slf4j
@@ -27,4 +25,23 @@ public class CommentController {
         commentService.deleteById(commentId);
         return String.format("redirect:/board/%s", boardDto.getId());
     }
+
+    @GetMapping("/comment/{commentId}/edit")
+    public String editForm(@PathVariable("commentId") Long commentId, Model model) {
+
+        CommentDto commentDto = commentService.findCommentToCommentDto(commentId);
+        BoardDto boardDto = commentService.findBoardDto(commentId);
+
+        model.addAttribute("boardDto", boardDto);
+        model.addAttribute("commentDto", commentDto);
+
+        return "board/editCommentForm";
+    }
+
+    @PostMapping("/comment/{commentId}/edit")
+    public String edit(@ModelAttribute("commentDto") CommentDto commentDto, @ModelAttribute("boardDto") BoardDto boardDto, Model model) {
+        commentService.edit(commentDto);
+        return String.format("redirect:/board/%s", boardDto.getId());
+    }
+
 }
