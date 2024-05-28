@@ -37,7 +37,9 @@
                 <tbody>
                 <tr th:each="board : ${pageBoardDtos}">
                     <td><a href="board/board.html" th:href="@{/board/{boardId}(boardId=${board.id})}" th:text="${board.id}">번호</a></td>
-                    <td><a href="board/board.html" th:href="@{|/board/${board.id}|}" th:text="${board.title}">제목</a></td>
+                    <td><a href="board/board.html" th:href="@{|/board/${board.id}|}" th:text="${board.title}">제목</a>
+                        <span th:if="${#lists.size(board.comments) > 0}" th:text="|(${#lists.size(board.comments)})|"></span>
+                    </td>
                     <td><p th:text="${board.views}">조회수</p></td>
                     <td><p th:text="${board.getCreatedDate()}">등록일</p></td>
                 </tr>
