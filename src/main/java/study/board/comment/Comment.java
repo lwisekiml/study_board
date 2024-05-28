@@ -15,7 +15,7 @@ public class Comment extends BaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "comment_id")
-    private Long id;
+    private Long commentId;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "board_id")
