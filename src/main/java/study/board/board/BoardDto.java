@@ -4,7 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import study.board.comment.CommentDto;
 import study.board.file.UploadFile;
+import study.board.file.UploadFileDto;
 import study.board.file.UploadFiles;
+import study.board.file.UploadFilesDto;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -28,8 +30,8 @@ public class BoardDto {
     private List<CommentDto> comments = new ArrayList<>();
 
     // 첨부파일
-    private UploadFile attachFile;
-    private List<UploadFiles> imageFiles = new ArrayList<>();
+    private UploadFileDto attachFile;
+    private List<UploadFilesDto> imageFiles = new ArrayList<>();
 
     private String createdBy;
     private String createdDate;
@@ -43,8 +45,8 @@ public class BoardDto {
                 entity.getContent(),
                 entity.getViews(),
                 entity.getComments().stream().map(CommentDto::toCommentDto).collect(Collectors.toList()),
-                entity.getAttachFile(),
-                entity.getImageFiles(),
+                UploadFileDto.toUploadFileDto(entity.getAttachFile()),
+                entity.getImageFiles().stream().map(UploadFilesDto::toUploadFilesDto).collect(Collectors.toList()),
                 entity.getCreatedBy(),
                 entity.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                 entity.getLastModifiedBy(),
