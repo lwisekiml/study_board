@@ -2,10 +2,10 @@ package study.board.board;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import study.board.comment.Comment;
 import study.board.file.UploadFile;
 import study.board.file.UploadFiles;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,8 @@ public class BoardDto {
     private String content;
     private int views; // 조회수
 
+    private List<Comment> comments = new ArrayList<>();
+
     // 첨부파일
     private UploadFile attachFile;
     private List<UploadFiles> imageFiles = new ArrayList<>();
@@ -39,6 +41,7 @@ public class BoardDto {
                 entity.getTitle(),
                 entity.getContent(),
                 entity.getViews(),
+                entity.getComments(),
                 entity.getAttachFile(),
                 entity.getImageFiles(),
                 entity.getCreatedBy(),

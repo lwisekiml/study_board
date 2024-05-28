@@ -50,6 +50,26 @@
             type="button">취소
     </button>
 
+    <br><br>
 </form>
+
+<!--    댓글-->
+<h5 th:text="|${#lists.size(boardDto.comments)}개의 댓글이 있습니다.|"></h5>
+
+<form th:each="comment : ${boardDto.comments}" th:action="@{/comment/{commentId}/delete(commentId=${comment.id})}" th:object="${boardDto}" method="post">
+    <!-- name값이 controller에 전달 될때 key값이 된다. 즉, id 멤버변수를 가지고 있는 boardDto의 id 값이 세팅된다. -->
+    <input type="hidden" id="boardId" name="id" th:value="${boardDto.id}"/>
+
+    <ul>
+        <li th:text="${comment.commentContent}"></li>
+        <input type="submit" value="삭제"/>
+    </ul>
+</form>
+
+<form th:action="@{|/comment/${boardDto.id}/create|}" method="post">
+    <textarea name="commentContent" id="commentContent" rows="15"></textarea>
+    <input type="submit" value="댓글등록">
+</form>
+
 </body>
 </html>

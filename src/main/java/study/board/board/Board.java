@@ -6,12 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import study.board.base.BaseEntity;
+import study.board.comment.Comment;
 import study.board.file.UploadFile;
 import study.board.file.UploadFiles;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 @Getter @Setter
@@ -25,6 +25,9 @@ public class Board extends BaseEntity {
     private String title;
     private String content;
     private int views; // 조회수
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+    private List<Comment> comments = new ArrayList<>();
 
     // 첨부파일
     @OneToOne(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
