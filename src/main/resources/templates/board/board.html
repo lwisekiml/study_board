@@ -62,6 +62,7 @@
 
     <ul>
         <li th:text="${comment.commentContent}"></li>
+        <span th:text="${comment.getLastModifiedDate()}"></span>
         <button onclick="location.href='board.html'"
                 th:onclick="|location.href='@{/comment/{commentId}/edit(commentId=${comment.commentId})}'|"
                 type="button">수정
