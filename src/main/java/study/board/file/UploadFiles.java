@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import study.board.base.BaseEntity;
 import study.board.board.Board;
 
 import static jakarta.persistence.FetchType.*;
@@ -11,7 +12,7 @@ import static jakarta.persistence.FetchType.*;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
-public class UploadFiles {
+public class UploadFiles extends BaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "uploadfile_id")
