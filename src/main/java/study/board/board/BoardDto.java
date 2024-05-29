@@ -3,9 +3,7 @@ package study.board.board;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import study.board.comment.CommentDto;
-import study.board.file.UploadFile;
 import study.board.file.UploadFileDto;
-import study.board.file.UploadFiles;
 import study.board.file.UploadFilesDto;
 
 import java.time.format.DateTimeFormatter;
@@ -38,7 +36,7 @@ public class BoardDto {
     private String lastModifiedBy;
     private String lastModifiedDate;
 
-    public static BoardDto toDto(Board entity) {
+    public static BoardDto toBoardDto(Board entity) {
         return new BoardDto(
                 entity.getId(),
                 entity.getTitle(),
