@@ -35,8 +35,10 @@ public class BoardController {
     private final FileStore fileStore;
 
     @GetMapping("/")
-    public String list(Model model, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-
+    public String list(
+            Model model,
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
         Page<BoardDto> pageBoardDtos = boardService.findAll(pageable);
 
         if (pageBoardDtos.isEmpty()) {
@@ -54,12 +56,17 @@ public class BoardController {
 
     // 글쓰기
     @GetMapping("/board/new")
-    public String createForm(@ModelAttribute("boardCreateDto") BoardCreateDto boardCreateDto) {
+    public String createForm(
+            @ModelAttribute("boardCreateDto") BoardCreateDto boardCreateDto
+    ) {
         return "board/createBoardForm";
     }
 
     @PostMapping("/board/new")
-    public String create(@Validated @ModelAttribute("boardCreateDto") BoardCreateDto boardCreateDto, BindingResult bindingResult, Model model) throws IOException {
+    public String create(
+            @Validated @ModelAttribute("boardCreateDto") BoardCreateDto boardCreateDto,
+            BindingResult bindingResult, Model model
+    ) throws IOException {
 
         if (bindingResult.hasErrors()) {
             log.info("errors = {}", bindingResult);
@@ -73,15 +80,21 @@ public class BoardController {
 
     // 글 조회
     @GetMapping("/board/{boardId}")
-    public String board(@PathVariable(name = "boardId") Long boardId, Model model) {
-        model.addAttribute("boardDto", boardService.board(boardId));
+    public String board(
+            @PathVariable(name = "boardId") Long boardId,
+            Model model
+    ) {
+        model.addAttribute("boardDto", boardService.findBoardPlusViewToBoardDto(boardId));
         return "/board/board";
     }
 
     // 글 수정
     @GetMapping("/board/{boardId}/edit")
-    public String editForm(@PathVariable(name = "boardId") Long boardId, Model model) {
-        model.addAttribute("boardDto", boardService.toDto(boardId));
+    public String editForm(
+            @PathVariable(name = "boardId") Long boardId,
+            Model model
+    ) {
+        model.addAttribute("boardDto", boardService.findBoardToBoardDto(boardId));
         return "board/editBoardForm";
     }
 
@@ -102,14 +115,18 @@ public class BoardController {
 
     // 글 삭제
     @PostMapping("/board/delete")
-    public String delete(@ModelAttribute("boardDto") BoardDto form) {
-        boardService.delete(form);
+    public String delete(
+            @ModelAttribute("boardDto") BoardDto boardDto
+    ) {
+        boardService.delete(boardDto);
         return "redirect:/";
     }
     
     // board에 관련되어 있지만 /board로 시작하는 것이 아니라 다른 곳을 옮기는게 좋을거 같은데
     @GetMapping("/attach/{boardId}")
-    public ResponseEntity<Resource> downloadAttach(@PathVariable("boardId") Long boardId) throws MalformedURLException {
+    public ResponseEntity<Resource> downloadAttach(
+            @PathVariable("boardId") Long boardId
+    ) throws MalformedURLException {
 
         Board board = boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
         String storeFileName = board.getAttachFile().getStoreFileName();
@@ -128,7 +145,10 @@ public class BoardController {
 
     @ResponseBody
     @GetMapping("/images/{filename}")
-    public Resource downloadImage(@PathVariable("filename") String filename) throws MalformedURLException {
+    public Resource downloadImage(
+            @PathVariable("filename") String filename
+    ) throws MalformedURLException {
+
         String s = "file:" + fileStore.getFullPath(filename);
         return new UrlResource(s);
     }
