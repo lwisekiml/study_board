@@ -19,7 +19,7 @@ public class CommentService {
 
     @Transactional
     public void create(Long boardId, String commentContent) {
-        Board board = boardService.findById(boardId);
+        Board board = boardService.findBoard(boardId);
         Comment comment = new Comment(board, commentContent);
         commentRepository.save(comment);
     }
@@ -48,6 +48,6 @@ public class CommentService {
     @Transactional
     public BoardDto findBoardDto(Long commentId) {
         Long boardId = this.findComment(commentId).getBoard().getId();
-        return boardService.toDto(boardId);
+        return boardService.findBoardToBoardDto(boardId);
     }
 }

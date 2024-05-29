@@ -27,7 +27,7 @@ public class BoardService {
 
     @Transactional
     public Page<BoardDto> findAll(Pageable pageable) {
-        return boardRepository.findAll(pageable).map(BoardDto::toDto);
+        return boardRepository.findAll(pageable).map(BoardDto::toBoardDto);
     }
 
     // validation 할 때 수정
@@ -44,22 +44,22 @@ public class BoardService {
 
     // 깔끔하게 Dto로 넘기고 싶지만 plusViews를 해야 하므로 아래와 같이 함
     @Transactional
-    public BoardDto board(Long boardId) {
-        Board board = this.findById(boardId);
+    public BoardDto findBoardPlusViewToBoardDto(Long boardId) {
+        Board board = this.findBoard(boardId);
         board.plusViews();
-        return BoardDto.toDto(board);
+        return BoardDto.toBoardDto(board);
     }
 
     @Transactional
-    public BoardDto toDto(Long boardId) {
-        Board board = this.findById(boardId);
-        return BoardDto.toDto(board);
+    public BoardDto findBoardToBoardDto(Long boardId) {
+        Board board = this.findBoard(boardId);
+        return BoardDto.toBoardDto(board);
     }
 
     @Transactional
     public void edit(BoardEditDto boardEditDto) throws IOException {
 
-        Board board = this.findById(boardEditDto.getId());
+        Board board = this.findBoard(boardEditDto.getId());
 
         board.setTitle(boardEditDto.getTitle());
         board.setContent(boardEditDto.getContent());
@@ -90,14 +90,13 @@ public class BoardService {
     }
 
     @Transactional
-    public void delete(BoardDto form) {
-        Board board = boardRepository.findById(form.getId()).orElseThrow(IllegalArgumentException::new);
-        boardRepository.delete(board);
+    public void delete(BoardDto boardDto) {
+        boardRepository.delete(this.findBoard(boardDto.getId()));
 
     }
 
     @Transactional
-    public Board findById(Long boardId) {
+    public Board findBoard(Long boardId) {
         return boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
     }
 
