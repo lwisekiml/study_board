@@ -41,6 +41,13 @@ dependencies {
 
 	// 뷰 템플릿 변경사항을 서버 재시작 없이 즉시 반영하기 (Build -> Rebuild / ctrl+shift+F9 )
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	// security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	testImplementation 'org.springframework.security:spring-security-test'
+
+	// Thymeleaf에서 SpringSecurity를 Integration
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 }
 
 tasks.named('test') {
