@@ -23,11 +23,18 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // 인증되지 않은 모든 페이지의 요청을 허락한다는 의미(로그인을 하지 않더라도 모든 페이지 접근 가능)
         http
-                .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-                        .requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
+//                .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
+//                        .requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
+
+                .csrf(AbstractHttpConfigurer::disable) // csrf 비활성화
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+
+//                .sessionManagement((session) ->
+//                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
         ;
 
+//        http.csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
 
