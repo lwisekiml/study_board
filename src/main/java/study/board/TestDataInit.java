@@ -5,12 +5,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import study.board.board.Board;
 import study.board.board.BoardRepository;
+import study.board.member.Member;
+import study.board.member.MemberRepository;
 
 @Component
 @RequiredArgsConstructor
 public class TestDataInit {
 
-    //    private final MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
 
     /*
@@ -24,6 +26,8 @@ public class TestDataInit {
 //        boardRepository.save(new Board("test", "제목1", "내용1"));
 //        boardRepository.save(new Board("test", "제목3", "내용3"));
 //        boardRepository.save(new Board("qwer", "제목2", "내용2"));
+
+        memberRepository.save(new Member("qwer", "qwer", "test@email.com", "1234"));
 
         for (int i = 0; i < 10; i++) {
             boardRepository.save(new Board("test", "test제목"+i, 1));
