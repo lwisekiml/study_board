@@ -9,6 +9,7 @@ import study.board.base.BaseEntity;
 import study.board.comment.Comment;
 import study.board.file.UploadFile;
 import study.board.file.UploadFiles;
+import study.board.member.Member;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,10 @@ public class Board extends BaseEntity {
     private String title;
     private String content;
     private int views; // 조회수
+
+//    @ManyToOne
+//    @JoinColumn(name = "member_id")
+//    private Member member;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
