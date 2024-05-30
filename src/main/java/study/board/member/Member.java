@@ -16,8 +16,11 @@ public class Member {
     @Column(name = "member_id")
     private Long memberId;
 
+    @Column(unique = true)
     private String loginId;
     private String memberName;
+
+    @Column(unique = true)
     private String email;
     private String password;
 
