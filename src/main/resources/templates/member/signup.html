@@ -16,6 +16,11 @@
 <h1>회원 정보 입력</h1>
 <form action="/member/signup" th:object="${memberDto}" method="post">
 
+    <div th:if="${#fields.hasGlobalErrors()}">
+        <p class="field-error" th:each="err : ${#fields.globalErrors()}"
+           th:text="${err}">글로벌 오류 메시지</p>
+    </div>
+
     <div>
         <label for="loginId">ID</label>
         <input type="text" id="loginId" th:field="*{loginId}" th:errorclass="field-error" placeholder="아이디를 입력하세요"/><br/>

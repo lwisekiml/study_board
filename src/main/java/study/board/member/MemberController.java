@@ -1,8 +1,8 @@
 package study.board.member;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -10,8 +10,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import study.board.board.BoardService;
 
 @Slf4j
 @Controller
@@ -46,8 +44,20 @@ public class MemberController {
             return "/member/signup";
         }
 
-        memberService.create(memberDto);
-        return "redirect:/member/welcome";
+        try {
+            memberService.create(memberDto);
+        } catch (DataIntegrityViolationException e) {
+            e.printStackTrace();
+            // 아이디 중복인지 이메일 중복인지 분리하려 했으나 방법을 못찾았다.
+            bindingResult.reject("signupFailed", "이미 등록된 사용자입니다."); // 글로벌 오류
+            return "/member/signup";
+        } catch (Exception e) {
+            e.printStackTrace();
+            bindingResult.reject("signupFailed", e.getMessage());
+            return "/member/signup";
+        }
+
+        return "redirect:/";
     }
 
 
