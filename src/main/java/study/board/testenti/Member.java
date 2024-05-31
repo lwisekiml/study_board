@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Entity
+@Entity(name = "JPAMEMBER")
 @Getter @Setter
 public class Member extends BaseEntity {
 
