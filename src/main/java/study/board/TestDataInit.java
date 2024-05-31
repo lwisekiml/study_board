@@ -2,16 +2,20 @@ package study.board;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import study.board.board.Board;
 import study.board.board.BoardRepository;
+import study.board.member.Member;
+import study.board.member.MemberRepository;
 
 @Component
 @RequiredArgsConstructor
 public class TestDataInit {
 
-    //    private final MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /*
      * 테스트용 데이터 추가
@@ -24,6 +28,8 @@ public class TestDataInit {
 //        boardRepository.save(new Board("test", "제목1", "내용1"));
 //        boardRepository.save(new Board("test", "제목3", "내용3"));
 //        boardRepository.save(new Board("qwer", "제목2", "내용2"));
+
+        memberRepository.save(new Member("loginId", "membername", "member@email.com", passwordEncoder.encode("password")));
 
         for (int i = 0; i < 10; i++) {
             boardRepository.save(new Board("test", "test제목"+i, 1));
