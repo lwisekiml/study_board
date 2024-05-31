@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인</title>
+    <style>
+        .field-error {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+<h1>로그인</h1>
+<form action="/login" th:action="@{/member/login}" method="post">
+    <!--
+        스프링 시큐리티는 로그인 실패 시 http://localhost:8080/user/login?error와 같이 error 매개변수를 전달한다.
+        이때 템플릿에서 ${param.error}로 error 매개변수가 전달되었는지 확인할 수 있다.
+    -->
+    <div th:if="${param.error}">
+        <div class="field-error">
+            사용자ID 또는 비밀번호를 확인해 주세요.
+        </div>
+    </div>
+
+    <div>
+        <!--
+            loadUserByUsername(String username) 에서 파라미터 이름을 맞추어야 해서 username으로 함
+            스프링 시큐리티에서 username 으로 정해놓은 것 같다.
+        -->
+        <label for="username">로그인 ID</label>
+        <input type="text" id="username" name="username"/><br/>
+
+        <label for="password">비밀번호</label>
+        <input type="password" id="password" name="password"/><br/>
+
+        <input type="submit" value="로그인"/>
+<!--        <button onclick="location.href='../list.html'"-->
+<!--                th:onclick="|location.href='@{/}'|"-->
+<!--                type="button">HOME</button>-->
+    </div>
+
+</form>
+</body>
+</html>
