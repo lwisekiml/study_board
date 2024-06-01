@@ -18,11 +18,11 @@
 <!-- th:object를 사용하려면 controller에서 빈 껍데기를 넘겨주어야 한다. -->
 <form action="/board/new" enctype="multipart/form-data" th:object="${boardCreateDto}" method="post">
 
-    <!--  <div>-->
-    <!--    <label for="loginId">글쓴이(아이디)</label>-->
-    <!--    <input type="text" id="loginId" name="loginId" class="form-control" value="글쓴이(아이디)"-->
-    <!--           th:value="${loginFormDto.loginId}" readonly>-->
-    <!--  </div>-->
+      <div>
+        <label for="loginId">글쓴이(아이디)</label>
+        <input type="text" id="loginId" name="loginId" class="form-control" value="글쓴이(아이디)"
+               th:value="*{loginId}" readonly>
+      </div>
 
     <!-- th:field가 id, name, value 속성을 자동으로 처리 -->
     <!-- th:errorclass는 th:field에서 지정한 필드에 오류가 있으면 class 정보를 추가 -->

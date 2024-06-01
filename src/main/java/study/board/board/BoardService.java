@@ -6,10 +6,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 import study.board.file.UploadFile;
 import study.board.file.UploadFileRepository;
 import study.board.file.UploadFilesRepository;
+import study.board.member.Member;
+import study.board.member.MemberRepository;
 import study.board.util.FileStore;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final FileStore fileStore;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public Page<BoardDto> findAll(Pageable pageable) {
@@ -32,9 +34,10 @@ public class BoardService {
 
     // validation 할 때 수정
     @Transactional
-    public void create(BoardCreateDto boardCreateDto, Model model) throws IOException {
+    public void create(BoardCreateDto boardCreateDto, Member member) throws IOException {
         boardRepository.save(
                 new Board(
+                        member,
                         boardCreateDto.getTitle(),
                         boardCreateDto.getContent(),
                         fileStore.storeFile(boardCreateDto.getAttachFile()),
@@ -98,6 +101,11 @@ public class BoardService {
     @Transactional
     public Board findBoard(Long boardId) {
         return boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
+    }
+
+    @Transactional
+    public Member findMember(String loginId) {
+        return memberRepository.findByLoginId(loginId).orElseThrow(IllegalArgumentException::new);
     }
 
 //    // 본인이 작성한 글 찾기
