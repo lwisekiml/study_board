@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,6 +18,10 @@
     <div class="login-info">
         <div class="container">
             <a href="/board/new" style="float: left">글쓰기</a>
+            <!-- https://dev-gorany.tistory.com/139 -->
+            <span sec:authorize="isAuthenticated()">
+                <span sec:authentication="name"></span>
+            </span>
             <span>
                 <a sec:authorize="isAnonymous()" th:href="@{/member/login}">로그인</a>
                 <a sec:authorize="isAuthenticated()" th:href="@{/member/logout}">로그아웃</a>
