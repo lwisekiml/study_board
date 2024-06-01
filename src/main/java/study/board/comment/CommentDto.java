@@ -2,6 +2,7 @@ package study.board.comment;
 
 import lombok.*;
 import study.board.board.Board;
+import study.board.member.Member;
 
 import java.time.format.DateTimeFormatter;
 
@@ -13,6 +14,7 @@ public class CommentDto {
 
     private Long commentId;
     private Board board;
+    private Member member;
     private String commentContent;
 
     private String createdBy;
@@ -24,6 +26,7 @@ public class CommentDto {
         return new CommentDto(
                 entity.getCommentId(),
                 entity.getBoard(),
+                entity.getMember(),
                 entity.getCommentContent(),
                 entity.getCreatedBy(),
                 entity.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
