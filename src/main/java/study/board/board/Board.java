@@ -42,7 +42,8 @@ public class Board extends BaseEntity {
     private List<UploadFiles> imageFiles = new ArrayList<>();
 
     // TestDataInit
-    public Board(String title, String content, int views) {
+    public Board(Member member, String title, String content, int views) {
+        this.member = member;
         this.title = title;
         this.content = content;
         this.views = views;
