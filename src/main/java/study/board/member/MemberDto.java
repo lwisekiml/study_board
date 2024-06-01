@@ -15,10 +15,11 @@ public class MemberDto {
     @NotBlank(message = "아이디는 필수 입니다.")
     private String loginId;
 
+//    @Pattern(regexp = "^[A-Za-z가-힣]+$", message = "사용자 이름은 한글 또는 알파벳만 입력해주세요.")
     @NotBlank(message = "이름은 필수 입니다.")
     private String memberName;
 
-    @NotBlank
+    @NotBlank(message = "이메일은 필수 입니다.")
     @Email(message = "이메일 형식이 아닙니다.")
     private String email;
 
