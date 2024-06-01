@@ -41,7 +41,7 @@ public class BoardDto { // 게시물 리스트, 글 수정 때 사용
     public static BoardDto toBoardDto(Board entity) {
         return new BoardDto(
                 entity.getId(),
-                entity.getMember() != null ? entity.getMember().getLoginId() : null, // 테스트 데이터로 인해 entity.getMember()가 없을 수 있어서 이렇게 함
+                entity.getMember().getLoginId(),
                 entity.getTitle(),
                 entity.getContent(),
                 entity.getViews(),
