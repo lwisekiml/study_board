@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import study.board.board.Board;
 import study.board.board.BoardDto;
 import study.board.board.BoardService;
+import study.board.member.Member;
+import study.board.member.MemberRepository;
 
 @Slf4j
 @Service
@@ -16,11 +18,13 @@ public class CommentService {
 
     private final BoardService boardService;
     private final CommentRepository commentRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
-    public void create(Long boardId, String commentContent) {
+    public void create(Long boardId, String loginId, String commentContent) {
         Board board = boardService.findBoard(boardId);
-        Comment comment = new Comment(board, commentContent);
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(IllegalArgumentException::new);
+        Comment comment = new Comment(board, member, commentContent);
         commentRepository.save(comment);
     }
 
