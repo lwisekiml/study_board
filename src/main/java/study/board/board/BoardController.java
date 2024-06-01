@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,6 +23,7 @@ import study.board.util.PaginationService;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
+import java.security.Principal;
 import java.util.List;
 
 @Slf4j
@@ -55,17 +57,24 @@ public class BoardController {
     }
 
     // 글쓰기
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/board/new")
     public String createForm(
             @ModelAttribute("boardCreateDto") BoardCreateDto boardCreateDto
+            ,Principal principal
+            ,Model model
     ) {
+        boardCreateDto.setLoginId(principal.getName());
+        model.addAttribute("boardCreateDto", boardCreateDto);
         return "board/createBoardForm";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/board/new")
     public String create(
-            @Validated @ModelAttribute("boardCreateDto") BoardCreateDto boardCreateDto,
-            BindingResult bindingResult, Model model
+            @Validated @ModelAttribute("boardCreateDto") BoardCreateDto boardCreateDto
+            , BindingResult bindingResult
+            , Principal principal
     ) throws IOException {
 
         if (bindingResult.hasErrors()) {
@@ -73,8 +82,7 @@ public class BoardController {
             return "/board/createBoardForm";
         }
 
-        boardService.create(boardCreateDto, model);
-
+        boardService.create(boardCreateDto, boardService.findMember(principal.getName()));
         return "redirect:/";
     }
 

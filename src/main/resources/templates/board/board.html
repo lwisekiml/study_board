@@ -12,10 +12,12 @@
 
     <input type="hidden" id="id" name="id" value="번호" th:value="${boardDto.id}"/>
 
-<!--    <div>-->
-<!--        <label for="loginId">글쓴이(아이디)</label>-->
-<!--        <input type="text" id="loginId" name="loginId" value="상품A" th:value="${boardDto.loginId}" readonly>-->
-<!--    </div>-->
+    <!-- 테스트 데이터로 loginId가 없는 게시글이 있어 if문으로 함. 나중에 수정 필요 -->
+    <div th:if="${boardDto.loginId}">
+        <label for="loginId">글쓴이(아이디)</label>
+        <input type="text" id="loginId" name="loginId" class="form-control" value="글쓴이(아이디)"
+               th:value="*{boardDto.loginId}" readonly>
+    </div>
 
     <div>
         <label for="tile">제목</label>

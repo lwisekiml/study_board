@@ -27,9 +27,9 @@ public class Board extends BaseEntity {
     private String content;
     private int views; // 조회수
 
-//    @ManyToOne
-//    @JoinColumn(name = "member_id")
-//    private Member member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
@@ -51,7 +51,8 @@ public class Board extends BaseEntity {
     // 글쓰기
     // @NoArgsConstructor와 @Builder를 같이 사용하면 오류 발생하여 생성자에 붙인다.
 //    @Builder
-    public Board(String title, String content, UploadFile uploadFile, List<UploadFiles> imageFiles) {
+    public Board(Member member, String title, String content, UploadFile uploadFile, List<UploadFiles> imageFiles) {
+        this.member = member;
         this.title = title;
         this.content = content;
         this.setAttachFile(uploadFile);

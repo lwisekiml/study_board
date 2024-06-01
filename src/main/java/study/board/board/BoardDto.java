@@ -15,9 +15,11 @@ import java.util.stream.Collectors;
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BoardDto {
+public class BoardDto { // 게시물 리스트, 글 수정 때 사용
 
     private Long id;
+    // Member에는 다른 정보들이 있어 로그인 아디디만 따로 뽑아서 넣음
+    private String loginId;
 
     @NotBlank(message = "제목은 필수 입니다.")
     private String title;
@@ -39,6 +41,7 @@ public class BoardDto {
     public static BoardDto toBoardDto(Board entity) {
         return new BoardDto(
                 entity.getId(),
+                entity.getMember() != null ? entity.getMember().getLoginId() : null, // 테스트 데이터로 인해 entity.getMember()가 없을 수 있어서 이렇게 함
                 entity.getTitle(),
                 entity.getContent(),
                 entity.getViews(),
