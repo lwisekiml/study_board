@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,6 +18,10 @@
     <div class="login-info">
         <div class="container">
             <a href="/board/new" style="float: left">글쓰기</a>
+            <!-- https://dev-gorany.tistory.com/139 -->
+            <span sec:authorize="isAuthenticated()">
+                <span sec:authentication="name"></span>
+            </span>
             <span>
                 <a sec:authorize="isAnonymous()" th:href="@{/member/login}">로그인</a>
                 <a sec:authorize="isAuthenticated()" th:href="@{/member/logout}">로그아웃</a>
@@ -36,6 +41,7 @@
                 <tr>
                     <th scope="col" class="th-num">번호</th>
                     <th scope="col" class="th-title">제목</th>
+                    <th scope="col" class="th-writer">작성자</th>
                     <th scope="col" class="th-viewcnt">조회수</th>
                     <th scope="col" class="th-date">등록일</th>
                 </tr>
@@ -47,6 +53,7 @@
                     <td><a href="board/board.html" th:href="@{|/board/${board.id}|}" th:text="${board.title}">제목</a>
                         <span th:if="${#lists.size(board.comments) > 0}" th:text="|(${#lists.size(board.comments)})|"></span>
                     </td>
+                    <td><p th:text="${board.loginId}">작성자</p></td>
                     <td><p th:text="${board.views}">조회수</p></td>
                     <td><p th:text="${board.getCreatedDate()}">등록일</p></td>
                 </tr>

@@ -7,6 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import study.board.board.BoardDto;
 
+import java.security.Principal;
+
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -16,10 +18,11 @@ public class CommentController {
 
     @PostMapping("/comment/{boardId}/create")
     public String create(
-            @PathVariable("boardId") Long boardId,
-            @RequestParam(value = "commentContent") String commentContent
+            @PathVariable("boardId") Long boardId
+            , @RequestParam(value = "commentContent") String commentContent
+            , Principal principal
     ) {
-        commentService.create(boardId, commentContent);
+        commentService.create(boardId, principal.getName(), commentContent);
         return String.format("redirect:/board/%s", boardId);
     }
 

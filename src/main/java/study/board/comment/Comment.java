@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import study.board.base.BaseEntity;
 import study.board.board.Board;
+import study.board.member.Member;
 
 import static jakarta.persistence.FetchType.LAZY;
 
@@ -21,10 +22,15 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "board_id")
     private Board board;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     private String commentContent;
 
-    public Comment(Board board, String commentContent) {
+    public Comment(Board board, Member member, String commentContent) {
         this.board = board;
+        this.member = member;
         this.commentContent = commentContent;
     }
 }

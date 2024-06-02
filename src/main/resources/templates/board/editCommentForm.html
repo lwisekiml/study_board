@@ -60,6 +60,7 @@
     <input type="hidden" id="boardId" name="id" th:value="${boardDto.id}"/>
 
     <ul th:each="comment : ${boardDto.comments}">
+        <!-- 수정 누른 댓글 -->
         <div th:if="${commentDto.commentId} == ${comment.commentId}">
             <input name="commentContent" th:placeholder="${comment.commentContent}" />
             <button type="submit">저장</button>
@@ -68,6 +69,7 @@
                     type="button">취소
             </button>
         </div>
+        <!-- 나머지 댓글 -->
         <li th:unless="${commentDto.commentId} == ${comment.commentId}" th:text="${comment.commentContent}"></li>
     </ul>
 </form>
