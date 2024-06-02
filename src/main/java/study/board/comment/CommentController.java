@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import study.board.board.BoardDto;
+import study.board.board.dto.BoardDto;
 
 import java.security.Principal;
 

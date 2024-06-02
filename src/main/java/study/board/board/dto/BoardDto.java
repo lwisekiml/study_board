@@ -1,7 +1,8 @@
-package study.board.board;
+package study.board.board.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import study.board.board.Board;
 import study.board.comment.CommentDto;
 import study.board.file.UploadFileDto;
 import study.board.file.UploadFilesDto;

@@ -17,6 +17,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
+import study.board.board.dto.BoardCreateDto;
+import study.board.board.dto.BoardDto;
+import study.board.board.dto.BoardEditDto;
 import study.board.util.FileStore;
 import study.board.util.PaginationService;
 

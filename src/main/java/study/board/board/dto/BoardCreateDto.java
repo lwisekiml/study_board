@@ -1,4 +1,4 @@
-package study.board.board;
+package study.board.board.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -12,9 +12,9 @@ import java.util.List;
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BoardEditDto {
+public class BoardCreateDto { // 글 쓰기 때 사용
 
-    Long id;
+    private String loginId; // GetMapping 때 세팅됨
 
     @NotBlank(message = "제목은 필수 입니다.")
     private String title;
@@ -22,6 +22,6 @@ public class BoardEditDto {
     private String content;
 
     // 첨부파일
-    private MultipartFile attachFile; // Board에 없다.
+    private MultipartFile attachFile;
     private List<MultipartFile> imageFiles;
 }

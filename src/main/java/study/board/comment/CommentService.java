@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.board.board.Board;
-import study.board.board.BoardDto;
+import study.board.board.dto.BoardDto;
 import study.board.board.BoardService;
 import study.board.member.Member;
 import study.board.member.MemberRepository;
