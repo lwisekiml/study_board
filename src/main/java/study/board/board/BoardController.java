@@ -18,7 +18,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
 import study.board.board.dto.BoardCreateDto;
-import study.board.board.dto.BoardDto;
 import study.board.board.dto.BoardEditDto;
 import study.board.board.dto.ListBoardDto;
 import study.board.util.FileStore;
@@ -126,11 +125,11 @@ public class BoardController {
     }
 
     // 글 삭제
-    @PostMapping("/board/delete")
+    @PostMapping("/board/delete/{boardId}")
     public String delete(
-            @ModelAttribute("boardDto") BoardDto boardDto
+            @PathVariable(name = "boardId") Long boardId
     ) {
-        boardService.delete(boardDto);
+        boardService.delete(boardId);
         return "redirect:/";
     }
     

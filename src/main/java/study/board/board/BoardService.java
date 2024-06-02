@@ -97,9 +97,8 @@ public class BoardService {
     }
 
     @Transactional
-    public void delete(BoardDto boardDto) {
-        boardRepository.delete(this.findBoard(boardDto.getId()));
-
+    public void delete(Long boardId) {
+        boardRepository.delete(this.findBoard(boardId));
     }
 
     @Transactional
