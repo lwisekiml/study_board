@@ -36,7 +36,6 @@ public class BoardService {
         return boardRepository.findAll(pageable).map(ListBoardDto::toListBoardDto);
     }
 
-    // validation 할 때 수정
     @Transactional
     public void create(BoardCreateDto boardCreateDto, Member member) throws IOException {
         boardRepository.save(
