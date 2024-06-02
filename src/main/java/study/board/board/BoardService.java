@@ -49,6 +49,7 @@ public class BoardService {
     }
 
     // 깔끔하게 Dto로 넘기고 싶지만 plusViews를 해야 하므로 아래와 같이 함
+    // 글 조회
     @Transactional
     public BoardDto findBoardPlusViewToBoardDto(Long boardId) {
         Board board = this.findBoard(boardId);
