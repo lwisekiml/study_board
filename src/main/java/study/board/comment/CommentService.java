@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import study.board.board.Board;
 import study.board.board.dto.BoardDto;
 import study.board.board.BoardService;
+import study.board.comment.dto.CommentPostEditDto;
 import study.board.member.Member;
 import study.board.member.MemberRepository;
 
@@ -34,14 +35,9 @@ public class CommentService {
     }
 
     @Transactional
-    public void edit(CommentDto commentDto) {
-        Comment comment = this.findComment(commentDto.getCommentId());
-        comment.setCommentContent(commentDto.getCommentContent());
-    }
-
-    @Transactional
-    public CommentDto findCommentToCommentDto(Long commentId) {
-        return CommentDto.toCommentDto(this.findComment(commentId));
+    public void edit(CommentPostEditDto commentPostEditDto) {
+        Comment comment = this.findComment(commentPostEditDto.getCommentId());
+        comment.setCommentContent(commentPostEditDto.getCommentContent());
     }
 
     @Transactional
@@ -49,9 +45,9 @@ public class CommentService {
         return commentRepository.findById(commentId).orElseThrow(IllegalArgumentException::new);
     }
 
-//    @Transactional
-//    public BoardDto findBoardDto(Long commentId) {
-//        Long boardId = this.findComment(commentId).getBoard().getId();
-//        return boardService.findBoardToBoardDto(boardId);
-//    }
+    @Transactional
+    public BoardDto findBoardDto(Long commentId) {
+        Long boardId = this.findComment(commentId).getBoard().getId();
+        return boardService.findBoardToBoardDto(boardId);
+    }
 }

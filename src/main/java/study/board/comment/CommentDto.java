@@ -10,16 +10,16 @@ import java.time.format.DateTimeFormatter;
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentDto {
+public class CommentDto { // toBoardDto 에서 사용
 
     private Long commentId;
     private Long boardId;
     private String loginId;
     private String commentContent;
 
-    private String createdBy;
-    private String createdDate;
-    private String lastModifiedBy;
+//    private String createdBy;
+//    private String createdDate;
+//    private String lastModifiedBy;
     private String lastModifiedDate;
 
     public static CommentDto toCommentDto(Comment entity) {
@@ -28,9 +28,9 @@ public class CommentDto {
                 BoardDto.toBoardId(entity.getBoard()),
                 MemberDto.toLoginId(entity.getMember()), // 댓글에 로그인 아이디 표시를 위함
                 entity.getCommentContent(),
-                entity.getCreatedBy(),
-                entity.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                entity.getLastModifiedBy(),
+//                entity.getCreatedBy(),
+//                entity.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+//                entity.getLastModifiedBy(),
                 entity.getLastModifiedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
         );
     }

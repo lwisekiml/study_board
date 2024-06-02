@@ -110,6 +110,13 @@ public class BoardService {
         return memberRepository.findByLoginId(loginId).orElseThrow(IllegalArgumentException::new);
     }
 
+    // comment 수정시 사용
+    @Transactional
+    public BoardDto findBoardToBoardDto(Long boardId) {
+        Board board = this.findBoard(boardId);
+        return BoardDto.toBoardDto(board);
+    }
+
 //    // 본인이 작성한 글 찾기
 //    @Transactional
 //    public List<BoardDto> getMemberWrite(String loginId) {
