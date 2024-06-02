@@ -54,4 +54,8 @@ public class BoardDto { // 게시물 리스트, 글 수정 때 사용
                 entity.getLastModifiedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
         );
     }
+
+    public static Long toBoardId(Board entity) {
+        return entity.getId();
+    }
 }

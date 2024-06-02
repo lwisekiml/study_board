@@ -1,8 +1,8 @@
 package study.board.comment;
 
 import lombok.*;
-import study.board.board.Board;
-import study.board.member.Member;
+import study.board.board.BoardDto;
+import study.board.member.MemberDto;
 
 import java.time.format.DateTimeFormatter;
 
@@ -13,8 +13,8 @@ import java.time.format.DateTimeFormatter;
 public class CommentDto {
 
     private Long commentId;
-    private Board board;
-    private Member member;
+    private Long boardId;
+    private String loginId;
     private String commentContent;
 
     private String createdBy;
@@ -25,8 +25,8 @@ public class CommentDto {
     public static CommentDto toCommentDto(Comment entity) {
         return new CommentDto(
                 entity.getCommentId(),
-                entity.getBoard(),
-                entity.getMember(),
+                BoardDto.toBoardId(entity.getBoard()),
+                MemberDto.toLoginId(entity.getMember()), // 댓글에 로그인 아이디 표시를 위함
                 entity.getCommentContent(),
                 entity.getCreatedBy(),
                 entity.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
