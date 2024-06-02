@@ -6,10 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import study.board.board.dto.BoardCreateDto;
-import study.board.board.dto.BoardDto;
-import study.board.board.dto.BoardEditDto;
-import study.board.board.dto.ListBoardDto;
+import study.board.board.dto.*;
 import study.board.file.UploadFile;
 import study.board.file.UploadFileRepository;
 import study.board.file.UploadFilesRepository;
@@ -57,27 +54,29 @@ public class BoardService {
         return BoardDto.toBoardDto(board);
     }
 
+    // get 글수정
     @Transactional
-    public BoardDto findBoardToBoardDto(Long boardId) {
+    public BoardGetEditDto findBoardToBoardGetEditDto(Long boardId) {
         Board board = this.findBoard(boardId);
-        return BoardDto.toBoardDto(board);
+        return BoardGetEditDto.toBoardGetEditDto(board);
     }
 
+    // post 글수정
     @Transactional
-    public void edit(BoardEditDto boardEditDto) throws IOException {
+    public void edit(BoardPostEditDto boardPostEditDto) throws IOException {
 
-        Board board = this.findBoard(boardEditDto.getId());
+        Board board = this.findBoard(boardPostEditDto.getId());
 
-        board.setTitle(boardEditDto.getTitle());
-        board.setContent(boardEditDto.getContent());
+        board.setTitle(boardPostEditDto.getTitle());
+        board.setContent(boardPostEditDto.getContent());
 
         // 첨부파일
-        editAttachFile(board, boardEditDto);
-        editImageFiles(board, boardEditDto);
+        editAttachFile(board, boardPostEditDto);
+        editImageFiles(board, boardPostEditDto);
     }
 
     @Transactional
-    public void editAttachFile(Board board, BoardEditDto boardEditDto) throws IOException {
+    public void editAttachFile(Board board, BoardPostEditDto boardPostEditDto) throws IOException {
         UploadFile boardAttachFile = board.getAttachFile();
 
         if (boardAttachFile != null) { // 기존 게시문에 첨부파일 있으면
@@ -87,13 +86,13 @@ public class BoardService {
             uploadFileRepository.flush();
         }
 
-        board.setAttachFile(fileStore.storeFile(boardEditDto.getAttachFile()));
+        board.setAttachFile(fileStore.storeFile(boardPostEditDto.getAttachFile()));
     }
 
     @Transactional
-    public void editImageFiles(Board board, BoardEditDto boardEditDto) throws IOException {
+    public void editImageFiles(Board board, BoardPostEditDto boardPostEditDto) throws IOException {
         uploadFilesRepository.deleteAllInBatch(board.getImageFiles()); // 기존 이미지 삭제
-        board.setImageFiles(fileStore.storeFiles(boardEditDto.getImageFiles())); // 첨부된 이미지 저장
+        board.setImageFiles(fileStore.storeFiles(boardPostEditDto.getImageFiles())); // 첨부된 이미지 저장
     }
 
     @Transactional
