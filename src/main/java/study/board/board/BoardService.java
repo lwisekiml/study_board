@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import study.board.board.dto.BoardCreateDto;
 import study.board.board.dto.BoardDto;
 import study.board.board.dto.BoardEditDto;
+import study.board.board.dto.ListBoardDto;
 import study.board.file.UploadFile;
 import study.board.file.UploadFileRepository;
 import study.board.file.UploadFilesRepository;
@@ -31,8 +32,8 @@ public class BoardService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Page<BoardDto> findAll(Pageable pageable) {
-        return boardRepository.findAll(pageable).map(BoardDto::toBoardDto);
+    public Page<ListBoardDto> findAll(Pageable pageable) {
+        return boardRepository.findAll(pageable).map(ListBoardDto::toListBoardDto);
     }
 
     // validation 할 때 수정
