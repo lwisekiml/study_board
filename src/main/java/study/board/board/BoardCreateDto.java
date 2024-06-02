@@ -12,7 +12,9 @@ import java.util.List;
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BoardCreateDto {
+public class BoardCreateDto { // 글 쓰기 때 사용
+
+    private String loginId; // GetMapping 때 세팅됨
 
     @NotBlank(message = "제목은 필수 입니다.")
     private String title;

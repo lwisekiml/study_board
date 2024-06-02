@@ -30,13 +30,17 @@ public class TestDataInit {
 //        boardRepository.save(new Board("qwer", "제목2", "내용2"));
 
         memberRepository.save(new Member("loginId", "membername", "member@email.com", passwordEncoder.encode("password")));
+        memberRepository.save(new Member("asd", "asd", "asd@email.com", passwordEncoder.encode("asd")));
+
+        Member member1 = memberRepository.findByLoginId("loginId").get();
+        Member member2 = memberRepository.findByLoginId("asd").get();
 
         for (int i = 0; i < 10; i++) {
-            boardRepository.save(new Board("test", "test제목"+i, 1));
+            boardRepository.save(new Board(member1, "test", "test제목"+i, 1));
         }
 
         for (int i = 0; i < 10; i++) {
-            boardRepository.save(new Board("qwer", "qwer제목"+i, 1));
+            boardRepository.save(new Board(member2, "qwer", "qwer제목"+i, 1));
         }
     }
 }
