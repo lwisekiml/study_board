@@ -41,9 +41,9 @@ public class CommentController {
             Model model
     ) {
         CommentDto commentDto = commentService.findCommentToCommentDto(commentId);
-        BoardDto boardDto = commentService.findBoardDto(commentId);
+//        BoardDto boardDto = commentService.findBoardDto(commentId);
 
-        model.addAttribute("boardDto", boardDto);
+//        model.addAttribute("boardDto", boardDto);
         model.addAttribute("commentDto", commentDto);
 
         return "board/editCommentForm";

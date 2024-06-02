@@ -49,9 +49,9 @@ public class CommentService {
         return commentRepository.findById(commentId).orElseThrow(IllegalArgumentException::new);
     }
 
-    @Transactional
-    public BoardDto findBoardDto(Long commentId) {
-        Long boardId = this.findComment(commentId).getBoard().getId();
-        return boardService.findBoardToBoardDto(boardId);
-    }
+//    @Transactional
+//    public BoardDto findBoardDto(Long commentId) {
+//        Long boardId = this.findComment(commentId).getBoard().getId();
+//        return boardService.findBoardToBoardDto(boardId);
+//    }
 }
