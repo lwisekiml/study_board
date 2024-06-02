@@ -27,7 +27,7 @@ public class CommentController {
     }
 
     @PostMapping("/comment/{commentId}/delete")
-    public String deleteById(
+    public String delete(
             @PathVariable("commentId") Long commentId,
             @ModelAttribute("boardDto") BoardDto boardDto
     ) {
