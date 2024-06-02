@@ -9,10 +9,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Getter @Setter
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BoardEditDto {
+public class BoardPostEditDto {
 
     Long id;
 
@@ -21,7 +22,6 @@ public class BoardEditDto {
     @NotBlank(message = "내용은 필수 입니다.")
     private String content;
 
-    // 첨부파일
-    private MultipartFile attachFile; // Board에 없다.
+    private MultipartFile attachFile;
     private List<MultipartFile> imageFiles;
 }

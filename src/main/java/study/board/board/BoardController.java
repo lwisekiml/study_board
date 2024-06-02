@@ -18,7 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
 import study.board.board.dto.BoardCreateDto;
-import study.board.board.dto.BoardEditDto;
+import study.board.board.dto.BoardPostEditDto;
 import study.board.board.dto.ListBoardDto;
 import study.board.util.FileStore;
 import study.board.util.PaginationService;
@@ -105,13 +105,13 @@ public class BoardController {
             @PathVariable(name = "boardId") Long boardId,
             Model model
     ) {
-        model.addAttribute("boardDto", boardService.findBoardToBoardDto(boardId));
+        model.addAttribute("boardGetEditDto", boardService.findBoardToBoardGetEditDto(boardId));
         return "board/editBoardForm";
     }
 
     @PostMapping("/board/{boardId}/edit")
     public String edit(
-            @Validated @ModelAttribute("boardEditDto") BoardEditDto boardEditDto,
+            @Validated @ModelAttribute("boardPostEditDto") BoardPostEditDto boardPostEditDto,
             BindingResult bindingResult
     ) throws IOException {
 
@@ -120,7 +120,7 @@ public class BoardController {
             return "/board/editBoardForm";
         }
 
-        boardService.edit(boardEditDto);
+        boardService.edit(boardPostEditDto);
         return "redirect:/board/{boardId}";
     }
 
