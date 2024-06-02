@@ -8,7 +8,7 @@
 <body>
 <h1>게시글 상세보기</h1>
 <!-- action에 {boardId}를 넣는 방법이 있다면 delete가 아닌 edit으로 수정이 더 좋을 것으로 보인다. -->
-<form action="/board/delete" method="post">
+<form th:action="@{/board/delete/{boardId}(boardId=${boardDto.id})}" method="post">
 
     <input type="hidden" id="id" name="id" value="번호" th:value="${boardDto.id}"/>
 
