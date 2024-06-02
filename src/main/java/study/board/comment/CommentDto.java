@@ -1,7 +1,7 @@
 package study.board.comment;
 
 import lombok.*;
-import study.board.board.BoardDto;
+import study.board.board.dto.BoardDto;
 import study.board.member.MemberDto;
 
 import java.time.format.DateTimeFormatter;
