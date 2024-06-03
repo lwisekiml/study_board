@@ -86,9 +86,14 @@
         <span th:text="${comment.getLoginId()}"></span>
         <button onclick="location.href='board.html'"
                 th:onclick="|location.href='@{/comment/{commentId}/edit(commentId=${comment.commentId})}'|"
+                sec:authorize="isAuthenticated()"
+                th:if="${#authentication.getPrincipal().getUsername() == comment.getLoginId()}"
                 type="button">수정
         </button>
-        <input type="submit" value="삭제"/>
+        <input type="submit"
+               sec:authorize="isAuthenticated()"
+               th:if="${#authentication.getPrincipal().getUsername() == comment.getLoginId()}"
+               value="삭제"/>
     </ul>
 </form>
 
