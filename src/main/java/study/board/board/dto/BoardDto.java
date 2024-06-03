@@ -40,8 +40,4 @@ public class BoardDto { // 게시글 조회
                 entity.getComments().stream().map(BoardCommentDto::toBoardCommentDto).collect(Collectors.toList())
         );
     }
-
-    public static Long toBoardId(Board entity) {
-        return entity.getId();
-    }
 }
