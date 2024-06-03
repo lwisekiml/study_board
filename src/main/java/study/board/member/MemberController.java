@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +28,7 @@ public class MemberController {
     @PostMapping("/member/signup")
     public String signup(
             @Validated @ModelAttribute("memberDto") MemberDto memberDto,
-            BindingResult bindingResult, Model model
+            BindingResult bindingResult
     ) {
 
         if (bindingResult.hasErrors()) {
