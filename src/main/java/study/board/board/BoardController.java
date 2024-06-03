@@ -17,6 +17,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
+import study.board.board.dto.BoardCreateDto;
+import study.board.board.dto.BoardPostEditDto;
+import study.board.board.dto.ListBoardDto;
 import study.board.util.FileStore;
 import study.board.util.PaginationService;
 
@@ -41,17 +44,17 @@ public class BoardController {
             Model model,
             @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<BoardDto> pageBoardDtos = boardService.findAll(pageable);
+        Page<ListBoardDto> listBoardDtos = boardService.findAll(pageable);
 
-        if (pageBoardDtos.isEmpty()) {
+        if (listBoardDtos.isEmpty()) {
             log.info("없는 페이지 입니다.");
             return "list";
         }
 
-        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), pageBoardDtos.getTotalPages());
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), listBoardDtos.getTotalPages());
 
         model.addAttribute("paginationBarNumbers", barNumbers);
-        model.addAttribute("pageBoardDtos", pageBoardDtos); // 프론트에 보낼 때 Dto 인지 명시할 필요가 없을 것으로 보여 boards로 함
+        model.addAttribute("listBoardDtos", listBoardDtos); // 프론트에 보낼 때 Dto 인지 명시할 필요가 없을 것으로 보여 boards로 함
 
         return "list";
     }
@@ -102,13 +105,13 @@ public class BoardController {
             @PathVariable(name = "boardId") Long boardId,
             Model model
     ) {
-        model.addAttribute("boardDto", boardService.findBoardToBoardDto(boardId));
+        model.addAttribute("boardGetEditDto", boardService.findBoardToBoardGetEditDto(boardId));
         return "board/editBoardForm";
     }
 
     @PostMapping("/board/{boardId}/edit")
     public String edit(
-            @Validated @ModelAttribute("boardEditDto") BoardEditDto boardEditDto,
+            @Validated @ModelAttribute("boardPostEditDto") BoardPostEditDto boardPostEditDto,
             BindingResult bindingResult
     ) throws IOException {
 
@@ -117,16 +120,16 @@ public class BoardController {
             return "/board/editBoardForm";
         }
 
-        boardService.edit(boardEditDto);
+        boardService.edit(boardPostEditDto);
         return "redirect:/board/{boardId}";
     }
 
     // 글 삭제
-    @PostMapping("/board/delete")
+    @PostMapping("/board/delete/{boardId}")
     public String delete(
-            @ModelAttribute("boardDto") BoardDto boardDto
+            @PathVariable(name = "boardId") Long boardId
     ) {
-        boardService.delete(boardDto);
+        boardService.delete(boardId);
         return "redirect:/";
     }
     

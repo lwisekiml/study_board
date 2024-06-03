@@ -21,8 +21,6 @@ public class MemberService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     public void create(MemberDto memberDto) {
-
-
         // 비밀 번호 암호화
         memberDto.setPassword(passwordEncoder.encode(memberDto.getPassword()));
 
@@ -39,7 +37,7 @@ public class MemberService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // username 이 loginId 이다.(loginForm 참조)
+        // username 이 loginId 이다.(loginForm.html 참조)
         Member member = this.memberRepository.findByLoginId(username)
                             .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 

@@ -55,13 +55,14 @@
 <!--    댓글-->
 <h5 th:text="|${#lists.size(boardDto.comments)}개의 댓글이 있습니다.|"></h5>
 
-<form  th:action="@{/comment/{commentId}/edit(commentId=${commentDto.commentId})}" method="post">
+<form  th:action="@{/comment/{commentId}/edit(commentId=${commentId})}" method="post">
     <!-- name값이 controller에 전달 될때 key값이 된다. 즉, id 멤버변수를 가지고 있는 boardDto의 id 값이 세팅된다. -->
+    <!-- 현재는 코드를 수정하였지만 기억하기 위해 남겨둔다. -->
     <input type="hidden" id="boardId" name="id" th:value="${boardDto.id}"/>
 
     <ul th:each="comment : ${boardDto.comments}">
         <!-- 수정 누른 댓글 -->
-        <div th:if="${commentDto.commentId} == ${comment.commentId}">
+        <div th:if="${commentId} == ${comment.commentId}">
             <input name="commentContent" th:placeholder="${comment.commentContent}" />
             <button type="submit">저장</button>
             <button onclick="location.href='../list.html'"
@@ -70,7 +71,7 @@
             </button>
         </div>
         <!-- 나머지 댓글 -->
-        <li th:unless="${commentDto.commentId} == ${comment.commentId}" th:text="${comment.commentContent}"></li>
+        <li th:unless="${commentId} == ${comment.commentId}" th:text="${comment.commentContent}"></li>
     </ul>
 </form>
 

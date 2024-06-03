@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import study.board.board.dto.*;
 import study.board.file.UploadFile;
 import study.board.file.UploadFileRepository;
 import study.board.file.UploadFilesRepository;
@@ -28,11 +29,10 @@ public class BoardService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Page<BoardDto> findAll(Pageable pageable) {
-        return boardRepository.findAll(pageable).map(BoardDto::toBoardDto);
+    public Page<ListBoardDto> findAll(Pageable pageable) {
+        return boardRepository.findAll(pageable).map(ListBoardDto::toListBoardDto);
     }
 
-    // validation 할 때 수정
     @Transactional
     public void create(BoardCreateDto boardCreateDto, Member member) throws IOException {
         boardRepository.save(
@@ -46,6 +46,7 @@ public class BoardService {
     }
 
     // 깔끔하게 Dto로 넘기고 싶지만 plusViews를 해야 하므로 아래와 같이 함
+    // 글 조회
     @Transactional
     public BoardDto findBoardPlusViewToBoardDto(Long boardId) {
         Board board = this.findBoard(boardId);
@@ -53,27 +54,29 @@ public class BoardService {
         return BoardDto.toBoardDto(board);
     }
 
+    // get 글수정
     @Transactional
-    public BoardDto findBoardToBoardDto(Long boardId) {
+    public BoardGetEditDto findBoardToBoardGetEditDto(Long boardId) {
         Board board = this.findBoard(boardId);
-        return BoardDto.toBoardDto(board);
+        return BoardGetEditDto.toBoardGetEditDto(board);
     }
 
+    // post 글수정
     @Transactional
-    public void edit(BoardEditDto boardEditDto) throws IOException {
+    public void edit(BoardPostEditDto boardPostEditDto) throws IOException {
 
-        Board board = this.findBoard(boardEditDto.getId());
+        Board board = this.findBoard(boardPostEditDto.getId());
 
-        board.setTitle(boardEditDto.getTitle());
-        board.setContent(boardEditDto.getContent());
+        board.setTitle(boardPostEditDto.getTitle());
+        board.setContent(boardPostEditDto.getContent());
 
         // 첨부파일
-        editAttachFile(board, boardEditDto);
-        editImageFiles(board, boardEditDto);
+        editAttachFile(board, boardPostEditDto);
+        editImageFiles(board, boardPostEditDto);
     }
 
     @Transactional
-    public void editAttachFile(Board board, BoardEditDto boardEditDto) throws IOException {
+    public void editAttachFile(Board board, BoardPostEditDto boardPostEditDto) throws IOException {
         UploadFile boardAttachFile = board.getAttachFile();
 
         if (boardAttachFile != null) { // 기존 게시문에 첨부파일 있으면
@@ -83,19 +86,18 @@ public class BoardService {
             uploadFileRepository.flush();
         }
 
-        board.setAttachFile(fileStore.storeFile(boardEditDto.getAttachFile()));
+        board.setAttachFile(fileStore.storeFile(boardPostEditDto.getAttachFile()));
     }
 
     @Transactional
-    public void editImageFiles(Board board, BoardEditDto boardEditDto) throws IOException {
+    public void editImageFiles(Board board, BoardPostEditDto boardPostEditDto) throws IOException {
         uploadFilesRepository.deleteAllInBatch(board.getImageFiles()); // 기존 이미지 삭제
-        board.setImageFiles(fileStore.storeFiles(boardEditDto.getImageFiles())); // 첨부된 이미지 저장
+        board.setImageFiles(fileStore.storeFiles(boardPostEditDto.getImageFiles())); // 첨부된 이미지 저장
     }
 
     @Transactional
-    public void delete(BoardDto boardDto) {
-        boardRepository.delete(this.findBoard(boardDto.getId()));
-
+    public void delete(Long boardId) {
+        boardRepository.delete(this.findBoard(boardId));
     }
 
     @Transactional
@@ -106,6 +108,13 @@ public class BoardService {
     @Transactional
     public Member findMember(String loginId) {
         return memberRepository.findByLoginId(loginId).orElseThrow(IllegalArgumentException::new);
+    }
+
+    // comment 수정시 사용
+    @Transactional
+    public BoardDto findBoardToBoardDto(Long boardId) {
+        Board board = this.findBoard(boardId);
+        return BoardDto.toBoardDto(board);
     }
 
 //    // 본인이 작성한 글 찾기

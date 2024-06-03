@@ -5,7 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import study.board.board.BoardDto;
+import study.board.board.dto.BoardDto;
+import study.board.comment.dto.CommentPostEditDto;
 
 import java.security.Principal;
 
@@ -27,7 +28,7 @@ public class CommentController {
     }
 
     @PostMapping("/comment/{commentId}/delete")
-    public String deleteById(
+    public String delete(
             @PathVariable("commentId") Long commentId,
             @ModelAttribute("boardDto") BoardDto boardDto
     ) {
@@ -40,22 +41,20 @@ public class CommentController {
             @PathVariable("commentId") Long commentId,
             Model model
     ) {
-        CommentDto commentDto = commentService.findCommentToCommentDto(commentId);
-        BoardDto boardDto = commentService.findBoardDto(commentId);
-
-        model.addAttribute("boardDto", boardDto);
-        model.addAttribute("commentDto", commentDto);
+        model.addAttribute("boardDto", commentService.findBoardDto(commentId));
+        model.addAttribute("commentId", commentId);
 
         return "board/editCommentForm";
     }
 
     @PostMapping("/comment/{commentId}/edit")
     public String edit(
-            @ModelAttribute("commentDto") CommentDto commentDto,
-            @ModelAttribute("boardDto") BoardDto boardDto
+            @ModelAttribute("commentPostEditDto") CommentPostEditDto commentPostEditDto,
+            @RequestParam("id") Long boardId
+//            @ModelAttribute("boardDto") BoardDto boardDto
     ) {
-        commentService.edit(commentDto);
-        return String.format("redirect:/board/%s", boardDto.getId());
+        commentService.edit(commentPostEditDto);
+        return String.format("redirect:/board/%s", boardId);
     }
 
 }
