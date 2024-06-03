@@ -1,14 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시글 상세보기</title>
+
+    <style>
+        .field-error {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+    </style>
 </head>
 <body>
 <h1>게시글 상세보기</h1>
 <!-- action에 {boardId}를 넣는 방법이 있다면 delete가 아닌 edit으로 수정이 더 좋을 것으로 보인다. -->
-<form th:action="@{/board/delete/{boardId}(boardId=${boardDto.id})}" method="post">
+<form th:action="@{/board/delete/{boardId}(boardId=${boardDto.id})}" th:object="${boardDto}" method="post">
+
+<!--    아래와 같이 글로벌 에러를 사용하려면 위에 th:object가 있어야 한다.-->
+    <div th:if="${#fields.hasGlobalErrors()}">
+        <p class="field-error" th:each="err : ${#fields.globalErrors()}"
+           th:text="${err}">글로벌 오류 메시지</p>
+    </div>
 
     <input type="hidden" id="id" name="id" value="번호" th:value="${boardDto.id}"/>
 
@@ -16,7 +30,7 @@
     <div th:if="${boardDto.loginId}">
         <label for="loginId">글쓴이(아이디)</label>
         <input type="text" id="loginId" name="loginId" class="form-control" value="글쓴이(아이디)"
-               th:value="*{boardDto.loginId}" readonly>
+               th:value="*{loginId}" readonly>
     </div>
 
     <div>
@@ -42,10 +56,14 @@
 
     <button onclick="location.href='editBoardForm.html'"
             th:onclick="|location.href='@{/board/{boardId}/edit(boardId=${boardDto.id})}'|"
+            sec:authorize="isAuthenticated()"
+            th:if="${#authentication.getPrincipal().getUsername() == boardDto.loginId}"
             type="button">수정
     </button>
 
-    <button type="submit">삭제</button>
+    <button sec:authorize="isAuthenticated()"
+            th:if="${#authentication.getPrincipal().getUsername() == boardDto.loginId}"
+            type="submit">삭제</button>
 
     <button onclick="location.href='../list.html'"
             th:onclick="|location.href='@{/}'|"
@@ -68,9 +86,14 @@
         <span th:text="${comment.getLoginId()}"></span>
         <button onclick="location.href='board.html'"
                 th:onclick="|location.href='@{/comment/{commentId}/edit(commentId=${comment.commentId})}'|"
+                sec:authorize="isAuthenticated()"
+                th:if="${#authentication.getPrincipal().getUsername() == comment.getLoginId()}"
                 type="button">수정
         </button>
-        <input type="submit" value="삭제"/>
+        <input type="submit"
+               sec:authorize="isAuthenticated()"
+               th:if="${#authentication.getPrincipal().getUsername() == comment.getLoginId()}"
+               value="삭제"/>
     </ul>
 </form>
 

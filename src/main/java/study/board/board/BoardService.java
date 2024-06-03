@@ -4,17 +4,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 import study.board.board.dto.*;
-import study.board.file.UploadFile;
-import study.board.file.UploadFileRepository;
-import study.board.file.UploadFilesRepository;
+import study.board.file.*;
 import study.board.member.Member;
 import study.board.member.MemberRepository;
 import study.board.util.FileStore;
 
 import java.io.IOException;
+import java.security.Principal;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -56,27 +58,37 @@ public class BoardService {
 
     // get 글수정
     @Transactional
-    public BoardGetEditDto findBoardToBoardGetEditDto(Long boardId) {
+    public BoardEditDto findBoardToBoardEditDto(Long boardId) {
         Board board = this.findBoard(boardId);
-        return BoardGetEditDto.toBoardGetEditDto(board);
+        return BoardEditDto.toBoardEditDto(board);
     }
 
     // post 글수정
     @Transactional
-    public void edit(BoardPostEditDto boardPostEditDto) throws IOException {
+    public void edit(BoardEditDto boardEditDto) throws IOException {
 
-        Board board = this.findBoard(boardPostEditDto.getId());
+        Board board = this.findBoard(boardEditDto.getId());
 
-        board.setTitle(boardPostEditDto.getTitle());
-        board.setContent(boardPostEditDto.getContent());
+        board.setTitle(boardEditDto.getTitle());
+        board.setContent(boardEditDto.getContent());
 
         // 첨부파일
-        editAttachFile(board, boardPostEditDto);
-        editImageFiles(board, boardPostEditDto);
+        editAttachFile(board, boardEditDto);
+        editImageFiles(board, boardEditDto);
     }
 
     @Transactional
-    public void editAttachFile(Board board, BoardPostEditDto boardPostEditDto) throws IOException {
+    public void checkEditAuth(Long boardId, Principal principal) {
+        Board board = this.findBoard(boardId);
+        String loginId = board.getMember().getLoginId();
+
+        if (!loginId.equals(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
+        }
+    }
+
+    @Transactional
+    public void editAttachFile(Board board, BoardEditDto boardEditDto) throws IOException {
         UploadFile boardAttachFile = board.getAttachFile();
 
         if (boardAttachFile != null) { // 기존 게시문에 첨부파일 있으면
@@ -86,13 +98,13 @@ public class BoardService {
             uploadFileRepository.flush();
         }
 
-        board.setAttachFile(fileStore.storeFile(boardPostEditDto.getAttachFile()));
+        board.setAttachFile(fileStore.storeFile(boardEditDto.getMulAttachFile()));
     }
 
     @Transactional
-    public void editImageFiles(Board board, BoardPostEditDto boardPostEditDto) throws IOException {
+    public void editImageFiles(Board board, BoardEditDto boardEditDto) throws IOException {
         uploadFilesRepository.deleteAllInBatch(board.getImageFiles()); // 기존 이미지 삭제
-        board.setImageFiles(fileStore.storeFiles(boardPostEditDto.getImageFiles())); // 첨부된 이미지 저장
+        board.setImageFiles(fileStore.storeFiles(boardEditDto.getMulImageFiles())); // 첨부된 이미지 저장
     }
 
     @Transactional
@@ -110,11 +122,27 @@ public class BoardService {
         return memberRepository.findByLoginId(loginId).orElseThrow(IllegalArgumentException::new);
     }
 
+    @Transactional
+    public void getAttachFileAndImageFiles(BoardEditDto boardEditDto) {
+        Board board = boardRepository.findById(boardEditDto.getId()).orElseThrow(IllegalArgumentException::new);
+        boardEditDto.setAttachFile(UploadFileDto.toUploadFileDto(board.getAttachFile()));
+        boardEditDto.setImageFiles(board.getImageFiles().stream().map(UploadFilesDto::toUploadFilesDto).collect(Collectors.toList()));
+    }
+
     // comment 수정시 사용
     @Transactional
     public BoardDto findBoardToBoardDto(Long boardId) {
         Board board = this.findBoard(boardId);
         return BoardDto.toBoardDto(board);
+    }
+
+    public void checkDeleteAuth(Long boardId, Principal principal) throws Exception {
+        Board board = this.findBoard(boardId);
+        String loginId = board.getMember().getLoginId();
+
+        if (!loginId.equals(principal.getName())) {
+            throw new Exception("예외");
+        }
     }
 
 //    // 본인이 작성한 글 찾기
