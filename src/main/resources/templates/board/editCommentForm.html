@@ -11,10 +11,11 @@
 
     <input type="hidden" id="id" name="id" class="form-control" value="번호" th:value="${boardDto.id}" readonly>
 
-<!--    <div>-->
-<!--        <label for="loginId">글쓴이(아이디)</label>-->
-<!--        <input type="text" id="loginId" name="loginId" value="상품A" th:value="${boardDto.loginId}" readonly>-->
-<!--    </div>-->
+    <div>
+        <label for="loginId">글쓴이(아이디)</label>
+        <input type="text" id="loginId" name="loginId" class="form-control" value="상품A"
+               th:value="${boardDto.loginId}" readonly>
+    </div>
 
     <div>
         <label for="tile">제목</label>
@@ -36,18 +37,6 @@
     </div>
 
     <img th:each="imageFile : ${boardDto.imageFiles}" th:src="|/images/${imageFile.getStoreFileName()}|" width="300" height="300"/><br>
-
-    <button onclick="location.href='editBoardForm.html'"
-            th:onclick="|location.href='@{/board/{boardId}/edit(boardId=${boardDto.id})}'|"
-            type="button">수정
-    </button>
-
-    <button type="submit">삭제</button>
-
-    <button onclick="location.href='../list.html'"
-            th:onclick="|location.href='@{/}'|"
-            type="button">취소
-    </button>
 
     <br><br>
 </form>
