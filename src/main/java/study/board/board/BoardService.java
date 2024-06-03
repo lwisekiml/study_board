@@ -78,8 +78,8 @@ public class BoardService {
     }
 
     @Transactional
-    public void checkEditAuth(Long boarId, Principal principal) {
-        Board board = this.findBoard(boarId);
+    public void checkEditAuth(Long boardId, Principal principal) {
+        Board board = this.findBoard(boardId);
         String loginId = board.getMember().getLoginId();
 
         if (!loginId.equals(principal.getName())) {
@@ -134,6 +134,15 @@ public class BoardService {
     public BoardDto findBoardToBoardDto(Long boardId) {
         Board board = this.findBoard(boardId);
         return BoardDto.toBoardDto(board);
+    }
+
+    public void checkDeleteAuth(Long boardId, Principal principal) throws Exception {
+        Board board = this.findBoard(boardId);
+        String loginId = board.getMember().getLoginId();
+
+        if (!loginId.equals(principal.getName())) {
+            throw new Exception("예외");
+        }
     }
 
 //    // 본인이 작성한 글 찾기

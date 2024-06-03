@@ -139,10 +139,22 @@ public class BoardController {
     }
 
     // 글 삭제
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/board/delete/{boardId}")
     public String delete(
-            @PathVariable(name = "boardId") Long boardId
+            @PathVariable(name = "boardId") Long boardId,
+            @ModelAttribute("boardDto") BoardDto boardDto,
+            BindingResult bindingResult,
+            Principal principal
     ) {
+        try {
+            boardService.checkDeleteAuth(boardId, principal);
+        } catch (Exception e) {
+            bindingResult.reject("DeleteFailed", "삭제 권한이 없습니다.");
+            log.error("delete errors = {}", bindingResult);
+            return "board/board";
+        }
+
         boardService.delete(boardId);
         return "redirect:/";
     }
