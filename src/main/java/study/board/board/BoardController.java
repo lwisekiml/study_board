@@ -17,9 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
-import study.board.board.dto.BoardCreateDto;
-import study.board.board.dto.BoardPostEditDto;
-import study.board.board.dto.ListBoardDto;
+import study.board.board.dto.*;
 import study.board.util.FileStore;
 import study.board.util.PaginationService;
 
@@ -100,35 +98,63 @@ public class BoardController {
     }
 
     // 글 수정
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/board/{boardId}/edit")
     public String editForm(
             @PathVariable(name = "boardId") Long boardId,
-            Model model
+            Model model,
+            Principal principal
     ) {
-        model.addAttribute("boardGetEditDto", boardService.findBoardToBoardGetEditDto(boardId));
+        boardService.checkEditAuth(boardId, principal);
+        model.addAttribute("boardEditDto", boardService.findBoardToBoardEditDto(boardId));
         return "board/editBoardForm";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/board/{boardId}/edit")
     public String edit(
-            @Validated @ModelAttribute("boardPostEditDto") BoardPostEditDto boardPostEditDto,
-            BindingResult bindingResult
+            @Validated @ModelAttribute("boardEditDto") BoardEditDto boardEditDto,
+            BindingResult bindingResult,
+            Principal principal
     ) throws IOException {
+
+        // 에러 발생 또는 exception 발생시 프론트에 기존 파일들이 보이도록 하기 위함
+        boardService.getAttachFileAndImageFiles(boardEditDto);
 
         if (bindingResult.hasErrors()) {
             log.info("errors = {}", bindingResult);
             return "/board/editBoardForm";
         }
 
-        boardService.edit(boardPostEditDto);
+        try {
+            boardService.checkEditAuth(boardEditDto.getId(), principal);
+        } catch (Exception e) {
+            bindingResult.reject("EditFailed", "수정 권한이 없습니다.");
+            log.info("edit errors = {}", bindingResult);
+            return "/board/editBoardForm";
+        }
+
+        boardService.edit(boardEditDto);
         return "redirect:/board/{boardId}";
     }
 
     // 글 삭제
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/board/delete/{boardId}")
     public String delete(
-            @PathVariable(name = "boardId") Long boardId
+            @PathVariable(name = "boardId") Long boardId,
+            @ModelAttribute("boardDto") BoardDto boardDto,
+            BindingResult bindingResult,
+            Principal principal
     ) {
+        try {
+            boardService.checkDeleteAuth(boardId, principal);
+        } catch (Exception e) {
+            bindingResult.reject("DeleteFailed", "삭제 권한이 없습니다.");
+            log.error("delete errors = {}", bindingResult);
+            return "board/board";
+        }
+
         boardService.delete(boardId);
         return "redirect:/";
     }

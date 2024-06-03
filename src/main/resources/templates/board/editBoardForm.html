@@ -14,39 +14,45 @@
 </head>
 <body>
 <h1>게시글 수정</h1>
-<form action="/board" enctype="multipart/form-data" th:action th:object="${boardGetEditDto}" method="post">
+<!--th:action 속성으로 CSRF 값 자동 생성-->
+<form action="/board" enctype="multipart/form-data" th:action th:object="${boardEditDto}" method="post">
 
-    <input type="hidden" id="id" name="id" class="form-control" value="번호" th:value="${boardGetEditDto.id}" readonly>
+    <div th:if="${#fields.hasGlobalErrors()}">
+        <p class="field-error" th:each="err : ${#fields.globalErrors()}"
+           th:text="${err}">글로벌 오류 메시지</p>
+    </div>
+
+    <input type="hidden" id="id" name="id" class="form-control" value="번호" th:value="${boardEditDto.id}" readonly>
 
     <div>
         <label for="loginId">글쓴이(아이디)</label>
         <input type="text" id="loginId" name="loginId" class="form-control" value="상품A"
-               th:value="${boardGetEditDto.loginId}" readonly>
+               th:value="${boardEditDto.loginId}" readonly>
     </div>
 
     <div>
         <label for="tile">제목</label>
-        <input type="text" id="tile" th:field="${boardGetEditDto.title}" th:errorclass="field-error">
-        <div class="field-error" th:errors="${boardGetEditDto.title}">
+        <input type="text" id="tile" th:field="${boardEditDto.title}" th:errorclass="field-error">
+        <div class="field-error" th:errors="${boardEditDto.title}">
             제목 오류
         </div>
     </div>
 
     <div>
         <label for="content">내용</label>
-        <input type="text" id="content" th:field="${boardGetEditDto.content}" th:errorclass="field-error">
-        <div class="field-error" th:errors="${boardGetEditDto.content}">
+        <input type="text" id="content" th:field="${boardEditDto.content}" th:errorclass="field-error">
+        <div class="field-error" th:errors="${boardEditDto.content}">
             내용 오류
         </div>
     </div>
 
-    <div th:if="${boardGetEditDto.attachFile}">
-        첨부파일: <a type="file" th:text="${boardGetEditDto.attachFile.getUploadFileName()}"></a>
+    <div th:if="${boardEditDto.attachFile}">
+        첨부파일: <a type="file" th:text="${boardEditDto.attachFile.getUploadFileName()}"></a>
     </div>
-    <input type="file" id="attachFile" name="attachFile" class="form-control" value="첨부파일"/><br/>
+    <input type="file" id="mulAttachFile" name="mulAttachFile" class="form-control" value="첨부파일"/><br/>
 
-    <img th:each="imageFile : ${boardGetEditDto.imageFiles}" th:src="|/images/${imageFile.getStoreFileName()}|" width="300" height="300"/><br>
-    <input type="file" th:field="*{imageFiles}" multiple="multiple"><br/>
+    <img th:each="imageFile : ${boardEditDto.imageFiles}" th:src="|/images/${imageFile.getStoreFileName()}|" width="300" height="300"/><br>
+    <input type="file" id="mulImageFiles" name="mulImageFiles" multiple="multiple"><br/>
 
     <button type="submit">저장</button>
 
@@ -54,7 +60,7 @@
 
 </form>
 <!--<button onclick="location.href='board.html'"-->
-<!--        th:onclick="|location.href='@{/board/{boardId}(boardId=${boardGetEditDto.id})}'|"-->
+<!--        th:onclick="|location.href='@{/board/{boardId}(boardId=${boardEditDto.id})}'|"-->
 <!--        type="button">취소</button>-->
 </body>
 </html>
