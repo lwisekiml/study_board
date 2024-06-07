@@ -36,3 +36,8 @@ logging:
 
 file:
   dir: /G:/ # 파일 저장 위치(업로드시)
+
+kakao:
+  rest_api:
+    client_id: ${KAKAO_REST_API_KEY}
+  redirect_uri: ${KAKAO_REDIRECT_URI}
