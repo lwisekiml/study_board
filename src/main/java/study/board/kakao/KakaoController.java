@@ -24,7 +24,7 @@ public class KakaoController {
         // @RequestParam("code") String code
 
         // 토큰 받기
-//        String token = kakaoService.getToken(code);
+        String token = kakaoService.getToken(code);
 
         // 이 사이트에 회원 가입이 되어 있는지 확인
 
