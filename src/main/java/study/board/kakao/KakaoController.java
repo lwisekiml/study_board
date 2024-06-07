@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.HashMap;
+
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -25,6 +27,9 @@ public class KakaoController {
 
         // 토큰 받기
         String token = kakaoService.getToken(code);
+
+        // kakao 사용자 정보 가져오기
+        HashMap<String, String> userIdAndEmail = kakaoService.getUserIdAndEmail(token);
 
         // 이 사이트에 회원 가입이 되어 있는지 확인
 
