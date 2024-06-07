@@ -1,15 +1,17 @@
 package study.board.kakao;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.netty.handler.codec.http.HttpHeaderValues;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+
+import java.util.HashMap;
 
 @Slf4j
 @Service
@@ -29,7 +31,6 @@ public class KakaoService {
                 "&client_id=" + clientId + "&redirect_uri=" + redirectUri;
     }
 
-    @Transactional
     public String getToken(String code) {
 
         KakaoTokenResponseDto kakaoTokenResponseDto = null;
@@ -54,7 +55,7 @@ public class KakaoService {
             Mono<String> mono = WebClient.create()
                     .post()
                     .uri(apiUrl)
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .header(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED.toString())
                     .body(BodyInserters.fromPublisher(requestBody, String.class))
                     .retrieve()
                     .bodyToMono(String.class);
@@ -68,5 +69,48 @@ public class KakaoService {
         }
 
         return kakaoTokenResponseDto.getAccessToken();
+    }
+
+    public HashMap<String, String> getUserIdAndEmail(String token) {
+
+        KakaoUserInfoResponseDto kakaoUserInfoResponseDto = null;
+        HashMap<String, String> userIdAndEmail = new HashMap<>();
+
+        try {
+            // API 엔드포인트 URL 정의
+            String apiUrl = "https://kapi.kakao.com/v2/user/me";
+
+            // API에 POST 요청 보내기
+            String response = WebClient.create()
+                    .post()
+                    .uri(apiUrl)
+                    .header(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED.toString())
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            kakaoUserInfoResponseDto = objectMapper.readValue(response, KakaoUserInfoResponseDto.class);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+//        // 이메일 유효 여부
+//        if (kakaoUserInfoResponseDto.getKakaoAccount().getIsEmailValid()) {
+//            // 유효하지 않은 이메일 입니다.
+//            return null;
+//        }
+//        // 이메일 인증 여부
+//        if (kakaoUserInfoResponseDto.getKakaoAccount().getIsEmailVerified()) {
+//            // 인증되지 않은 이메일 입니다.
+//            return null;
+//        }
+
+        userIdAndEmail.put("userId", kakaoUserInfoResponseDto.getId().toString());
+        userIdAndEmail.put("email", kakaoUserInfoResponseDto.getKakaoAccount().email);
+        return userIdAndEmail;
+
     }
 }
