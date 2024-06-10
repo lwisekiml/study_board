@@ -18,6 +18,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
 import study.board.board.dto.*;
+import study.board.member.Member;
+import study.board.oauth2.UserEntity;
+import study.board.oauth2.UserRepository;
 import study.board.util.FileStore;
 import study.board.util.PaginationService;
 
@@ -36,6 +39,8 @@ public class BoardController {
     private final BoardRepository boardRepository;
     private final PaginationService paginationService;
     private final FileStore fileStore;
+
+    private final UserRepository userRepository;
 
     @GetMapping("/")
     public String list(
@@ -65,6 +70,7 @@ public class BoardController {
             ,Principal principal
             ,Model model
     ) {
+        // kakao로그인시 oauth2_authorized_client 테이블에 principal_name 값이 나온다.
         boardCreateDto.setLoginId(principal.getName());
         model.addAttribute("boardCreateDto", boardCreateDto);
         return "board/createBoardForm";
@@ -82,8 +88,16 @@ public class BoardController {
             log.info("errors = {}", bindingResult);
             return "/board/createBoardForm";
         }
-
-        boardService.create(boardCreateDto, boardService.findMember(principal.getName()));
+        Member member = null;
+        String name = principal.getName(); // // kakao로그인시 oauth2_authorized_client 테이블에 principal_name 값이 나온다.
+        try {
+            // 일반 회원 가입시
+            member = boardService.findMember(principal.getName());
+        } catch (IllegalArgumentException e) {
+            // kakao 가입시
+            UserEntity byUsername = userRepository.findByUsername(principal.getName());
+        }
+        boardService.create(boardCreateDto, member);
         return "redirect:/";
     }
 
@@ -91,9 +105,13 @@ public class BoardController {
     @GetMapping("/board/{boardId}")
     public String board(
             @PathVariable(name = "boardId") Long boardId,
-            Model model
+            Model model,
+            Principal principal
     ) {
         model.addAttribute("boardDto", boardService.findBoardPlusViewToBoardDto(boardId));
+        // 현재 로그인 한 member
+        String name = principal.getName();
+        model.addAttribute("principal", name);
         return "/board/board";
     }
 
