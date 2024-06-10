@@ -2,6 +2,7 @@ package study.board.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -28,7 +29,7 @@ public class SecurityConfig {
     private final CustomOAuth2AuthorizedClientService customOAuth2AuthorizedClientService;
     private final JdbcTemplate jdbcTemplate;
 
-    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService,
+    public SecurityConfig(@Lazy CustomOAuth2UserService customOAuth2UserService,
                          CustomClientRegistrationRepo customClientRegistrationRepo,
                          CustomOAuth2AuthorizedClientService customOAuth2AuthorizedClientService,
                          JdbcTemplate jdbcTemplate
