@@ -18,6 +18,7 @@
 <!-- th:object를 사용하려면 controller에서 빈 껍데기를 넘겨주어야 한다. -->
 <form action="/board/new" enctype="multipart/form-data" th:object="${boardCreateDto}" method="post">
 
+    <!-- kakao로그인시 oauth2_authorized_client 테이블에 principal_name 값이 나온다. -->
       <div>
         <label for="loginId">글쓴이(아이디)</label>
         <input type="text" id="loginId" name="loginId" class="form-control" value="글쓴이(아이디)"

@@ -23,6 +23,11 @@
                 <span sec:authentication="name"></span>
             </span>
             <span>
+                <a sec:authorize="isAnonymous()" th:href="@{/oauth2/authorization/kakao}">
+                    <img src="/kakao_login_medium.png" >
+                </a>
+            </span>
+            <span>
                 <a sec:authorize="isAnonymous()" th:href="@{/member/login}">로그인</a>
                 <a sec:authorize="isAuthenticated()" th:href="@{/member/logout}">로그아웃</a>
             </span>
