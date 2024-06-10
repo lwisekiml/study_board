@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -23,6 +24,8 @@ public class KakaoService {
 
     @Value("${kakao.redirect_uri}")
     private String redirectUri;
+
+    private final KakaoRepository kakaoRepository;
 
     public String getAuthorization() {
         // clientId : rest api
@@ -71,7 +74,7 @@ public class KakaoService {
         return kakaoTokenResponseDto.getAccessToken();
     }
 
-    public HashMap<String, String> getUserIdAndEmail(String token) {
+    public KakaoUserInfoResponseDto getUserInfo(String token) {
 
         KakaoUserInfoResponseDto kakaoUserInfoResponseDto = null;
         HashMap<String, String> userIdAndEmail = new HashMap<>();
@@ -108,9 +111,11 @@ public class KakaoService {
 //            return null;
 //        }
 
-        userIdAndEmail.put("userId", kakaoUserInfoResponseDto.getId().toString());
-        userIdAndEmail.put("email", kakaoUserInfoResponseDto.getKakaoAccount().email);
-        return userIdAndEmail;
+        return kakaoUserInfoResponseDto;
+    }
 
+    @Transactional
+    public Kakao getKakao(String kakaoUserId) {
+        return kakaoRepository.findKakaoByKakaoId(kakaoUserId);
     }
 }
