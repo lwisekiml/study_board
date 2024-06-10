@@ -109,9 +109,6 @@ public class BoardController {
             Principal principal
     ) {
         model.addAttribute("boardDto", boardService.findBoardPlusViewToBoardDto(boardId));
-        // 현재 로그인 한 member
-        String name = principal.getName();
-        model.addAttribute("principal", name);
         return "/board/board";
     }
 
