@@ -29,7 +29,7 @@ public class SecurityConfig {
     private final CustomOAuth2AuthorizedClientService customOAuth2AuthorizedClientService;
     private final JdbcTemplate jdbcTemplate;
 
-    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService,
+    public SecurityConfig(@Lazy CustomOAuth2UserService customOAuth2UserService,
                          CustomClientRegistrationRepo customClientRegistrationRepo,
                          CustomOAuth2AuthorizedClientService customOAuth2AuthorizedClientService,
                          JdbcTemplate jdbcTemplate
