@@ -59,7 +59,7 @@ public class KakaoResponse implements OAuth2Response {
     @Override
     public String getName() {
         // 카카오는 이름을 받아오려면 비즈앱 신청을 해야 받을 수 있어서 부득이 하게 nickanme으로 함
-        // 이 값이 ID가 되어서 kakao client Id로 설정 함
+        // 이 값이 ID가 되어서 kakao client Id로 설정 함(이 값이 oauth2_authorized_client 테이블에 principal_name이 됨)
         return attribute.get("id").toString();
     }
 }

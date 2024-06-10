@@ -57,12 +57,12 @@
     <button onclick="location.href='editBoardForm.html'"
             th:onclick="|location.href='@{/board/{boardId}/edit(boardId=${boardDto.id})}'|"
             sec:authorize="isAuthenticated()"
-            th:if="${#authentication.getPrincipal().getUsername() == boardDto.loginId}"
+            th:if="${principal == boardDto.loginId}"
             type="button">수정
     </button>
 
     <button sec:authorize="isAuthenticated()"
-            th:if="${#authentication.getPrincipal().getUsername() == boardDto.loginId}"
+            th:if="${principal == boardDto.loginId}"
             type="submit">삭제</button>
 
     <button onclick="location.href='../list.html'"
@@ -87,12 +87,12 @@
         <button onclick="location.href='board.html'"
                 th:onclick="|location.href='@{/comment/{commentId}/edit(commentId=${comment.commentId})}'|"
                 sec:authorize="isAuthenticated()"
-                th:if="${#authentication.getPrincipal().getUsername() == comment.getLoginId()}"
+                th:if="${principal == comment.getLoginId()}"
                 type="button">수정
         </button>
         <input type="submit"
                sec:authorize="isAuthenticated()"
-               th:if="${#authentication.getPrincipal().getUsername() == comment.getLoginId()}"
+               th:if="${principal == comment.getLoginId()}"
                value="삭제"/>
     </ul>
 </form>

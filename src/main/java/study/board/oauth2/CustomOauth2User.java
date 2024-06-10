@@ -43,8 +43,4 @@ public class CustomOauth2User implements OAuth2User {
     public String getName() {
         return oAuth2Response.getName();
     }
-
-    public String getUsername() {
-        return oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
-    }
 }
