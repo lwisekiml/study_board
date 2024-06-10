@@ -2,11 +2,14 @@ package study.board.oauth2;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import study.board.member.Member;
+import study.board.member.MemberRepository;
 
 @Slf4j
 @Service
@@ -15,6 +18,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     //DefaultOAuth2UserService OAuth2UserService의 구현체
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final MemberRepository memberRepository;
 
     @Override                   // 인증 데이터가 넘어옴
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -38,7 +43,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return null;
         }
 
-        String username = oAuth2Response.getProvider()+" "+oAuth2Response.getProviderId();
+//        String username = oAuth2Response.getProvider()+"_"+oAuth2Response.getProviderId();
+        String username = oAuth2Response.getProviderId();
         UserEntity existData = userRepository.findByUsername(username);
         String role = "ROLE_USER";
 
@@ -47,6 +53,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             userEntity.setUsername(username);
             userEntity.setEmail(oAuth2Response.getEmail());
             userEntity.setRole(role);
+
+            Member saveMember = memberRepository.save(new Member(username, username, oAuth2Response.getEmail(), passwordEncoder.encode(username)));
+            userEntity.setMember(saveMember);
+            userRepository.save(userEntity);
 
             userRepository.save(userEntity);
         } else {
