@@ -23,7 +23,7 @@
                 <span sec:authentication="name"></span>
             </span>
             <span>
-                <a th:href="@{/kakao/login}">
+                <a sec:authorize="isAnonymous()" th:href="@{/oauth2/authorization/kakao}">
                     <img src="/kakao_login_medium.png" >
                 </a>
             </span>

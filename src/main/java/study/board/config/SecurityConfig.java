@@ -2,6 +2,7 @@ package study.board.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -12,11 +13,32 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import study.board.oauth2.CustomClientRegistrationRepo;
+import study.board.oauth2.CustomOAuth2AuthorizedClientService;
+import study.board.oauth2.CustomOAuth2UserService;
 
 @Configuration
 @EnableWebSecurity // 모든 요청 URL이 스프링 시큐리티의 제어를 받도록 만드는 annotation(스프링 시큐리티를 활성화)
 @EnableMethodSecurity(prePostEnabled = true) // @PreAuthorize 사용을 위함
 public class SecurityConfig {
+
+    // oauth2
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomClientRegistrationRepo customClientRegistrationRepo;
+    private final CustomOAuth2AuthorizedClientService customOAuth2AuthorizedClientService;
+    private final JdbcTemplate jdbcTemplate;
+
+    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService,
+                         CustomClientRegistrationRepo customClientRegistrationRepo,
+                         CustomOAuth2AuthorizedClientService customOAuth2AuthorizedClientService,
+                         JdbcTemplate jdbcTemplate
+    ) {
+        this.customOAuth2UserService = customOAuth2UserService;
+        this.customClientRegistrationRepo = customClientRegistrationRepo;
+        this.customOAuth2AuthorizedClientService = customOAuth2AuthorizedClientService;
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     /*
      * 내부적으로 SecurityFilterChain 클래스가 동작하여 모든 요청 URL에 이 클래스가 필터로 적용되어
      * URL별로 특별한 설정을 할 수 있게 된다. 스프링 시큐리티의 세부 설정은 @Bean 애너테이션을 통해
@@ -39,6 +61,15 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/") // .defaultSuccessUrl("/") // 로그인 성공 시에 이동할 페이지
                         .permitAll()
                 )
+
+                // oauth2 login
+                .oauth2Login((oauth2) -> oauth2
+                        .clientRegistrationRepository(customClientRegistrationRepo.clientRegistrationRepository())
+                        .authorizedClientService(customOAuth2AuthorizedClientService.oAuth2AuthorizedClientService(jdbcTemplate, customClientRegistrationRepo.clientRegistrationRepository()))
+                        .userInfoEndpoint((userInfoEndpointConfig -> userInfoEndpointConfig
+                                .userService(customOAuth2UserService)))
+                )
+
 //                .logout(LogoutConfigurer::permitAll)
                 .logout((logout) -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
