@@ -173,6 +173,17 @@ public class BoardController {
         boardService.delete(boardId);
         return "redirect:/";
     }
+
+    // 글 검색
+    @GetMapping("/board/search")
+    public String search(@RequestParam(value = "search") String search,
+                         Model model,
+                         @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        List<Board> search1 = boardService.findSearch(search, pageable);
+
+        model.addAttribute("search", search);
+        return "redirect:/";
+    }
     
     // board에 관련되어 있지만 /board로 시작하는 것이 아니라 다른 곳을 옮기는게 좋을거 같은데
     @GetMapping("/attach/{boardId}")

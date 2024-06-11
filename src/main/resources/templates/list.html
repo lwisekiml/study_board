@@ -35,6 +35,13 @@
                 <a sec:authorize="isAnonymous()" th:href="@{/member/signup}">회원가입</a>
             </span>
         </div>
+
+        <div style="text-align: center">
+            <form style="text-align: center" th:action="@{/board/search}" id="searchForm" method="get">
+                <input type="text" id="search" name="search" th:value="${search}">
+                <button type="submit" id="btn_search">검색</button>
+            </form>
+        </div>
     </div>
 
     <!-- board list area -->
