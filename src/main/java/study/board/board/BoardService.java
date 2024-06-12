@@ -16,6 +16,7 @@ import study.board.util.FileStore;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -33,6 +34,11 @@ public class BoardService {
     @Transactional
     public Page<ListBoardDto> findAll(Pageable pageable) {
         return boardRepository.findAll(pageable).map(ListBoardDto::toListBoardDto);
+    }
+
+    @Transactional
+    public List<Board> findSearch(String search) {
+        return boardRepository.findByTitleContaining(search);
     }
 
     @Transactional

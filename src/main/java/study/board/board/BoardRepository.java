@@ -10,5 +10,5 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
 //    @Query("select new study.board.dto.BoardDto(b.id, b.title, b.views) from Board b where b.loginId = :loginId")
 //    List<BoardDto> findMemberDto(@Param("loginId") String loginId);
-
+    List<Board> findByTitleContaining(String search);
 }
