@@ -35,6 +35,13 @@
                 <a sec:authorize="isAnonymous()" th:href="@{/member/signup}">회원가입</a>
             </span>
         </div>
+
+        <div style="text-align: center">
+            <form style="text-align: center" th:action="@{/}" id="searchForm" method="get">
+                <input type="text" id="search" name="search" th:value="${search}">
+                <button type="submit" id="btn_search">검색</button>
+            </form>
+        </div>
     </div>
 
     <!-- board list area -->
@@ -71,7 +78,7 @@
 <!--        <a th:href="@{/(page=1)}">첫 페이지 </a>-->
 
         <a th:if="${listBoardDtos.number > 0}">
-            <a th:href="@{/(page=${listBoardDtos.number - 1})}" style="color:#FF0000">
+            <a th:href="@{/(page=${listBoardDtos.number - 1},search=${search})}" style="color:#FF0000">
                 Previous
             </a>
         </a>
@@ -82,12 +89,12 @@
         <span th:each="pageNumber : ${paginationBarNumbers}">
             <span th:if="${pageNumber == listBoardDtos.number}" th:text="${pageNumber + 1}"></span>
             <span th:unless="${pageNumber == listBoardDtos.number}">
-               <a th:href="@{/(page=${pageNumber})}" th:text="${pageNumber + 1}" style="color:#FF0000"></a>
+               <a th:href="@{/(page=${pageNumber},search=${search})}" th:text="${pageNumber + 1}" style="color:#FF0000"></a>
             </span>
         </span>
 
         <a th:if="${listBoardDtos.number < listBoardDtos.totalPages - 1}">
-            <a th:href="@{/(page=${listBoardDtos.number + 1})}" style="color:#FF0000">
+            <a th:href="@{/(page=${listBoardDtos.number + 1},search=${search})}" style="color:#FF0000">
                 Next
             </a>
         </a>
