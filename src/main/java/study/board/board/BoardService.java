@@ -37,6 +37,11 @@ public class BoardService {
     }
 
     @Transactional
+    public List<Board> findSearch(String search) {
+        return boardRepository.findByTitleContaining(search);
+    }
+
+    @Transactional
     public void create(BoardCreateDto boardCreateDto, Member member) throws IOException {
         boardRepository.save(
                 new Board(
@@ -144,10 +149,6 @@ public class BoardService {
         if (!loginId.equals(principal.getName())) {
             throw new Exception("예외");
         }
-    }
-
-    public List<Board> findSearch(String search, Pageable pageable) {
-        return boardRepository.findByTitleContaining(search);
     }
 
 //    // 본인이 작성한 글 찾기

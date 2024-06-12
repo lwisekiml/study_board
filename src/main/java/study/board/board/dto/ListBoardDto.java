@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ListBoardDto {
+public class ListBoardDto implements Comparable<ListBoardDto> {
 
     private Long id;
     private String loginId;
@@ -34,5 +34,18 @@ public class ListBoardDto {
                 entity.getLastModifiedBy(),
                 entity.getLastModifiedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
         );
+    }
+
+
+    // id 내림차순 정렬
+    @Override
+    public int compareTo(ListBoardDto o) {
+        if (this.id > o.id) {
+            return -1;
+        } else if (this.id < o.id) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }
