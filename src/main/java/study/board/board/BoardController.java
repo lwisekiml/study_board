@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +15,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
-import study.board.board.dto.*;
+import study.board.board.dto.BoardCreateDto;
+import study.board.board.dto.BoardDto;
+import study.board.board.dto.BoardEditDto;
+import study.board.board.dto.ListBoardDto;
 import study.board.member.Member;
 import study.board.oauth2.UserEntity;
 import study.board.oauth2.UserRepository;
@@ -28,6 +29,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -45,9 +47,25 @@ public class BoardController {
     @GetMapping("/")
     public String list(
             Model model,
-            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam(value = "search", defaultValue = "") String search
     ) {
-        Page<ListBoardDto> listBoardDtos = boardService.findAll(pageable);
+        Page<ListBoardDto> listBoardDtos = null;
+
+        if (search.isEmpty()) {
+            listBoardDtos = boardService.findAll(pageable);
+        }
+        else {
+            List<Board> boardList = boardService.findSearch(search);
+            List<ListBoardDto> list = new java.util.ArrayList<>(boardList.stream().map(ListBoardDto::toListBoardDto).toList());
+            // PageImpl<>() 은 정렬기능이 없어서 미리 sort
+            // 참고 : https://stackoverflow.com/questions/56946999/can-we-sort-listt-from-spring-boot-pageable-or-sort-page-from-pageimpl
+            Collections.sort(list);
+            PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), 10);
+            int start = (int) pageRequest.getOffset();
+            int end = Math.min(start + pageRequest.getPageSize(), list.size());
+            listBoardDtos = new PageImpl<>(list.subList(start, end), pageRequest, list.size());
+        }
 
         if (listBoardDtos.isEmpty()) {
             log.info("없는 페이지 입니다.");
@@ -58,6 +76,7 @@ public class BoardController {
 
         model.addAttribute("paginationBarNumbers", barNumbers);
         model.addAttribute("listBoardDtos", listBoardDtos); // 프론트에 보낼 때 Dto 인지 명시할 필요가 없을 것으로 보여 boards로 함
+        model.addAttribute("search", search); // 검색어를 화면에 유지하기 위함
 
         return "list";
     }
@@ -171,17 +190,6 @@ public class BoardController {
         }
 
         boardService.delete(boardId);
-        return "redirect:/";
-    }
-
-    // 글 검색
-    @GetMapping("/board/search")
-    public String search(@RequestParam(value = "search") String search,
-                         Model model,
-                         @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        List<Board> search1 = boardService.findSearch(search, pageable);
-
-        model.addAttribute("search", search);
         return "redirect:/";
     }
     
