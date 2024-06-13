@@ -155,9 +155,14 @@ public class BoardService {
     }
 
     @Transactional
-    public void vote(Board board, Member member) {
-        board.getRecommend().add(member);
-        boardRepository.save(board);
+    public void recommend(Board board, Member member) {
+        // 추천을 누르고 한 번 더 누르면 추천 취소
+        if (board.getRecommend().contains(member)) {
+            board.getRecommend().remove(member);
+        } else {
+            board.getRecommend().add(member);
+            boardRepository.save(board);
+        }
     }
 
 //    // 본인이 작성한 글 찾기

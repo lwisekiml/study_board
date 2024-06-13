@@ -226,9 +226,10 @@ public class BoardController {
         return new UrlResource(s);
     }
 
+    // 추천
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/board/vote/{boardId}")
-    public String boarVote(
+    @GetMapping("/board/recommend/{boardId}")
+    public String boardRecommend(
             Principal principal,
             @PathVariable("boardId") String id
     ) {
@@ -236,7 +237,7 @@ public class BoardController {
         // 밑에 둘 순서가 바뀌면 member값이 null로 나온다.
         Member member = memberService.findMember(principal.getName());
         Board board = boardService.findBoard(boardId);
-        boardService.vote(board, member);
+        boardService.recommend(board, member);
 
         return String.format("redirect:/board/%d", boardId);
     }
