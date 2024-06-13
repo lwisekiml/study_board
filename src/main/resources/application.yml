@@ -1,8 +1,65 @@
 spring:
+  config:
+    activate:
+      on-profile: local
+            # .env 값 import
+    import: optional:file:.env[.properties]
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/studydb?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: root
-    password: 1234
+    password: ${MY_MYSQL_PW}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  servlet:
+    multipart:
+      max-file-size: 1MB # 파일 하나의 최대 사이즈
+      max-request-size: 10MB # 전체 사이즈
+
+  messages:
+    basename: messages,errors
+
+kakao:
+  rest_api:
+    client_id: ${KAKAO_REST_API_KEY}
+    redirect_uri: ${KAKAO_REDIRECT_URI}
+
+server:
+  servlet:
+    session:
+      tracking-modes=cookie: cookie
+
+logging:
+  level:
+    org.apache.coyote.http11: trace
+    org.hibernate.SQL: debug
+
+file:
+  dir: /G:/
+
+---
+spring:
+# .env 값 import
+  config:
+    activate:
+      on-profile: dev
+    import: optional:file:.env[.properties]
+  datasource:
+    url: jdbc:mysql://localhost:3306/studydb?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: ${AWS_MYSQL_PW}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -23,14 +80,11 @@ spring:
 
   messages:
     basename: messages,errors
-# .env 값 import
-  config:
-    import: optional:file:.env[.properties]
 
 kakao:
   rest_api:
     client_id: ${KAKAO_REST_API_KEY}
-  redirect_uri: ${KAKAO_REDIRECT_URI}
+    redirect_uri: ${KAKAO_REDIRECT_URI}
 
 server:
   servlet:
