@@ -70,6 +70,11 @@
             type="button">취소
     </button>
 
+    <a th:href="@{/board/vote/{boardId}(boardId=${boardDto.id})}">
+        추천
+        <span class="badge rounded-pill bg-success" th:text="${#lists.size(boardDto.recommend)}"></span>
+    </a>
+
     <br><br>
 </form>
 

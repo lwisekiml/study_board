@@ -9,9 +9,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -50,5 +52,10 @@ public class MemberService implements UserDetailsService {
         }
 
         return new User(member.getLoginId(), member.getPassword(), authorities);
+    }
+
+    @Transactional
+    public Member findMember(String memberName) {
+        return memberRepository.findByLoginId(memberName).orElseThrow(IllegalArgumentException::new);
     }
 }

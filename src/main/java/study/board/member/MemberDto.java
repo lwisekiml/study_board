@@ -37,4 +37,18 @@ public class MemberDto {
     public static String toLoginId(Member entity) {
         return entity.getLoginId();
     }
+
+    public MemberDto(String loginId, String memberName, String email) {
+        this.loginId = loginId;
+        this.memberName = memberName;
+        this.email = email;
+    }
+
+    public static MemberDto toMemberDto(Member entity) {
+        return new MemberDto(
+                entity.getLoginId(),
+                entity.getMemberName(),
+                entity.getEmail()
+        );
+    }
 }

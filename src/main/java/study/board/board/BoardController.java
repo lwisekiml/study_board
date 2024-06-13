@@ -20,6 +20,7 @@ import study.board.board.dto.BoardDto;
 import study.board.board.dto.BoardEditDto;
 import study.board.board.dto.ListBoardDto;
 import study.board.member.Member;
+import study.board.member.MemberService;
 import study.board.oauth2.UserEntity;
 import study.board.oauth2.UserRepository;
 import study.board.util.FileStore;
@@ -43,6 +44,7 @@ public class BoardController {
     private final FileStore fileStore;
 
     private final UserRepository userRepository;
+    private final MemberService memberService;
 
     @GetMapping("/")
     public String list(
@@ -222,5 +224,20 @@ public class BoardController {
 
         String s = "file:" + fileStore.getFullPath(filename);
         return new UrlResource(s);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/board/vote/{boardId}")
+    public String boarVote(
+            Principal principal,
+            @PathVariable("boardId") String id
+    ) {
+        Long boardId = Long.valueOf(id);
+        // 밑에 둘 순서가 바뀌면 member값이 null로 나온다.
+        Member member = memberService.findMember(principal.getName());
+        Board board = boardService.findBoard(boardId);
+        boardService.vote(board, member);
+
+        return String.format("redirect:/board/%d", boardId);
     }
 }
