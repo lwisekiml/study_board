@@ -8,7 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import study.board.board.dto.*;
+import study.board.board.dto.BoardCreateDto;
+import study.board.board.dto.BoardDto;
+import study.board.board.dto.BoardEditDto;
+import study.board.board.dto.ListBoardDto;
 import study.board.file.*;
 import study.board.member.Member;
 import study.board.member.MemberRepository;
@@ -148,6 +151,17 @@ public class BoardService {
 
         if (!loginId.equals(principal.getName())) {
             throw new Exception("예외");
+        }
+    }
+
+    @Transactional
+    public void recommend(Board board, Member member) {
+        // 추천을 누르고 한 번 더 누르면 추천 취소
+        if (board.getRecommend().contains(member)) {
+            board.getRecommend().remove(member);
+        } else {
+            board.getRecommend().add(member);
+            boardRepository.save(board);
         }
     }
 

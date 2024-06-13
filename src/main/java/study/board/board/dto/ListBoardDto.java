@@ -16,6 +16,7 @@ public class ListBoardDto implements Comparable<ListBoardDto> {
     private String title;
     private int views;
     private int commentSize;
+    private int recommendSize;
 
     private String createdBy;
     private String createdDate;
@@ -29,6 +30,7 @@ public class ListBoardDto implements Comparable<ListBoardDto> {
                 entity.getTitle(),
                 entity.getViews(),
                 entity.getComments().size(),
+                entity.getRecommend().size(),
                 entity.getCreatedBy(),
                 entity.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                 entity.getLastModifiedBy(),

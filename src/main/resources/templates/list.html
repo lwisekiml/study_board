@@ -53,6 +53,7 @@
                 <tr>
                     <th scope="col" class="th-num">번호</th>
                     <th scope="col" class="th-title">제목</th>
+                    <th scope="col" class="th-title">추천</th>
                     <th scope="col" class="th-writer">작성자</th>
                     <th scope="col" class="th-viewcnt">조회수</th>
                     <th scope="col" class="th-date">등록일</th>
@@ -65,6 +66,7 @@
                     <td><a href="board/board.html" th:href="@{|/board/${board.id}|}" th:text="${board.title}">제목</a>
                         <span th:if="${board.commentSize > 0}" th:text="|(${board.commentSize})|"></span>
                     </td>
+                    <td><p th:text="${board.recommendSize}">추천</p></td>
                     <td><p th:text="${board.loginId}">작성자</p></td>
                     <td><p th:text="${board.views}">조회수</p></td>
                     <td><p th:text="${board.getCreatedDate()}">등록일</p></td>

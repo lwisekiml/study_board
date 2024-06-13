@@ -13,6 +13,7 @@ import study.board.member.Member;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter @Setter
@@ -26,6 +27,10 @@ public class Board extends BaseEntity {
     private String title;
     private String content;
     private int views; // 조회수
+
+    // 다대다 관계는 다대일, 일대다 관계로 풀어야 하지만 추천기능의 경우 중간에 기능 확장할 필요가 없을 것으로 예상된어 다대다 관계로 진행함
+    @ManyToMany
+    Set<Member> recommend;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
