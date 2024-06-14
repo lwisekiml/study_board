@@ -107,7 +107,7 @@ public class BoardController {
 
         if (bindingResult.hasErrors()) {
             log.info("errors = {}", bindingResult);
-            return "/board/createBoardForm";
+            return "board/createBoardForm";
         }
         Member member = null;
         String name = principal.getName(); // // kakao로그인시 oauth2_authorized_client 테이블에 principal_name 값이 나온다.
@@ -130,7 +130,7 @@ public class BoardController {
             Principal principal
     ) {
         model.addAttribute("boardDto", boardService.findBoardPlusViewToBoardDto(boardId));
-        return "/board/board";
+        return "board/board";
     }
 
     // 글 수정
@@ -159,7 +159,7 @@ public class BoardController {
 
         if (bindingResult.hasErrors()) {
             log.info("errors = {}", bindingResult);
-            return "/board/editBoardForm";
+            return "board/editBoardForm";
         }
 
         try {
@@ -167,7 +167,7 @@ public class BoardController {
         } catch (Exception e) {
             bindingResult.reject("EditFailed", "수정 권한이 없습니다.");
             log.info("edit errors = {}", bindingResult);
-            return "/board/editBoardForm";
+            return "board/editBoardForm";
         }
 
         boardService.edit(boardEditDto);
