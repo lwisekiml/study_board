@@ -21,7 +21,7 @@ public class MemberController {
     public String signup(
             @ModelAttribute("memberDto") MemberDto memberDto
     ) {
-        return "/member/signup";
+        return "member/signup";
     }
 
 
@@ -33,13 +33,13 @@ public class MemberController {
 
         if (bindingResult.hasErrors()) {
             log.info("errors = {}", bindingResult);
-            return "/member/signup";
+            return "member/signup";
         }
 
         // 비밀번호와 비밀번호 확인 값이 같은지 검증
         if (!memberDto.getPassword().equals(memberDto.getPasswordConfirm())) {
             bindingResult.rejectValue("passwordConfirm", "passwordInCorrect", "비밀번호와 비밀번호 확인의 값이 일치하지 않습니다.");
-            return "/member/signup";
+            return "member/signup";
         }
 
         try {
@@ -48,11 +48,11 @@ public class MemberController {
             log.error("signupFailed!! Duplicate!! " + memberDto, e);
             // 아이디 중복인지 이메일 중복인지 분리하려 했으나 방법을 못찾았다.
             bindingResult.reject("signupFailed", "이미 등록된 사용자입니다."); // 글로벌 오류
-            return "/member/signup";
+            return "member/signup";
         } catch (Exception e) {
             log.error("signupFailed!! " + memberDto, e);
             bindingResult.reject("signupFailed", e.getMessage());
-            return "/member/signup";
+            return "member/signup";
         }
 
         return "redirect:/";
@@ -60,7 +60,7 @@ public class MemberController {
 
     @GetMapping("/member/login")
     public String login() {
-        return "/member/loginForm";
+        return "member/loginForm";
     }
 
 
