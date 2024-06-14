@@ -10,6 +10,25 @@ spring:
     password: ${MY_MYSQL_PW}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-name: kakao
+            client-authentication-method: client_secret_post
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
+            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+            authorization-grant-type: authorization_code
+            scope: profile_nickname
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
   jpa:
     hibernate:
       ddl-auto: create
@@ -33,8 +52,10 @@ spring:
 
 kakao:
   rest_api:
-    client_id: ${KAKAO_REST_API_KEY}
-    redirect_uri: ${KAKAO_REDIRECT_URI}
+    client_id: ${KAKAO_CLIENT_ID}
+    client-secret: ${KAKAO_CLIENT_SECRET}
+
+
 
 server:
   servlet:
@@ -61,7 +82,24 @@ spring:
     username: root
     password: ${AWS_MYSQL_PW}
     driver-class-name: com.mysql.cj.jdbc.Driver
-
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-name: kakao
+            client-authentication-method: client_secret_post
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
+            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+            authorization-grant-type: authorization_code
+            scope: profile_nickname
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
   jpa:
     hibernate:
       ddl-auto: create
@@ -83,8 +121,8 @@ spring:
 
 kakao:
   rest_api:
-    client_id: ${KAKAO_REST_API_KEY}
-    redirect_uri: ${KAKAO_REDIRECT_URI}
+    client_id: ${KAKAO_CLIENT_ID}
+    client-secret: ${KAKAO_CLIENT_SECRET}
 
 server:
   servlet:
@@ -98,3 +136,4 @@ logging:
 
 file:
   dir: /G:/ # 파일 저장 위치(업로드시)
+
