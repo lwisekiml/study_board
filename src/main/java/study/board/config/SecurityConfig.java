@@ -3,7 +3,6 @@ package study.board.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -14,8 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import study.board.oauth2.CustomClientRegistrationRepo;
-import study.board.oauth2.CustomOAuth2AuthorizedClientService;
 import study.board.oauth2.CustomOAuth2UserService;
 
 @Configuration
@@ -25,19 +22,16 @@ public class SecurityConfig {
 
     // oauth2
     private final CustomOAuth2UserService customOAuth2UserService;
-    private final CustomClientRegistrationRepo customClientRegistrationRepo;
-    private final CustomOAuth2AuthorizedClientService customOAuth2AuthorizedClientService;
-    private final JdbcTemplate jdbcTemplate;
+//    private final CustomOAuth2AuthorizedClientService customOAuth2AuthorizedClientService;
+//    private final JdbcTemplate jdbcTemplate;
 
-    public SecurityConfig(@Lazy CustomOAuth2UserService customOAuth2UserService,
-                         CustomClientRegistrationRepo customClientRegistrationRepo,
-                         CustomOAuth2AuthorizedClientService customOAuth2AuthorizedClientService,
-                         JdbcTemplate jdbcTemplate
+    public SecurityConfig(@Lazy CustomOAuth2UserService customOAuth2UserService
+//                         CustomOAuth2AuthorizedClientService customOAuth2AuthorizedClientService,
+//                         JdbcTemplate jdbcTemplate
     ) {
         this.customOAuth2UserService = customOAuth2UserService;
-        this.customClientRegistrationRepo = customClientRegistrationRepo;
-        this.customOAuth2AuthorizedClientService = customOAuth2AuthorizedClientService;
-        this.jdbcTemplate = jdbcTemplate;
+//        this.customOAuth2AuthorizedClientService = customOAuth2AuthorizedClientService;
+//        this.jdbcTemplate = jdbcTemplate;
     }
 
     /*
@@ -65,8 +59,6 @@ public class SecurityConfig {
 
                 // oauth2 login
                 .oauth2Login((oauth2) -> oauth2
-                        .clientRegistrationRepository(customClientRegistrationRepo.clientRegistrationRepository())
-                        .authorizedClientService(customOAuth2AuthorizedClientService.oAuth2AuthorizedClientService(jdbcTemplate, customClientRegistrationRepo.clientRegistrationRepository()))
                         .userInfoEndpoint((userInfoEndpointConfig -> userInfoEndpointConfig
                                 .userService(customOAuth2UserService)))
                 )
