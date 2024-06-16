@@ -1,16 +1,15 @@
 #!/bin/bash
- CURRENT_PID=$(pgrep -f .jar)
- echo "$CURRENT_PID"
- if [ -z $CURRENT_PID ]; then
-         echo "no process"
- else
-         echo "kill $CURRENT_PID"
-         kill -9 $CURRENT_PID
-         sleep 3
- fi
+CURRENT_PID=$(pgrep -f .java)
+echo "$CURRENT_PID"
+if [ -z $CURRENT_PID ]
+then
+  echo "현재 구동중이 것이 없으므로 중지하지 않습니다."
+else
+  echo "kill $CURRENT_PID"
+  kill -9 $CURRENT_PID
+  sleep 3
+fi
 
- JAR_PATH="/home/ec2-user/study_board/*.jar"
- echo "jar path : $JAR_PATH"
- chmod +x $JAR_PATH
- nohup java -jar $JAR_PATH > /dev/null 2> /dev/null < /dev/null &
- echo "jar file deploy success"
+JAR_PATH="/home/ec2-user/study_board/build/libs/board-0.0.1-SNAPSHOT.jar"
+nohup java -jar $JAR_PATH --spring.profiles.active=dev
+echo "jar file deploy success!!!"
