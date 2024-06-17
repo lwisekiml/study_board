@@ -1,6 +1,6 @@
 #!/bin/bash
-CURRENT_PID=$(pgrep -f .java)
-echo "$CURRENT_PID"
+CURRENT_PID=$(pgrep -f .jar)
+echo "현재 PID : $CURRENT_PID"
 if [ -z $CURRENT_PID ]
 then
   echo "현재 구동중이 것이 없으므로 중지하지 않습니다."
