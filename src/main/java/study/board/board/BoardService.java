@@ -45,10 +45,10 @@ public class BoardService {
     }
 
     @Transactional
-    public void create(BoardCreateDto boardCreateDto, Member member) throws IOException {
+    public void create(BoardCreateDto boardCreateDto, String loginId) throws IOException {
         boardRepository.save(
                 new Board(
-                        member,
+                        loginId,
                         boardCreateDto.getTitle(),
                         boardCreateDto.getContent(),
                         fileStore.storeFile(boardCreateDto.getAttachFile()),
@@ -89,7 +89,7 @@ public class BoardService {
     @Transactional
     public void checkEditAuth(Long boardId, Principal principal) {
         Board board = this.findBoard(boardId);
-        String loginId = board.getMember().getLoginId();
+        String loginId = board.getLoginId();
 
         if (!loginId.equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
@@ -147,7 +147,7 @@ public class BoardService {
 
     public void checkDeleteAuth(Long boardId, Principal principal) throws Exception {
         Board board = this.findBoard(boardId);
-        String loginId = board.getMember().getLoginId();
+        String loginId = board.getLoginId();
 
         if (!loginId.equals(principal.getName())) {
             throw new Exception("예외");

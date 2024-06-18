@@ -34,7 +34,7 @@ public class BoardDto { // 게시글 조회
     public static BoardDto toBoardDto(Board entity) {
         return new BoardDto(
                 entity.getId(),
-                entity.getMember().getLoginId(),
+                entity.getLoginId(),
                 entity.getTitle(),
                 entity.getContent(),
                 entity.getViews(),

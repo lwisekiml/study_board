@@ -48,7 +48,7 @@ public class BoardEditDto {
     public static BoardEditDto toBoardEditDto(Board entity) {
         return new BoardEditDto(
                 entity.getId(),
-                entity.getMember().getLoginId(),
+                entity.getLoginId(),
                 entity.getTitle(),
                 entity.getContent(),
                 UploadFileDto.toUploadFileDto(entity.getAttachFile()),
