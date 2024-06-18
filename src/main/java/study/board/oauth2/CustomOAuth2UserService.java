@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import study.board.member.Member;
 import study.board.member.MemberRepository;
+import study.board.member.MemberRole;
 
 @Slf4j
 @Service
@@ -46,7 +47,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 //        String username = oAuth2Response.getProvider()+"_"+oAuth2Response.getProviderId();
         String username = oAuth2Response.getProviderId();
         UserEntity existData = userRepository.findByUsername(username);
-        String role = "ROLE_USER";
+        String role = "ROLE_MEMBER";
 
         if (existData == null) {
             UserEntity userEntity = new UserEntity();
@@ -54,7 +55,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             userEntity.setEmail(oAuth2Response.getEmail());
             userEntity.setRole(role);
 
-            Member saveMember = memberRepository.save(new Member(username, username, oAuth2Response.getEmail(), passwordEncoder.encode(username)));
+            Member saveMember = memberRepository.save(new Member(username, username, oAuth2Response.getEmail(), passwordEncoder.encode(username), MemberRole.MEMBER));
             userEntity.setMember(saveMember);
             userRepository.save(userEntity);
 
