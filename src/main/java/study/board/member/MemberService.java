@@ -32,7 +32,8 @@ public class MemberService implements UserDetailsService {
                         memberDto.getLoginId(),
                         memberDto.getMemberName(),
                         memberDto.getEmail(),
-                        memberDto.getPassword()
+                        memberDto.getPassword(),
+                        MemberRole.MEMBER
                 )
         );
     }
@@ -45,7 +46,7 @@ public class MemberService implements UserDetailsService {
 
         List<GrantedAuthority> authorities = new ArrayList<>();
 
-        if ("admin".equals(username)) {
+        if (member.getMemberRole().equals(MemberRole.ADMIN)){
             authorities.add(new SimpleGrantedAuthority(MemberRole.ADMIN.getValue()));
         } else {
             authorities.add(new SimpleGrantedAuthority(MemberRole.MEMBER.getValue()));

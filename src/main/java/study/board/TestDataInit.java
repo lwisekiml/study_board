@@ -8,6 +8,7 @@ import study.board.board.Board;
 import study.board.board.BoardRepository;
 import study.board.member.Member;
 import study.board.member.MemberRepository;
+import study.board.member.MemberRole;
 
 @Component
 @RequiredArgsConstructor
@@ -29,8 +30,9 @@ public class TestDataInit {
 //        boardRepository.save(new Board("test", "제목3", "내용3"));
 //        boardRepository.save(new Board("qwer", "제목2", "내용2"));
 
-        memberRepository.save(new Member("loginId", "membername", "member@email.com", passwordEncoder.encode("password")));
-        memberRepository.save(new Member("asd", "asd", "asd@email.com", passwordEncoder.encode("asd")));
+        memberRepository.save(new Member("loginId", "membername", "member@email.com", passwordEncoder.encode("password"), MemberRole.MEMBER));
+        memberRepository.save(new Member("asd", "asd", "asd@email.com", passwordEncoder.encode("asd"), MemberRole.MEMBER));
+        memberRepository.save(new Member("admin", "ADMIN", "admin@email.com", passwordEncoder.encode("12345"), MemberRole.ADMIN));
 
         Member member1 = memberRepository.findByLoginId("loginId").get();
         Member member2 = memberRepository.findByLoginId("asd").get();

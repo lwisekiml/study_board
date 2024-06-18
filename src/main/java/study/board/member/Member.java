@@ -24,13 +24,16 @@ public class Member {
     private String email;
     private String password;
 
+    private MemberRole memberRole;
+
 //    @OneToMany(mappedBy = "member")
 //    private List<Board> board = new ArrayList<>();
 
-    public Member(String loginId, String memberName, String email, String password) {
+    public Member(String loginId, String memberName, String email, String password, MemberRole memberRole) {
         this.loginId = loginId;
         this.memberName = memberName;
         this.email = email;
         this.password = password;
+        this.memberRole = memberRole;
     }
 }
