@@ -47,24 +47,22 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 //        String username = oAuth2Response.getProvider()+"_"+oAuth2Response.getProviderId();
         String username = oAuth2Response.getProviderId();
         UserEntity existData = userRepository.findByUsername(username);
-        String role = "ROLE_MEMBER";
+        String role = MemberRole.MEMBER.toString();
 
         if (existData == null) {
             UserEntity userEntity = new UserEntity();
             userEntity.setUsername(username);
             userEntity.setEmail(oAuth2Response.getEmail());
-            userEntity.setRole(role);
+            userEntity.setMemberRole(MemberRole.MEMBER);
 
             Member saveMember = memberRepository.save(new Member(username, username, oAuth2Response.getEmail(), passwordEncoder.encode(username), MemberRole.MEMBER));
             userEntity.setMember(saveMember);
-            userRepository.save(userEntity);
-
             userRepository.save(userEntity);
         } else {
             existData.setUsername(username);
             existData.setEmail(oAuth2Response.getEmail());
 
-            role = existData.getRole();
+            role = existData.getMemberRole().toString();
 
             userRepository.save(existData);
         }
