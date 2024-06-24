@@ -2,8 +2,10 @@ package study.board.board.dto;
 
 import lombok.*;
 import study.board.board.Board;
+import study.board.member.Member;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Builder
 @Getter @Setter
@@ -26,7 +28,7 @@ public class ListBoardDto implements Comparable<ListBoardDto> {
     public static ListBoardDto toListBoardDto(Board entity) {
         return new ListBoardDto(
                 entity.getId(),
-                entity.getMember().getLoginId(),
+                entity.getLoginId(),
                 entity.getTitle(),
                 entity.getViews(),
                 entity.getComments().size(),
@@ -37,7 +39,6 @@ public class ListBoardDto implements Comparable<ListBoardDto> {
                 entity.getLastModifiedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
         );
     }
-
 
     // id 내림차순 정렬
     @Override
