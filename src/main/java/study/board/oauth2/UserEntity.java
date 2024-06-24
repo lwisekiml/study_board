@@ -3,6 +3,7 @@ package study.board.oauth2;
 import jakarta.persistence.*;
 import lombok.*;
 import study.board.member.Member;
+import study.board.member.MemberRole;
 
 import static jakarta.persistence.FetchType.LAZY;
 
@@ -15,7 +16,9 @@ public class UserEntity {
     private Long id;
     private String username;
     private String email;
-    private String role;
+
+    @Enumerated(EnumType.STRING)
+    private MemberRole memberRole;
 
     @OneToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
