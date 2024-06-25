@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="container">
+    <div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>ID</th>
+                <th>이름</th>
+                <th>email</th>
+                <th>role</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr th:each="member : ${allMember}">
+                <td th:text="${member.memberId}"></td>
+                <td th:text="${member.loginId}"></td>
+                <td th:text="${member.memberName}"></td>
+                <td th:text="${member.email}"></td>
+                <td th:text="${member.memberRole}"></td>
+                <td>
+                    <a href="#" id="deleteButton" th:href="@{/admin/{id}/delete (id=${member.memberId})}"
+                       onclick="return confirmDelete();" class="btn btn-primary" role="button">삭제</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <script>
+            function confirmDelete() {
+                // Display confirmation dialog
+                if (window.confirm("삭제 하시겠습니까?")) {
+                    // User confirmed, proceed with deletion
+                    // console.log("삭제 합니다.")
+                    return true;
+                } else {
+                    // console.log("취소 합니다.")
+                    // User canceled, prevent deletion
+                    return false;
+                }
+            }
+        </script>
+    </div>
+</div>
+</body>
+</html>
+

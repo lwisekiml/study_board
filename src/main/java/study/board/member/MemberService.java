@@ -10,15 +10,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import study.board.oauth2.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService implements UserDetailsService {
 
+    private final UserRepository userRepository;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -58,5 +59,19 @@ public class MemberService implements UserDetailsService {
     @Transactional
     public Member findMember(String memberName) {
         return memberRepository.findByLoginId(memberName).orElseThrow(IllegalArgumentException::new);
+    }
+
+    @Transactional
+    public void deleteMember(Long id) {
+        Member member = memberRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        if (member.getMemberRole().equals(MemberRole.MEMBER)) {
+            memberRepository.deleteById(id);
+            userRepository.deleteByMember(member);
+        }
+    }
+
+    @Transactional
+    public List<MemberResponseDto> findAll() {
+        return memberRepository.findAll().stream().map(MemberResponseDto::toMemberResponseDto).toList();
     }
 }
