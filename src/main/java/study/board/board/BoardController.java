@@ -109,16 +109,10 @@ public class BoardController {
             log.info("errors = {}", bindingResult);
             return "board/createBoardForm";
         }
-        Member member = null;
-        String name = principal.getName(); // // kakao로그인시 oauth2_authorized_client 테이블에 principal_name 값이 나온다.
-        try {
-            // 일반 회원 가입시
-            member = boardService.findMember(principal.getName());
-        } catch (IllegalArgumentException e) {
-            // kakao 가입시
-            UserEntity byUsername = userRepository.findByUsername(principal.getName());
-        }
-        boardService.create(boardCreateDto, member);
+
+        Member member = boardService.findMember(principal.getName());
+        boardService.create(boardCreateDto, member.getLoginId());
+
         return "redirect:/";
     }
 
