@@ -146,6 +146,10 @@ public class BoardService {
     }
 
     public void checkDeleteAuth(Long boardId, Principal principal) throws Exception {
+        if (principal.getName().equals("admin")) {
+            return;
+        }
+
         Board board = this.findBoard(boardId);
         String loginId = board.getLoginId();
 

@@ -62,7 +62,7 @@
     </button>
 
     <button sec:authorize="isAuthenticated()"
-            th:if="${#authentication.getName() == boardDto.loginId}"
+            th:if="${#authentication.getName() == boardDto.loginId || #authentication.getName() == 'admin'}"
             type="submit">삭제</button>
 
     <button onclick="location.href='../list.html'"
