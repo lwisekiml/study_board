@@ -32,9 +32,7 @@ public class Board extends BaseEntity {
     @ManyToMany
     Set<Member> recommend;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    private String loginId;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
@@ -47,8 +45,8 @@ public class Board extends BaseEntity {
     private List<UploadFiles> imageFiles = new ArrayList<>();
 
     // TestDataInit
-    public Board(Member member, String title, String content, int views) {
-        this.member = member;
+    public Board(String loginId, String title, String content, int views) {
+        this.loginId = loginId;
         this.title = title;
         this.content = content;
         this.views = views;
@@ -57,8 +55,8 @@ public class Board extends BaseEntity {
     // 글쓰기
     // @NoArgsConstructor와 @Builder를 같이 사용하면 오류 발생하여 생성자에 붙인다.
 //    @Builder
-    public Board(Member member, String title, String content, UploadFile uploadFile, List<UploadFiles> imageFiles) {
-        this.member = member;
+    public Board(String loginId, String title, String content, UploadFile uploadFile, List<UploadFiles> imageFiles) {
+        this.loginId = loginId;
         this.title = title;
         this.content = content;
         this.setAttachFile(uploadFile);

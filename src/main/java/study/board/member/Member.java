@@ -1,9 +1,6 @@
 package study.board.member;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -24,6 +21,7 @@ public class Member {
     private String email;
     private String password;
 
+    @Enumerated(EnumType.STRING)
     private MemberRole memberRole;
 
 //    @OneToMany(mappedBy = "member")

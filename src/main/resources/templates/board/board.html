@@ -62,7 +62,7 @@
     </button>
 
     <button sec:authorize="isAuthenticated()"
-            th:if="${#authentication.getName() == boardDto.loginId}"
+            th:if="${#authentication.getName() == boardDto.loginId || #authentication.getName() == 'admin'}"
             type="submit">삭제</button>
 
     <button onclick="location.href='../list.html'"
@@ -97,7 +97,7 @@
         </button>
         <input type="submit"
                sec:authorize="isAuthenticated()"
-               th:if="${#authentication.getName() == comment.getLoginId()}"
+               th:if="${#authentication.getName() == comment.getLoginId() || #authentication.getName() == 'admin'}"
                value="삭제"/>
     </ul>
 </form>

@@ -23,7 +23,7 @@ public class BoardCommentDto { // 게시글 조회
     public static BoardCommentDto toBoardCommentDto(Comment entity) {
         return new BoardCommentDto(
                 entity.getCommentId(),
-                MemberDto.toLoginId(entity.getMember()), // 댓글에 로그인 아이디 표시
+                entity.getLoginId(), // 댓글에 로그인 아이디 표시
                 entity.getCommentContent(),
                 entity.getCreatedBy(),
                 entity.getLastModifiedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))

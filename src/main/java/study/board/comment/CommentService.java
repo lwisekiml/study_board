@@ -19,13 +19,11 @@ public class CommentService {
 
     private final BoardService boardService;
     private final CommentRepository commentRepository;
-    private final MemberRepository memberRepository;
 
     @Transactional
     public void create(Long boardId, String loginId, String commentContent) {
         Board board = boardService.findBoard(boardId);
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(IllegalArgumentException::new);
-        Comment comment = new Comment(board, member, commentContent);
+        Comment comment = new Comment(board, loginId, commentContent);
         commentRepository.save(comment);
     }
 
