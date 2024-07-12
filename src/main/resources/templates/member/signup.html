@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원 가입</title>
 
     <style>
@@ -11,10 +10,106 @@
             color: #dc3545;
         }
     </style>
+
+    <script>
+        let countdown;
+        let countdownActive = false;
+
+        function startCountdown(duration) {
+            let timerDisplay = document.getElementById("countdown");
+            let seconds = duration;
+
+            if (countdownActive) {
+                clearInterval(countdown);
+            }
+
+            countdownActive = true;
+            countdown = setInterval(function() {
+                let remainingSeconds = parseInt(seconds % 60, 10);
+                remainingSeconds = remainingSeconds < 10 ? "0" + remainingSeconds : remainingSeconds;
+
+                timerDisplay.textContent = "00:" + remainingSeconds;
+
+                if (--seconds < 0) {
+                    clearInterval(countdown);
+                    document.getElementById("completeButton").disabled = true;
+                    document.getElementById("verifyButton").disabled = true;
+                    document.getElementById("email").disabled = true;
+                    timerDisplay.textContent = "";
+                }
+            }, 1000);
+        }
+
+        function sendVerification() {
+            const emailInput = document.getElementById("email").value;
+
+            fetch('/verify-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: emailInput }),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementById("verificationCode").style.display = 'inline';
+                        document.getElementById("code").disabled = false; // 인증 코드 입력란 활성화
+                        startCountdown(60); // 1분 카운트다운 시작
+                    } else {
+                        alert('인증 코드 전송 실패');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function submitVerificationCode(event) {
+            event.preventDefault(); // 기본 제출 방지
+            const codeInput = document.getElementById("code").value;
+
+            fetch('/verification-code', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ code: codeInput }),
+            })
+                .then(response => response.text())
+                .then(data => {
+                    if (data === "ok") {
+                        alert('인증이 완료되었습니다.');
+                        document.getElementById("completeButton").innerText = "인증완료"; // 버튼 텍스트 변경
+                        document.getElementById("completeButton").disabled = true; // 인증 완료 후 버튼 비활성화
+                        clearInterval(countdown); // 카운트다운 종료
+                        document.getElementById("countdown").textContent = ""; // 카운트다운 텍스트 삭제
+                        document.getElementById("verifyButton").disabled = true; // 인증코드 받기 버튼 비활성화
+                        document.getElementById("email").disabled = true; // 이메일 입력 비활성화
+                    } else {
+                        alert('인증 코드가 잘못되었습니다.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function checkVerificationStatus(event) {
+            const verifyButton = document.getElementById("verifyButton");
+            const completeButton = document.getElementById("completeButton");
+
+            if (verifyButton.disabled && completeButton.disabled) {
+                document.getElementById("email").disabled = false; // 이메일 입력란 재활성화
+                // 버튼이 비활성화 되어 있으면 폼 제출
+                document.forms[0].submit();
+            } else {
+                // 버튼이 활성화 되어 있으면 알림창 표시
+                alert("이메일 인증 해주세요");
+            }
+
+            event.preventDefault(); // 기본 제출 방지
+        }
+    </script>
 </head>
 <body>
-<h1>회원 정보 입력</h1>
-<form action="/member/signup" th:object="${memberDto}" method="post">
+<h1>회원 가입</h1>
+<form action="/member/signup" th:object="${memberDto}" method="post" onsubmit="checkVerificationStatus(event);">
 
     <div th:if="${#fields.hasGlobalErrors()}">
         <p class="field-error" th:each="err : ${#fields.globalErrors()}"
@@ -31,26 +126,31 @@
         <input type="text" id="username" th:field="*{memberName}" th:errorclass="field-error" placeholder="이름을 입력하세요"/><br/>
         <div class="field-error" th:errors="*{memberName}">이름 오류</div>
     </div>
-    <div>
-        <label for="email">이메일</label>
-        <input type="text" id="email" th:field="*{email}" th:errorclass="field-error" placeholder="이메일을 입력하세요"/><br/>
-        <div class="field-error" th:errors="*{email}">이메일 오류</div>
+
+    <label for="email">이메일:</label>
+    <input type="text" id="email" th:field="*{email}" th:errorclass="field-error" placeholder="이메일을 입력하세요" />
+    <button type="button" id="verifyButton" onclick="sendVerification()">인증코드 받기</button><br>
+    <div class="field-error" th:errors="*{email}">이메일 오류</div>
+
+    <div id="verificationCode" style="display: none;">
+        <label for="code">인증 코드:</label>
+        <input type="text" id="code" name="code" required disabled>
+        <span id="countdown">00:60</span>
+        <button type="button" id="completeButton" onclick="submitVerificationCode(event)">인증하기</button>
     </div>
     <div>
         <label for="password">비밀번호</label>
-        <input type="password"  id="password" th:field="*{password}" th:errorclass="field-error" placeholder="비밀번호를 입력하세요"/><br/>
+        <input type="password" id="password" th:field="*{password}" th:errorclass="field-error" placeholder="비밀번호를 입력하세요"/><br/>
         <div class="field-error" th:errors="*{password}">비밀번호 오류</div>
     </div>
     <div>
         <label for="passwordConfirm">비밀번호 확인</label>
-        <input type="password"  id="passwordConfirm" th:field="*{passwordConfirm}" th:errorclass="field-error" placeholder="비밀번호를 다시 입력하세요"/><br/>
+        <input type="password" id="passwordConfirm" th:field="*{passwordConfirm}" th:errorclass="field-error" placeholder="비밀번호를 다시 입력하세요"/><br/>
         <div class="field-error" th:errors="*{passwordConfirm}">비밀번호 확인 오류</div>
     </div>
 
     <input type="submit" value="회원가입"/>
-    <button onclick="location.href='../list.html'"
-            th:onclick="|location.href='@{/}'|"
-            type="button">취소</button>
+    <button onclick="location.href='../list.html'" th:onclick="|location.href='@{/}'|" type="button">취소</button>
 
 </form>
 </body>
