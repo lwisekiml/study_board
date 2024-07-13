@@ -52,6 +52,12 @@ public class BoardController {
             @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(value = "search", defaultValue = "") String search
     ) {
+        log.error("error from log");
+        log.warn( "warn from log");
+        log.info( "info from log");
+        log.debug("debug from log");
+        log.trace("trace from log");
+
         Page<ListBoardDto> listBoardDtos = null;
 
         if (search.isEmpty()) {
