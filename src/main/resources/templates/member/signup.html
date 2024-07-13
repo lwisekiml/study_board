@@ -13,104 +13,102 @@
 
     <script>
         let countdown;
-        let countdownActive = false;
+        let timeLeft = 180; // 3분
 
-        function startCountdown(duration) {
-            let timerDisplay = document.getElementById("countdown");
-            let seconds = duration;
+        function startCountdown() {
+            updateCountdownDisplay();
+            document.getElementById("verificationButton").disabled = false;
 
-            if (countdownActive) {
-                clearInterval(countdown);
-            }
-
-            countdownActive = true;
-            countdown = setInterval(function() {
-                let remainingSeconds = parseInt(seconds % 60, 10);
-                remainingSeconds = remainingSeconds < 10 ? "0" + remainingSeconds : remainingSeconds;
-
-                timerDisplay.textContent = "00:" + remainingSeconds;
-
-                if (--seconds < 0) {
+            countdown = setInterval(() => {
+                if (timeLeft <= 0) {
                     clearInterval(countdown);
-                    document.getElementById("completeButton").disabled = true;
-                    document.getElementById("verifyButton").disabled = true;
-                    document.getElementById("email").disabled = true;
-                    timerDisplay.textContent = "";
+                    document.getElementById("verificationButton").disabled = true;
+                    document.getElementById("countdown").innerText = "시간 만료";
+                } else {
+                    timeLeft--;
+                    updateCountdownDisplay();
                 }
             }, 1000);
         }
 
-        function sendVerification() {
-            const emailInput = document.getElementById("email").value;
-
-            fetch('/verify-email', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email: emailInput }),
-            })
-                .then(response => {
-                    if (response.ok) {
-                        document.getElementById("verificationCode").style.display = 'inline';
-                        document.getElementById("code").disabled = false; // 인증 코드 입력란 활성화
-                        startCountdown(60); // 1분 카운트다운 시작
-                    } else {
-                        alert('인증 코드 전송 실패');
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+        function updateCountdownDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById("countdown").innerText = `${minutes}분 ${seconds}초`;
         }
 
-        function submitVerificationCode(event) {
-            event.preventDefault(); // 기본 제출 방지
-            const codeInput = document.getElementById("code").value;
+        function resetCountdown() {
+            clearInterval(countdown);
+            timeLeft = 180;
+            startCountdown();
+        }
 
+        function verifyCode() {
+            const code = document.getElementById("verificationInput").value;
             fetch('/verification-code', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ code: codeInput }),
+                body: JSON.stringify({ code }),
             })
                 .then(response => response.text())
                 .then(data => {
                     if (data === "ok") {
-                        alert('인증이 완료되었습니다.');
-                        document.getElementById("completeButton").innerText = "인증완료"; // 버튼 텍스트 변경
-                        document.getElementById("completeButton").disabled = true; // 인증 완료 후 버튼 비활성화
-                        clearInterval(countdown); // 카운트다운 종료
-                        document.getElementById("countdown").textContent = ""; // 카운트다운 텍스트 삭제
-                        document.getElementById("verifyButton").disabled = true; // 인증코드 받기 버튼 비활성화
-                        document.getElementById("email").disabled = true; // 이메일 입력 비활성화
+                        document.getElementById("verificationButton").innerText = "인증완료";
+                        document.getElementById("verificationButton").disabled = true;
+                        document.getElementById("email").disabled = true;
+                        document.getElementById("getCodeButton").disabled = true;
+                        document.getElementById("verificationInput").disabled = true;
+                        clearInterval(countdown);
+                        document.getElementById("countdown").innerText = "";
                     } else {
-                        alert('인증 코드가 잘못되었습니다.');
+                        alert('인증 코드가 유효하지 않습니다.');
                     }
-                })
-                .catch(error => console.error('Error:', error));
+                });
         }
 
-        function checkVerificationStatus(event) {
-            const verifyButton = document.getElementById("verifyButton");
-            const completeButton = document.getElementById("completeButton");
+        function requestVerificationCode() {
+            const email = document.getElementById("email").value;
+            fetch('/verify-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email }),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // 인증코드 입력란 및 버튼 활성화
+                        document.getElementById("verificationSection").style.display = "block";
+                        document.getElementById("verificationInput").disabled = false;
+                        document.getElementById("verificationInput").focus();
+                        resetCountdown();
+                    } else {
+                        alert('이메일 전송에 실패했습니다.');
+                    }
+                });
+        }
 
-            if (verifyButton.disabled && completeButton.disabled) {
-                document.getElementById("email").disabled = false; // 이메일 입력란 재활성화
-                // 버튼이 비활성화 되어 있으면 폼 제출
-                document.forms[0].submit();
+        function validateForm(event) {
+            const isVerificationDisabled = document.getElementById("verificationButton").disabled;
+            const isGetCodeDisabled = document.getElementById("getCodeButton").disabled;
+
+            if (isVerificationDisabled && isGetCodeDisabled) {
+                // 이메일 입력한이 활성화 되어야 emial 값이 전송된다.
+                document.getElementById("email").disabled = false;
+                return true; // 폼 제출 허용
             } else {
-                // 버튼이 활성화 되어 있으면 알림창 표시
-                alert("이메일 인증 해주세요");
+                event.preventDefault(); // 폼 제출 방지
+                alert("이메일 인증이 완료되지 않았습니다.");
+                return false; // 폼 제출 차단
             }
-
-            event.preventDefault(); // 기본 제출 방지
         }
     </script>
 </head>
 <body>
 <h1>회원 가입</h1>
-<form action="/member/signup" th:object="${memberDto}" method="post" onsubmit="checkVerificationStatus(event);">
-
+<form action="/member/signup" th:object="${memberDto}" method="post" onsubmit="return validateForm(event);">
     <div th:if="${#fields.hasGlobalErrors()}">
         <p class="field-error" th:each="err : ${#fields.globalErrors()}"
            th:text="${err}">글로벌 오류 메시지</p>
@@ -129,15 +127,15 @@
 
     <label for="email">이메일:</label>
     <input type="text" id="email" th:field="*{email}" th:errorclass="field-error" placeholder="이메일을 입력하세요" />
-    <button type="button" id="verifyButton" onclick="sendVerification()">인증코드 받기</button><br>
+    <button type="button" id="getCodeButton" onclick="requestVerificationCode()">인증코드 받기</button><br>
     <div class="field-error" th:errors="*{email}">이메일 오류</div>
 
-    <div id="verificationCode" style="display: none;">
-        <label for="code">인증 코드:</label>
-        <input type="text" id="code" name="code" required disabled>
-        <span id="countdown">00:60</span>
-        <button type="button" id="completeButton" onclick="submitVerificationCode(event)">인증하기</button>
+    <div id="verificationSection" style="display:none;">
+        <input type="text" id="verificationInput" placeholder="인증코드" disabled>
+        <span id="countdown" style="margin-left: 10px;">3분 0초</span>
+        <button type="button" id="verificationButton" onclick="verifyCode()" disabled>인증하기</button>
     </div>
+
     <div>
         <label for="password">비밀번호</label>
         <input type="password" id="password" th:field="*{password}" th:errorclass="field-error" placeholder="비밀번호를 입력하세요"/><br/>
