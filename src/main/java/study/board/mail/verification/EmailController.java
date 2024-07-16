@@ -1,11 +1,13 @@
 package study.board.mail.verification;
 
 import com.nimbusds.oauth2.sdk.GeneralException;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 
 @RestController
@@ -14,9 +16,8 @@ public class EmailController {
     private final EmailService emailService;
 
     @PostMapping("/verify-email")
-    public String getEmailForVerification(@RequestBody EmailRequest.EmailForVerificationRequest request) {
-        LocalDateTime requestedAt = LocalDateTime.now();
-        emailService.sendSimpleVerificationMail(request.getEmail(), requestedAt);
+    public String getEmailForVerification(@RequestBody EmailRequest.EmailForVerificationRequest request) throws MessagingException, UnsupportedEncodingException {
+        emailService.sendVerificationMail(request.getEmail());
         return "ok";
     }
 

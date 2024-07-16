@@ -19,18 +19,9 @@ public class VerificationCode {
         return verifiedAt.isAfter(expiredAt);
     }
 
-    public String generateCodeMessage() {
-        String formattedExpiredAt = createAt
+    public String getVerificationCodeExpiredAt() {
+        return getCreateAt()
                 .plusMinutes(expirationTimeInMinutes)
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
-        return String.format(
-                """
-                [Verification Code] 
-                %s
-                Expired At : %s
-                """,
-                code, formattedExpiredAt
-        );
     }
 }
