@@ -1,4 +1,4 @@
-package study.board.mail.verification;
+package study.board.mail;
 
 import com.nimbusds.oauth2.sdk.GeneralException;
 import jakarta.mail.Message;

@@ -1,4 +1,4 @@
-package study.board.mail.verification;
+package study.board.mail;
 
 import lombok.Getter;
 

@@ -1,4 +1,4 @@
-package study.board.mail.verification;
+package study.board.mail;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
