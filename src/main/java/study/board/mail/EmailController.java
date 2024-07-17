@@ -21,10 +21,10 @@ public class EmailController {
         return "ok";
     }
 
-    @PostMapping("/verification-code")
-    public String verificationByCode(@RequestBody EmailRequest.VerificationCodeRequest request) throws GeneralException {
-        LocalDateTime requestedAt = LocalDateTime.now();
-        emailService.verifyCode(request.getCode(), requestedAt);
-        return "ok";
-    }
+//    @PostMapping("/verification-code")
+//    public String verificationByCode(@RequestBody EmailRequest.VerificationCodeRequest request) throws GeneralException {
+//        LocalDateTime requestedAt = LocalDateTime.now();
+//        emailService.verifyCode(request.getCode(), requestedAt);
+//        return "ok";
+//    }
 }

@@ -1,6 +1,5 @@
 package study.board.mail;
 
-import com.nimbusds.oauth2.sdk.GeneralException;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
@@ -10,36 +9,42 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import study.board.util.RedisUtil;
 
 import java.io.UnsupportedEncodingException;
-import java.time.LocalDateTime;
+import java.time.Duration;
 import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
 public class EmailService {
+
+    private final RedisUtil redisUtil;
+
     @Value("${spring.mail.username")
     private String from;
     private String sender = "Board_Master";
     private final int VERIFICATION_CODE_LENGTH = 6;
-    private final Integer EXPIRATION_TIME_IN_MINUTES = 5;
+    private final Long EXPIRATION_TIME_IN_MINUTES = 60*3L; // 3분
 
     @Qualifier("javaMailSender")
     private final JavaMailSender mailSender;
-    private final VerificationCodeRepository verificationCodeRepository;
 
-    public void sendVerificationMail(String to) throws MessagingException, UnsupportedEncodingException {
-        VerificationCode verificationCode = generateVerificationCode();
-        verificationCodeRepository.save(verificationCode);
+    public void sendVerificationMail(String toEmail) throws MessagingException, UnsupportedEncodingException {
+        String code = generateVerificationCode();
+        redisUtil.setDataExpire(code, toEmail, EXPIRATION_TIME_IN_MINUTES);
+
+        Duration dataExpire = redisUtil.getDataExpire(code);
+        VerificationCode verificationCode = new VerificationCode(code, dataExpire);
 
         MimeMessage mailMessage = generateCodeMessage(verificationCode);
         mailMessage.setFrom(new InternetAddress(from, sender));
-        mailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+        mailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
 
         mailSender.send(mailMessage);
     }
 
-    private VerificationCode generateVerificationCode() {
+    private String generateVerificationCode() {
         Random random = new Random();
         StringBuffer code = new StringBuffer();
 
@@ -59,15 +64,11 @@ public class EmailService {
             }
         }
 
-        return VerificationCode.builder()
-                .code(code.toString())
-                .createAt(LocalDateTime.now())
-                .expirationTimeInMinutes(EXPIRATION_TIME_IN_MINUTES)
-                .build();
+        return code.toString();
     }
 
     public MimeMessage generateCodeMessage(VerificationCode verificationCode) throws MessagingException {
-        String verificationCodeExpiredAt = verificationCode.getVerificationCodeExpiredAt();
+        String expiration = verificationCode.getExpirationTime();
         String msgOfEmail = "<div style='margin:20px;'>" +
                 "<h1>이메일 인증코드</h1><br/>" +
                 "<p>아래 코드를 입력해주세요.<p><br/>" +
@@ -75,7 +76,7 @@ public class EmailService {
                 "<h3 style='color:blue;'>회원가입 인증 코드입니다.</h3>" +
                 "<div style='font-size:130%'>" +
                 "CODE : <strong>" + verificationCode.getCode() + "</strong><br/>" +
-                "만료일 : " + verificationCodeExpiredAt +
+                "만료일 : " + expiration +
                 "</div><br/> " +
                 "</div><br/>" +
                 "<p>감사합니다.<p>" +
@@ -89,14 +90,14 @@ public class EmailService {
         return message;
     }
 
-    public void verifyCode(String code, LocalDateTime verifiedAt) throws GeneralException {
-        VerificationCode verificationCode = verificationCodeRepository.findByCode(code)
-                .orElseThrow(() -> new GeneralException("에러"));
-
-        if (verificationCode.isExpired(verifiedAt)) {
-            throw new GeneralException("에러");
-        }
-
-        verificationCodeRepository.remove(verificationCode);
-    }
+//    public void verifyCode(String code, LocalDateTime verifiedAt) throws GeneralException {
+//        VerificationCode verificationCode = verificationCodeRepository.findByCode(code)
+//                .orElseThrow(() -> new GeneralException("에러"));
+//
+//        if (verificationCode.isExpired(verifiedAt)) {
+//            throw new GeneralException("에러");
+//        }
+//
+//        verificationCodeRepository.remove(verificationCode);
+//    }
 }

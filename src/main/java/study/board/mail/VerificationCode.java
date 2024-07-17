@@ -2,26 +2,25 @@ package study.board.mail;
 
 import lombok.*;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class VerificationCode {
     private String code;
-    private LocalDateTime createAt;
-    private Integer expirationTimeInMinutes;
+    private String expirationTime;
 
-    public boolean isExpired(LocalDateTime verifiedAt) {
-        LocalDateTime expiredAt = createAt.plusMinutes(expirationTimeInMinutes);
-        return verifiedAt.isAfter(expiredAt);
+    public VerificationCode(String code, Duration dataExpire) {
+        this.code = code;
+        this.expirationTime = toLocalDateTimeString(dataExpire);
     }
 
-    public String getVerificationCodeExpiredAt() {
-        return getCreateAt()
-                .plusMinutes(expirationTimeInMinutes)
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    public String toLocalDateTimeString(Duration dataExpire) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime expiration = now.plus(dataExpire);
+        return expiration.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 }
