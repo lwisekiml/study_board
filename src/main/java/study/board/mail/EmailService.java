@@ -90,14 +90,14 @@ public class EmailService {
         return message;
     }
 
-//    public void verifyCode(String code, LocalDateTime verifiedAt) throws GeneralException {
-//        VerificationCode verificationCode = verificationCodeRepository.findByCode(code)
-//                .orElseThrow(() -> new GeneralException("에러"));
-//
-//        if (verificationCode.isExpired(verifiedAt)) {
-//            throw new GeneralException("에러");
-//        }
-//
-//        verificationCodeRepository.remove(verificationCode);
-//    }
+    public Boolean verifyCode(EmailRequest.VerificationRequest verificationRequest) {
+
+        String data = redisUtil.getData(verificationRequest.getCode());
+
+        if (verificationRequest.getEmail().equals(data)) {
+          redisUtil.deleteData(verificationRequest.getCode());
+          return true;
+        }
+        return false;
+    }
 }

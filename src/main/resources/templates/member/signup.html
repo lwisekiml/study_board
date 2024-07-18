@@ -45,12 +45,13 @@
 
         function verifyCode() {
             const code = document.getElementById("verificationInput").value;
+            const email = document.getElementById("email").value;
             fetch('/verification-code', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ code }),
+                body: JSON.stringify({ code, email }),
             })
                 .then(response => response.text())
                 .then(data => {

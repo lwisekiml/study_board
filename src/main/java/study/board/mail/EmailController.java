@@ -1,6 +1,5 @@
 package study.board.mail;
 
-import com.nimbusds.oauth2.sdk.GeneralException;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.UnsupportedEncodingException;
-import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,10 +19,11 @@ public class EmailController {
         return "ok";
     }
 
-//    @PostMapping("/verification-code")
-//    public String verificationByCode(@RequestBody EmailRequest.VerificationCodeRequest request) throws GeneralException {
-//        LocalDateTime requestedAt = LocalDateTime.now();
-//        emailService.verifyCode(request.getCode(), requestedAt);
-//        return "ok";
-//    }
+    @PostMapping("/verification-code")
+    public String verificationByCode(@RequestBody EmailRequest.VerificationRequest verificationRequest) {
+        if (emailService.verifyCode(verificationRequest)) {
+            return "ok";
+        }
+        return "error";
+    }
 }
