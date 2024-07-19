@@ -1,0 +1,20 @@
+<!-- TODO : 현재 사용하지 않으나 추후에 사용할 것으로 보여 남겨둠 -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div style='margin:20px;'>
+    <h1>이메일 인증코드</h1><br/>
+    <p>아래 코드를 입력해주세요.<p><br/>
+    <div style='border:1px solid black;'>
+        <h3 style='color:blue;'>회원가입 인증 코드입니다.</h3>
+        <div style='font-size:130%'>
+            CODE : <strong th:text="${code}"></strong><br/>
+            만료일 : <p th:text="${expiration}"></p><br/>
+        </div><br/>
+    </div><br/>
+    <p>감사합니다.</p>
+    한글
+    <br/>
+</div>
+</body>
+</html>

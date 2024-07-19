@@ -2,6 +2,7 @@ package study.board.mail;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,16 +15,16 @@ public class EmailController {
     private final EmailService emailService;
 
     @PostMapping("/verify-email")
-    public String getEmailForVerification(@RequestBody EmailRequest.EmailForVerificationRequest request) throws MessagingException, UnsupportedEncodingException {
-        emailService.sendVerificationMail(request.getEmail());
-        return "ok";
+    public ResponseEntity<String> sendEmail(@RequestBody EmailRequest.EmailForVerificationRequest request) throws MessagingException, UnsupportedEncodingException {
+        emailService.sendEmail(request.getEmail());
+        return ResponseEntity.ok("ok");
     }
 
     @PostMapping("/verification-code")
-    public String verificationByCode(@RequestBody EmailRequest.VerificationRequest verificationRequest) {
+    public ResponseEntity<String> verifyCode(@RequestBody EmailRequest.VerificationRequest verificationRequest) {
         if (emailService.verifyCode(verificationRequest)) {
-            return "ok";
+            return ResponseEntity.ok("ok");
         }
-        return "error";
+        return ResponseEntity.notFound().build();
     }
 }

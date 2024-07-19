@@ -5,7 +5,6 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -20,31 +19,45 @@ import java.util.Random;
 public class EmailService {
 
     private final RedisUtil redisUtil;
+    private final JavaMailSender mailSender;
 
     @Value("${spring.mail.username")
     private String from;
     private String sender = "Board_Master";
+
     private final int VERIFICATION_CODE_LENGTH = 6;
     private final Long EXPIRATION_TIME_IN_MINUTES = 60*3L; // 3분
 
-    @Qualifier("javaMailSender")
-    private final JavaMailSender mailSender;
+    public void sendEmail(String toEmail) throws MessagingException, UnsupportedEncodingException {
+        if (redisUtil.existData(toEmail)) {
+            redisUtil.deleteData(toEmail);
+        }
 
-    public void sendVerificationMail(String toEmail) throws MessagingException, UnsupportedEncodingException {
-        String code = generateVerificationCode();
-        redisUtil.setDataExpire(code, toEmail, EXPIRATION_TIME_IN_MINUTES);
-
-        Duration dataExpire = redisUtil.getDataExpire(code);
-        VerificationCode verificationCode = new VerificationCode(code, dataExpire);
-
-        MimeMessage mailMessage = generateCodeMessage(verificationCode);
-        mailMessage.setFrom(new InternetAddress(from, sender));
-        mailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
-
-        mailSender.send(mailMessage);
+        MimeMessage emailForm = createEmailForm(toEmail);
+        mailSender.send(emailForm);
     }
 
-    private String generateVerificationCode() {
+    public MimeMessage createEmailForm(String toEmail) throws MessagingException, UnsupportedEncodingException {
+        VerificationCode verificationCode = setVerificationCode(toEmail);
+
+        MimeMessage message = mailSender.createMimeMessage();
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
+        message.setSubject("회원가입을 위한 인증 코드입니다.");
+        message.setFrom(new InternetAddress(from, sender));
+        message.setText(setContext(verificationCode), "utf-8", "html");
+
+        return message;
+    }
+
+    private VerificationCode setVerificationCode(String toEmail) {
+        String code = createCode();
+        redisUtil.setDataExpire(toEmail, code, EXPIRATION_TIME_IN_MINUTES);
+
+        Duration dataExpire = redisUtil.getDataExpire(toEmail);
+        return new VerificationCode(code, dataExpire);
+    }
+
+    private String createCode() {
         Random random = new Random();
         StringBuffer code = new StringBuffer();
 
@@ -67,36 +80,45 @@ public class EmailService {
         return code.toString();
     }
 
-    public MimeMessage generateCodeMessage(VerificationCode verificationCode) throws MessagingException {
-        String expiration = verificationCode.getExpirationTime();
-        String msgOfEmail = "<div style='margin:20px;'>" +
+    private String setContext(VerificationCode verificationCode) {
+        // TODO : 아래 코드로 바꾸는 것이 더 좋을 것으로 판단되어 바꾸려 했지만
+        //        templateEngine.process("member/mailForm", context); 에서 에러 발생하여 보류
+//        Context context = new Context();
+//        TemplateEngine templateEngine = new TemplateEngine();
+//        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+//
+//        context.setVariable("code", verificationCode.getCode());
+//        context.setVariable("expiration", verificationCode.getExpirationTime());
+//
+//        templateResolver.setPrefix("templates/");
+//        templateResolver.setSuffix(".html");
+//        templateResolver.setTemplateMode(TemplateMode.HTML);
+//        templateResolver.setCacheable(false);
+//
+//        templateEngine.setTemplateResolver(templateResolver);
+//
+//        String str =  templateEngine.process("member/mailForm", context);
+//        return str;
+
+        return "<div style='margin:20px;'>" +
                 "<h1>이메일 인증코드</h1><br/>" +
                 "<p>아래 코드를 입력해주세요.<p><br/>" +
                 "<div align='center' style='border:1px solid black; font-family:verdana;'>" +
                 "<h3 style='color:blue;'>회원가입 인증 코드입니다.</h3>" +
                 "<div style='font-size:130%'>" +
                 "CODE : <strong>" + verificationCode.getCode() + "</strong><br/>" +
-                "만료일 : " + expiration +
+                "만료일 : " + verificationCode.getExpirationTime() +
                 "</div><br/> " +
                 "</div><br/>" +
                 "<p>감사합니다.<p>" +
                 "<br/>";
-
-        String title = " 회원가입을 위한 인증 코드입니다.";
-        MimeMessage message = mailSender.createMimeMessage();
-        message.setSubject(title);
-        message.setText(msgOfEmail, "utf-8", "html");
-
-        return message;
     }
 
     public Boolean verifyCode(EmailRequest.VerificationRequest verificationRequest) {
-
-        String data = redisUtil.getData(verificationRequest.getCode());
-
-        if (verificationRequest.getEmail().equals(data)) {
-          redisUtil.deleteData(verificationRequest.getCode());
-          return true;
+        String code = redisUtil.getData(verificationRequest.getEmail());
+        if (verificationRequest.getCode().equals(code)) {
+            redisUtil.deleteData(verificationRequest.getEmail());
+            return true;
         }
         return false;
     }

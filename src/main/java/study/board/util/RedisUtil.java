@@ -18,6 +18,10 @@ public class RedisUtil {
         return valueOperations.get(key);
     }
 
+    public boolean existData(String key) {
+        return Boolean.TRUE.equals(stringRedisTemplate.hasKey(key));
+    }
+
     public void setData(String key, String value) {
         ValueOperations<String,String> valueOperations = stringRedisTemplate.opsForValue();
         valueOperations.set(key, value);
