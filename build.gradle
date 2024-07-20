@@ -62,6 +62,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	// 인증 서버에서 발급 받은 Access 토큰과 같은 정보를 담을 저장소를 만들기 위함
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+	// email 전송
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	// redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 tasks.named('test') {

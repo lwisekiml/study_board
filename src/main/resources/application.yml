@@ -49,6 +49,22 @@ spring:
 
   messages:
     basename: messages,errors
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${GMAIL}
+    password: ${GMAIL_APP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
 
 kakao:
   rest_api:
