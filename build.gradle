@@ -17,6 +17,10 @@ configurations {
 	}
 }
 
+bootJar {
+	archiveFileName = 'study_board.jar'
+}
+
 repositories {
 	mavenCentral()
 }
