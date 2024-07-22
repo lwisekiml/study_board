@@ -20,7 +20,7 @@ spring:
             # .env 값 import
     import: optional:file:.env[.properties]
   datasource:
-#    url: jdbc:mysql://127.0.0.1:3306/study-board?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+#    url: jdbc:mysql://127.0.0.1:3306/studydb?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     # docker
     url: jdbc:mysql://127.0.0.1:3307/study-board?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: root
