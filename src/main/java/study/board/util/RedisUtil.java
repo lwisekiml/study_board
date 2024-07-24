@@ -3,13 +3,12 @@ package study.board.util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.stereotype.Component;
+import study.board.mail.EmailAuthentication;
 
 import java.time.Duration;
 
-@Component
 @RequiredArgsConstructor
-public class RedisUtil {
+public class RedisUtil implements EmailAuthentication {
 
     private final StringRedisTemplate stringRedisTemplate;
 
