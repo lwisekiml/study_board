@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import study.board.util.RedisUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.time.Duration;
@@ -18,7 +17,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class EmailService {
 
-    private final RedisUtil redisUtil;
+    private final EmailAuthentication emailAuthentication;
     private final JavaMailSender mailSender;
 
     @Value("${spring.mail.username")
@@ -29,8 +28,8 @@ public class EmailService {
     private final Long EXPIRATION_TIME_IN_MINUTES = 60*3L; // 3분
 
     public void sendEmail(String toEmail) throws MessagingException, UnsupportedEncodingException {
-        if (redisUtil.existData(toEmail)) {
-            redisUtil.deleteData(toEmail);
+        if (emailAuthentication.existData(toEmail)) {
+            emailAuthentication.deleteData(toEmail);
         }
 
         MimeMessage emailForm = createEmailForm(toEmail);
@@ -51,9 +50,9 @@ public class EmailService {
 
     private VerificationCode setVerificationCode(String toEmail) {
         String code = createCode();
-        redisUtil.setDataExpire(toEmail, code, EXPIRATION_TIME_IN_MINUTES);
+        emailAuthentication.setDataExpire(toEmail, code, EXPIRATION_TIME_IN_MINUTES);
 
-        Duration dataExpire = redisUtil.getDataExpire(toEmail);
+        Duration dataExpire = emailAuthentication.getDataExpire(toEmail);
         return new VerificationCode(code, dataExpire);
     }
 
@@ -115,9 +114,9 @@ public class EmailService {
     }
 
     public Boolean verifyCode(EmailRequest.VerificationRequest verificationRequest) {
-        String code = redisUtil.getData(verificationRequest.getEmail());
+        String code = emailAuthentication.getData(verificationRequest.getEmail());
         if (verificationRequest.getCode().equals(code)) {
-            redisUtil.deleteData(verificationRequest.getEmail());
+            emailAuthentication.deleteData(verificationRequest.getEmail());
             return true;
         }
         return false;

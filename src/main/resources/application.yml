@@ -1,8 +1,10 @@
 spring:
   profiles:
-    active: local
+    active: docker
     group:
       local:
+        - common
+      docker:
         - common
       prod:
         - common
@@ -11,18 +13,9 @@ spring:
   config:
     activate:
       on-profile: common
-
----
-spring:
-  config:
-    activate:
-      on-profile: local
-            # .env 값 import
+      # .env 값 import
     import: optional:file:.env[.properties]
   datasource:
-#    url: jdbc:mysql://127.0.0.1:3306/studydb?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    # docker
-    url: jdbc:mysql://127.0.0.1:3307/study-board?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: root
     password: ${MY_MYSQL_PW}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -77,7 +70,6 @@ spring:
           starttls:
             enable: true
           auth: true
-
   data:
     redis:
       host: 127.0.0.1
@@ -88,13 +80,6 @@ kakao:
     client_id: ${KAKAO_CLIENT_ID}
     client-secret: ${KAKAO_CLIENT_SECRET}
 
-
-
-server:
-  servlet:
-    session:
-      tracking-modes=cookie: cookie
-
 logging:
   level:
     org.apache.coyote.http11: trace
@@ -102,6 +87,22 @@ logging:
 
 file:
   dir: /G:/
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/studydb?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3307/study-board?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
 
 ---
 spring:
