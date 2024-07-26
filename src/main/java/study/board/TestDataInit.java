@@ -18,17 +18,8 @@ public class TestDataInit {
     private final BoardRepository boardRepository;
     private final PasswordEncoder passwordEncoder;
 
-    /*
-     * 테스트용 데이터 추가
-     */
     @PostConstruct
     public void init() {
-//        memberRepository.save(new Member("kim", "test", "1234"));
-//        memberRepository.save(new Member("lee", "qwer", "zxcv"));
-
-//        boardRepository.save(new Board("test", "제목1", "내용1"));
-//        boardRepository.save(new Board("test", "제목3", "내용3"));
-//        boardRepository.save(new Board("qwer", "제목2", "내용2"));
 
         memberRepository.save(new Member("loginId", "membername", "member@email.com", passwordEncoder.encode("password"), MemberRole.MEMBER));
         memberRepository.save(new Member("asd", "asd", "asd@email.com", passwordEncoder.encode("asd"), MemberRole.MEMBER));

@@ -62,15 +62,4 @@ public class MemberController {
     public String login() {
         return "member/loginForm";
     }
-
-
-    // 멤버에 대한 게시글이기는 한데 Board에 있어야 하나?
-//    @GetMapping("/boardList")
-//    public String getMemberWrite(Model model, HttpServletRequest request) {
-//        LoginFormDto loginFormDto = (LoginFormDto) request.getSession().getAttribute(SessionConst.LOGIN_MEMBER);
-//        List<BoardDto> boardDto = boardService.getMemberWrite(loginFormDto.getLoginId());
-//        model.addAttribute("boardDtos", boardDto);
-//
-//        return "/member/boardList";
-//    }
 }

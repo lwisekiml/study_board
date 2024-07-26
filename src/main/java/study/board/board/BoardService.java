@@ -168,10 +168,4 @@ public class BoardService {
             boardRepository.save(board);
         }
     }
-
-//    // 본인이 작성한 글 찾기
-//    @Transactional
-//    public List<BoardDto> getMemberWrite(String loginId) {
-//        return boardRepository.findMemberDto(loginId);
-//    }
 }

@@ -10,8 +10,6 @@ import lombok.*;
 @AllArgsConstructor
 public class MemberDto {
 
-//    private Long memberId;
-
     @NotBlank(message = "아이디는 필수 입니다.")
     private String loginId;
 
