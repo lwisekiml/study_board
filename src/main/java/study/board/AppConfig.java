@@ -17,9 +17,9 @@ public class AppConfig {
 
     @Bean
     public EmailAuthentication emailAuthentication() {
-//        return new VerificationCodeRepository();
+        return new VerificationCodeRepository();
         // docker 사용할 때
-        return new RedisUtil(stringRedisTemplate());
+//        return new RedisUtil(stringRedisTemplate());
     }
 
     public StringRedisTemplate stringRedisTemplate() {

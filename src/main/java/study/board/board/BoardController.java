@@ -195,7 +195,6 @@ public class BoardController {
         return "redirect:/";
     }
     
-    // board에 관련되어 있지만 /board로 시작하는 것이 아니라 다른 곳을 옮기는게 좋을거 같은데
     @GetMapping("/attach/{boardId}")
     public ResponseEntity<Resource> downloadAttach(
             @PathVariable("boardId") Long boardId
@@ -226,7 +225,6 @@ public class BoardController {
         return new UrlResource(s);
     }
 
-    // 추천
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/board/recommend/{boardId}")
     public String boardRecommend(
