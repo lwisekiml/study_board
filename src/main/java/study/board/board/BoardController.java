@@ -83,7 +83,7 @@ public class BoardController {
         List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), listBoardDtos.getTotalPages());
 
         model.addAttribute("paginationBarNumbers", barNumbers);
-        model.addAttribute("listBoardDtos", listBoardDtos); // 프론트에 보낼 때 Dto 인지 명시할 필요가 없을 것으로 보여 boards로 함
+        model.addAttribute("listBoardDtos", listBoardDtos);
         model.addAttribute("search", search); // 검색어를 화면에 유지하기 위함
 
         return "list";
@@ -126,8 +126,7 @@ public class BoardController {
     @GetMapping("/board/{boardId}")
     public String board(
             @PathVariable(name = "boardId") Long boardId,
-            Model model,
-            Principal principal
+            Model model
     ) {
         model.addAttribute("boardDto", boardService.findBoardPlusViewToBoardDto(boardId));
         return "board/board";

@@ -8,7 +8,7 @@ on:
 
 env:
   BUCKET_NAME: study-board-s3
-  CODE_DEPLOY_APP_NAME: study-board
+  CODE_DEPLOY_APP_NAME: study-board-codedep
   DEPLOYMENT_GROUP_NAME: board_instance
 
 jobs:
