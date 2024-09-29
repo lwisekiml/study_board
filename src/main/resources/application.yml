@@ -82,7 +82,7 @@ kakao:
 
 logging:
   level:
-    org.apache.coyote.http11: trace
+    org.apache.coyote.http11: info # 이미지 업로드시 불필요한 로그가 많아서 수정
     org.hibernate.SQL: debug
 
 file:
@@ -109,7 +109,7 @@ spring:
 # .env 값 import
   config:
     activate:
-      on-profile: dev
+      on-profile: prod
     import: optional:file:.env[.properties]
   datasource:
     url: jdbc:mysql://localhost:3306/studydb?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
@@ -165,7 +165,7 @@ server:
 
 logging:
   level:
-    org.apache.coyote.http11: trace
+    org.apache.coyote.http11: info # 이미지 업로드시 불필요한 로그가 많아서 수정
     org.hibernate.SQL: debug
 
 file:
