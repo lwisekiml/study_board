@@ -1,15 +1,29 @@
-#!/bin/bash
-CURRENT_PID=$(pgrep -f .jar)
-echo "현재 PID : $CURRENT_PID"
+!/bin/bash
+BUILD_JAR=$(ls /home/ec2-user/study_board/build/libs/study_board.jar)
+JAR_NAME=$(basename $BUILD_JAR)
+
+echo "> 현재 시간: $(date)" >> /home/ec2-user/test.log
+
+echo "> build 파일명: $JAR_NAME" >> /home/ec2-user/test.log
+
+echo "> build 파일 복사" >> /home/ec2-user/test.log
+DEPLOY_PATH=/home/ec2-user/action/
+cp $BUILD_JAR $DEPLOY_PATH
+
+echo "> 현재 실행중인 애플리케이션 pid 확인" >> /home/ec2-user/test.log
+CURRENT_PID=$(pgrep -f $JAR_NAME)
+
 if [ -z $CURRENT_PID ]
 then
-  echo "현재 구동중이 것이 없으므로 중지하지 않습니다."
+  echo "> 현재 구동중인 애플리케이션이 없으므로 종료하지 않습니다." >> /home/ec2-user/test.log
 else
-  echo "kill $CURRENT_PID"
-  kill -9 $CURRENT_PID
-  sleep 3
+  echo "> kill -9 $CURRENT_PID" >> /home/ec2-user/test.log
+  sudo kill -9 $CURRENT_PID
+  sleep 5
 fi
 
-JAR_PATH="/home/ec2-user/study_board/build/libs/board-0.0.1-SNAPSHOT.jar"
-nohup java -jar $JAR_PATH --spring.profiles.active=dev
-echo "jar file deploy success!!!"
+
+#DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
+DEPLOY_JAR=/home/ec2-user/study_board/build/libs/study_board.jar
+echo "> DEPLOY_JAR 배포"    >> /home/ec2-user/test.log
+sudo java -jar $DEPLOY_JAR >> /home/ec2-user/test.log 2>/home/ec2-user/deploy_err.log &

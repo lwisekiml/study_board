@@ -22,6 +22,23 @@ jobs:
         with:
           java-version: 17
 
+      # Github Repository Secrets를 통해 환경 변수 파일 생성
+      - name: Generate Environment Variables File for Production
+        run: |
+          echo "KAKAO_CLIENT_ID=$KAKAO_CLIENT_ID" >> .env
+          echo "KAKAO_CLIENT_SECRET=$KAKAO_CLIENT_SECRET" >> .env
+          echo "AWS_MYSQL_PW=$AWS_MYSQL_PW" >> .env
+          echo "AWS_IP=$AWS_IP" >> .env
+          echo "GMAIL=$GMAIL" >> .env
+          echo "GMAIL_APP_PASSWORD=$GMAIL_APP_PASSWORD" >> .env
+        env:
+          KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID}}
+          KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET}}
+          AWS_MYSQL_PW: ${{ secrets.AWS_MYSQL_PW}}
+          AWS_IP: ${{ secrets.AWS_IP}}
+          GMAIL: ${{ secrets.GMAIL}}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD}}
+
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
         shell: bash

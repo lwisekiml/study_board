@@ -4,10 +4,13 @@ spring:
     group:
       local:
         - common
+        - localdocker
       docker:
         - common
+        - localdocker
       prod:
         - common
+
 ---
 spring:
   config:
@@ -15,38 +18,6 @@ spring:
       on-profile: common
       # .env 값 import
     import: optional:file:.env[.properties]
-  datasource:
-    username: root
-    password: ${MY_MYSQL_PW}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
-  security:
-    oauth2:
-      client:
-        registration:
-          kakao:
-            client-name: kakao
-            client-authentication-method: client_secret_post
-            client-id: ${KAKAO_CLIENT_ID}
-            client-secret: ${KAKAO_CLIENT_SECRET}
-            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
-            authorization-grant-type: authorization_code
-            scope: profile_nickname
-        provider:
-          kakao:
-            authorization-uri: https://kauth.kakao.com/oauth/authorize
-            token-uri: https://kauth.kakao.com/oauth/token
-            user-info-uri: https://kapi.kakao.com/v2/user/me
-            user-name-attribute: id
-
-  jpa:
-    hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        format_sql: true
-        show_sql: true
-        dialect: org.hibernate.dialect.MySQL8Dialect
 
   mvc:
     pathmatch:
@@ -80,9 +51,49 @@ kakao:
     client_id: ${KAKAO_CLIENT_ID}
     client-secret: ${KAKAO_CLIENT_SECRET}
 
+---
+spring:
+  config:
+    activate:
+      on-profile: localdocker
+    import: optional:file:.env[.properties]
+
+  datasource:
+    username: root
+    password: ${MY_MYSQL_PW}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-name: kakao
+            client-authentication-method: client_secret_post
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
+            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+            authorization-grant-type: authorization_code
+            scope: profile_nickname
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
 logging:
   level:
-    org.apache.coyote.http11: trace
+    org.apache.coyote.http11: info
     org.hibernate.SQL: debug
 
 file:
@@ -109,7 +120,7 @@ spring:
 # .env 값 import
   config:
     activate:
-      on-profile: dev
+      on-profile: prod
     import: optional:file:.env[.properties]
   datasource:
     url: jdbc:mysql://localhost:3306/studydb?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
@@ -134,38 +145,19 @@ spring:
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
+
   jpa:
     hibernate:
       ddl-auto: create
     properties:
       hibernate:
-        format_sql: true
-
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
-
-  servlet:
-    multipart:
-      max-file-size: 1MB # 파일 하나의 최대 사이즈
-      max-request-size: 10MB # 전체 사이즈
-
-  messages:
-    basename: messages,errors
-
-kakao:
-  rest_api:
-    client_id: ${KAKAO_CLIENT_ID}
-    client-secret: ${KAKAO_CLIENT_SECRET}
-
-server:
-  servlet:
-    session:
-      tracking-modes=cookie: cookie
+#        format_sql: true
+#        show_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
 
 logging:
   level:
-    org.apache.coyote.http11: trace
+    org.apache.coyote.http11: info
     org.hibernate.SQL: debug
 
 file:
