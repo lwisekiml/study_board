@@ -1,14 +1,11 @@
-!/bin/bash
+#!/bin/bash
+
 BUILD_JAR=$(ls /home/ec2-user/study_board/build/libs/study_board.jar)
 JAR_NAME=$(basename $BUILD_JAR)
 
 echo "> 현재 시간: $(date)" >> /home/ec2-user/test.log
 
 echo "> build 파일명: $JAR_NAME" >> /home/ec2-user/test.log
-
-echo "> build 파일 복사" >> /home/ec2-user/test.log
-DEPLOY_PATH=/home/ec2-user/action/
-cp $BUILD_JAR $DEPLOY_PATH
 
 echo "> 현재 실행중인 애플리케이션 pid 확인" >> /home/ec2-user/test.log
 CURRENT_PID=$(pgrep -f $JAR_NAME)
@@ -22,8 +19,7 @@ else
   sleep 5
 fi
 
-
-#DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
 DEPLOY_JAR=/home/ec2-user/study_board/build/libs/study_board.jar
 echo "> DEPLOY_JAR 배포"    >> /home/ec2-user/test.log
-sudo java -jar $DEPLOY_JAR >> /home/ec2-user/test.log 2>/home/ec2-user/deploy_err.log &
+
+export $(cat /home/ec2-user/study_board/.env | xargs) && sudo java -jar /home/ec2-user/study_board/build/libs/study_board.jar --spring.datasource.password=$AWS_MYSQL_PW --spring.security.oauth2.client.registration.kakao.client-id=$KAKAO_CLIENT_ID --spring.security.oauth2.client.registration.kakao.client-secret=$KAKAO_CLIENT_SECRET --spring.mail.username=$GMAIL --spring.mail.password=$GMAIL_APP_PASSWORD --spring.security.oauth2.client.registration.kakao.redirect-uri=http://$AWS_IP:8080/login/oauth2/code/kakao >> /home/ec2-user/test.log 2>/home/ec2-user/deploy_err.log &
