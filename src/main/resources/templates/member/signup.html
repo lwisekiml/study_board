@@ -91,19 +91,23 @@
                 });
         }
 
+        // TODO : 이메일 인증 기능을 위해 gmail smtp를 사용했는데 AWS 서버에서 사용하려면 AWS SES를 사용 해야한다.
+        // TODO : AWS SES 사용을 위해 도메인 등이 필요하고 검수(?) 받는데 시간이 걸려 이메일 인증 기능은 주석처리 함
+        // TODO : 실제 기능은 구현되어 있고 AWS SES 설정만 해주면 되기에 차후에 하기로 결정함
         function validateForm(event) {
-            const isVerificationDisabled = document.getElementById("verificationButton").disabled;
-            const isGetCodeDisabled = document.getElementById("getCodeButton").disabled;
-
-            if (isVerificationDisabled && isGetCodeDisabled) {
-                // 이메일 입력한이 활성화 되어야 emial 값이 전송된다.
-                document.getElementById("email").disabled = false;
-                return true; // 폼 제출 허용
-            } else {
-                event.preventDefault(); // 폼 제출 방지
-                alert("이메일 인증이 완료되지 않았습니다.");
-                return false; // 폼 제출 차단
-            }
+            return true;
+            // const isVerificationDisabled = document.getElementById("verificationButton").disabled;
+            // const isGetCodeDisabled = document.getElementById("getCodeButton").disabled;
+            //
+            // if (isVerificationDisabled && isGetCodeDisabled) {
+            //     // 이메일 입력한이 활성화 되어야 emial 값이 전송된다.
+            //     document.getElementById("email").disabled = false;
+            //     return true; // 폼 제출 허용
+            // } else {
+            //     event.preventDefault(); // 폼 제출 방지
+            //     alert("이메일 인증이 완료되지 않았습니다.");
+            //     return false; // 폼 제출 차단
+            // }
         }
     </script>
 </head>
@@ -128,14 +132,14 @@
 
     <label for="email">이메일:</label>
     <input type="text" id="email" th:field="*{email}" th:errorclass="field-error" placeholder="이메일을 입력하세요" />
-    <button type="button" id="getCodeButton" onclick="requestVerificationCode()">인증코드 받기</button><br>
+<!--    <button type="button" id="getCodeButton" onclick="requestVerificationCode()">인증코드 받기</button><br>-->
     <div class="field-error" th:errors="*{email}">이메일 오류</div>
 
-    <div id="verificationSection" style="display:none;">
-        <input type="text" id="verificationInput" placeholder="인증코드" disabled>
-        <span id="countdown" style="margin-left: 10px;">3분 0초</span>
-        <button type="button" id="verificationButton" onclick="verifyCode()" disabled>인증하기</button>
-    </div>
+<!--    <div id="verificationSection" style="display:none;">-->
+<!--        <input type="text" id="verificationInput" placeholder="인증코드" disabled>-->
+<!--        <span id="countdown" style="margin-left: 10px;">3분 0초</span>-->
+<!--        <button type="button" id="verificationButton" onclick="verifyCode()" disabled>인증하기</button>-->
+<!--    </div>-->
 
     <div>
         <label for="password">비밀번호</label>
