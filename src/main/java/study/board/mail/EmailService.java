@@ -5,6 +5,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.io.UnsupportedEncodingException;
 import java.time.Duration;
 import java.util.Random;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EmailService {
@@ -32,7 +34,9 @@ public class EmailService {
             emailAuthentication.deleteData(toEmail);
         }
 
+        log.info("createEmailForm start...");
         MimeMessage emailForm = createEmailForm(toEmail);
+        log.info("mail send...");
         mailSender.send(emailForm);
     }
 
