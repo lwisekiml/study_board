@@ -30,7 +30,7 @@ jobs:
           echo "AWS_MYSQL_PW=$AWS_MYSQL_PW" >> .env
           echo "AWS_IP=$AWS_IP" >> .env
           echo "GMAIL=$GMAIL" >> .env
-          echo "GMAIL_APP_PASSWORD=\"$GMAIL_APP_PASSWORD\"" >> .env
+          echo "GMAIL_APP_PASSWORD=$GMAIL_APP_PASSWORD" >> .env
         env:
           KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID}}
           KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET}}
