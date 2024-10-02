@@ -1,5 +1,6 @@
 package study.board.mail;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +9,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
+@Slf4j
 @Configuration
 public class MailConfig {
     @Value("${spring.mail.host}")
@@ -21,6 +23,11 @@ public class MailConfig {
 
     @Bean
     public JavaMailSender javaMailSender() {
+        log.info("mailServerHost : {}", mailServerHost);
+        log.info("mailServerPort : {}", mailServerPort);
+        log.info("mailServerUsername : {}", mailServerUsername);
+        log.info("mailServerPassword : {}", mailServerPassword);
+
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(mailServerHost);
         mailSender.setPassword(mailServerPort);
