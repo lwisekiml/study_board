@@ -24,3 +24,15 @@ git clone https://github.com/lwisekiml/study_board.git
 > MY_MYSQL_PW=  
 > GMAIL=  
 > GMAIL_APP_PASSWORD=  
+
+4. mysql 
+database 생성(studydb로 설정되어 있다.)
+
+5. docker 사용 방법(Redis도 같이 사용해야한다.)
+- docker 사용시 datasource.url을 본인 설정과 맞게 수정
+- AppConfig에서 다음과 같이 수정
+```java
+// return new VerificationCodeRepository();
+// docker 사용할 때
+return new RedisUtil(stringRedisTemplate());
+```
