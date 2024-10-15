@@ -3,14 +3,12 @@ package study.board;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import study.board.board.Board;
 import study.board.board.BoardRepository;
 import study.board.member.Member;
 import study.board.member.MemberRepository;
 import study.board.member.MemberRole;
 
-@Component
 @RequiredArgsConstructor
 public class TestDataInit {
 
